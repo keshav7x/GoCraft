@@ -6,3 +6,8 @@ export const xpEventTypeEnum = pgEnum("xp_event_type", [
   "XP_ADJUSTMENT",
 ]);
 
+export const outboxStatusEnum = pgEnum("outbox_status", [
+  "pending",     
+  "processed",  
+  "failed"     
+]);

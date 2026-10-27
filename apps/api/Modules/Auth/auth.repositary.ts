@@ -14,8 +14,9 @@ export class authRepositoryClass {
     return this.authDB;
   };
 
-  findUserByEmail = async (email: string) => {
-    const [user] = await this.authDB
+  findUserByEmail = async (email: string, tx?: any) => {
+    const DbClient = this.getClient(tx);
+    const [user] = await DbClient
       .select()
       .from(this.users)
       .where(eq(this.users.email, email))
@@ -24,8 +25,9 @@ export class authRepositoryClass {
     return user ?? null;
   };
 
-  findUserById = async (id: number) => {
-    const [user] = await this.authDB
+  findUserById = async (id: number, tx?: any) => {
+        const DbClient = this.getClient(tx);
+    const [user] = await DbClient
       .select()
       .from(this.users)
       .where(eq(this.users.id, id))
@@ -101,7 +103,7 @@ export class authRepositoryClass {
       .where(
         and(
           eq(this.tokens.token, tokenString),
-          gt(this.tokens.expiresAt, new Date()) 
+          gt(this.tokens.expiresAt, new Date())
         )
       )
       .limit(1);
