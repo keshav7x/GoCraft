@@ -3,13 +3,24 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bunx tsx --watch index.ts"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^1.0.0-rc.5"
   },
   "peerDependencies": {
     "typescript": "^7"
   },
   "dependencies": {
-    "@trpc/server": "^11.19.0"
+    "@trpc/server": "^11.19.0",
+    "dotenv": "^18.0.9",
+    "drizzle-orm": "^1.0.0-rc.5",
+    "fastify": "^5.12.7",
+    "pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.7"
   }
 }
