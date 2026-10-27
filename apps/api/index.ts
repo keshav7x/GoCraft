@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { appRouter } from "./appRouter";
+import fastifyCookie from "@fastify/cookie";
 
 const server = Fastify({
   logger: true,
@@ -15,6 +16,10 @@ async function main() {
       createContext: () => ({}),
     },
   });
+  server.register(fastifyCookie, {
+    secret:process.env.COOKIE_SECRET!
+  })
+  
   server.get("/health", async () => {
     return {
       status: "ok",

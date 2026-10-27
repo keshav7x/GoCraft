@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import type { Response } from "express";
+import type { FastifyReply } from "fastify";
 
 export interface JwtPayload {
   userId: number;
@@ -53,11 +53,12 @@ export class AuthUtils {
     return jwt.verify(token, this.jwtSecret) as JwtPayload;
   }
 
-  public assignAuthCookie(res: Response, token: string): void {
+  public assignAuthCookie(reply: FastifyReply, token: string): void {
     const isProduction = process.env.NODE_ENV === "production";
     const oneDayInMs = 24 * 60 * 60 * 1000;
 
-    res.cookie(this.cookieName, token, {
+    reply.setCookie(this.cookieName, token, {
+      path: "/",
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "strict" : "lax",
@@ -65,8 +66,8 @@ export class AuthUtils {
     });
   }
 
-  public clearAuthCookie(res: Response): void {
-    res.clearCookie(this.cookieName);
+  public clearAuthCookie(reply: FastifyReply): void {
+    reply.clearCookie(this.cookieName, { path: "/" });
   }
 
   public async hashPassword(password: string): Promise<string> {

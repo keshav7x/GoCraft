@@ -5,7 +5,7 @@ import { AppError, InvalidCredentialsError, UserAlreadyExistsError, UserCreation
 import type { VerificationRepositoryClass } from "../verification/verification.repo";
 import { AuthUtils } from "./auth.utils";
 import type { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
-import { applyEffectWrapper } from "drizzle-orm/effect-core";
+
 
 export class authServiceClass{
   constructor(
@@ -99,10 +99,25 @@ export class authServiceClass{
 
     if (!password) throw new InvalidCredentialsError()
 
+    const token = this.authUtils.generateJwtToken({
+      userId: user.id,
+      email:email
+    })
+    return token
+  }
 
-    if (!newUser) throw new Error("Something error occured , try again later")
+  getMe = async (jwtToken: string) => {
+    if (!jwtToken) throw new AppError("JWT token not found", 404)
+    const userId = this.authUtils.verifyJwtToken(jwtToken).userId
+    if (!userId) throw new AppError("User Id not found", 401)
+    if (typeof userId !== "number") {
+      throw new AppError("Invalid user ID in token", 401)
+    }
+    if(Number.isFinite(userId)) throw new AppError("Invalid user id",401)
+    const [user] = await this.authRepo.findUserById(Number(userId))
+    if (!user) throw new AppError("User not found", 404)
 
-    return newUser
+    return user
 
   }
 }
