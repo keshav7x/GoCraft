@@ -1,50 +1,85 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+
+  /* Canvas + surfaces: clean white, neutral borders */
+  --color-canvas: #f7f8fa;
+  --color-surface: #ffffff;
+
+  /* Restrained accent — Go brand cyan, used sparingly */
+  --color-accent-50: #eef9fd;
+  --color-accent-100: #d7f1fa;
+  --color-accent-200: #b2e4f5;
+  --color-accent-300: #7dd2ed;
+  --color-accent-400: #44b9e1;
+  --color-accent-500: #1fa1d1;
+  --color-accent-600: #0d84b6;
+  --color-accent-700: #0e6a93;
+  --color-accent-800: #125878;
+  --color-accent-900: #144a65;
+
+  /* Difficulty scale */
+  --color-difficulty-easy: #0f7b4f;
+  --color-difficulty-medium: #a2651a;
+  --color-difficulty-hard: #b4322f;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.imgDark {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   html {
-    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
   }
 
-  .imgLight {
-    display: none;
+  body {
+    background-color: var(--color-canvas);
+    color: #020617;
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
   }
-  .imgDark {
-    display: unset;
+
+  ::selection {
+    background-color: var(--color-accent-100);
+    color: var(--color-accent-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-600);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    outline-color: var(--color-accent-600);
+  }
+}
+
+@layer utilities {
+  /* Quiet scrollbar for sidebar / long lists */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
