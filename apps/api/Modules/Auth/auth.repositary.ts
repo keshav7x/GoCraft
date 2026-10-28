@@ -14,7 +14,7 @@ export class authRepositoryClass {
     return this.authDB;
   };
 
-  findUserByEmail = async (email: string, tx?: any) => {
+  public findUserByEmail = async (email: string, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [user] = await DbClient
       .select()
@@ -25,7 +25,7 @@ export class authRepositoryClass {
     return user ?? null;
   };
 
-  findUserById = async (id: number, tx?: any) => {
+  public findUserById = async (id: number, tx?: any) => {
         const DbClient = this.getClient(tx);
     const [user] = await DbClient
       .select()
@@ -36,13 +36,13 @@ export class authRepositoryClass {
     return user ?? null;
   };
 
-  create = async (input: UserCreateInput, tx?: any) => {
+  public create = async (input: UserCreateInput, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [user] = await DbClient.insert(this.users).values(input).returning();
     return user;
   };
 
-  softDelete = async (userId: number, tx?: any) => {
+  public softDelete = async (userId: number, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [user] = await DbClient.update(this.users)
       .set({ isDelete: true })
@@ -51,7 +51,7 @@ export class authRepositoryClass {
     return user;
   };
 
-  delete = async (userId: number, tx?: any) => {
+  public delete = async (userId: number, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [user] = await DbClient.delete(this.users)
       .where(eq(this.users.id, userId))
@@ -59,7 +59,7 @@ export class authRepositoryClass {
     return user;
   };
 
-  update = async (userId: number, input: Partial<UserCreateInput>, tx?: any) => {
+  public update = async (userId: number, input: Partial<UserCreateInput>, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [user] = await DbClient.update(this.users)
       .set(input)
@@ -68,7 +68,7 @@ export class authRepositoryClass {
     return user;
   };
 
-  verifyUser = async (userId: number, tx?: any) => {
+  public verifyUser = async (userId: number, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [user] = await DbClient.update(this.users)
       .set({ emailVerified: true })
@@ -77,7 +77,7 @@ export class authRepositoryClass {
     return user;
   };
 
-  getXp = async (userId: number, tx?: any) => {
+  public getXp = async (userId: number, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [result] = await DbClient.select({
       xp: this.users.xp
@@ -88,7 +88,7 @@ export class authRepositoryClass {
     return result?.xp ?? 0;
   };
 
-  createVerificationToken = async (input: VerificationTokenInsertInput, tx?: any) => {
+  public createVerificationToken = async (input: VerificationTokenInsertInput, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [tokenRecord] = await DbClient.insert(this.tokens)
       .values(input)
@@ -96,7 +96,7 @@ export class authRepositoryClass {
     return tokenRecord;
   };
 
-  findValidVerificationToken = async (tokenString: string, tx?: any) => {
+  public findValidVerificationToken = async (tokenString: string, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [tokenRecord] = await DbClient.select()
       .from(this.tokens)
@@ -110,7 +110,7 @@ export class authRepositoryClass {
 
     return tokenRecord ?? null;
   };
-  deleteVerificationToken = async (tokenId: number, tx?: any) => {
+  public deleteVerificationToken = async (tokenId: number, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [deletedToken] = await DbClient.delete(this.tokens)
       .where(eq(this.tokens.id, tokenId))
