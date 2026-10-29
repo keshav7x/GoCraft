@@ -1,0 +1,550 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "5ad92e86-7999-4f49-b6e8-d6215712b717",
+  "prevIds": [
+    "925ce86b-9f9a-4e94-887d-2da7fa0d47a5"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "lessons"
+      ],
+      "writes": [
+        "s|tbl|public.lessons",
+        "n|tbl|public.lessons",
+        "e|tbl|public.lessons",
+        "n|rel|public.lessons",
+        "n|type|public.lessons",
+        "n|rel|public.lessons_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "modules"
+      ],
+      "writes": [
+        "s|tbl|public.modules",
+        "n|tbl|public.modules",
+        "e|tbl|public.modules",
+        "n|rel|public.modules",
+        "n|type|public.modules",
+        "n|rel|public.modules_pkey",
+        "n|rel|public.modules_moduleNo_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "user_lesson_progress"
+      ],
+      "writes": [
+        "s|tbl|public.user_lesson_progress",
+        "n|tbl|public.user_lesson_progress",
+        "e|tbl|public.user_lesson_progress",
+        "n|rel|public.user_lesson_progress",
+        "n|type|public.user_lesson_progress",
+        "n|rel|public.user_lesson_progress_pkey"
+      ],
+      "reads": [
+        "n|sch|public",
+        "n|enum|public.lesson_status"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "users",
+        "isPremiumUser"
+      ],
+      "writes": [
+        "s|col|public.users.isPremiumUser",
+        "n|col|public.users.isPremiumUser",
+        "e|col|public.users.isPremiumUser"
+      ],
+      "reads": [
+        "n|tbl|public.users",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "lessons"
+      ],
+      "writes": [
+        "s|fk|public.lessons.lessons_moduleId_modules_id_fkey",
+        "n|fk|public.lessons.lessons_moduleId_modules_id_fkey",
+        "e|fk|public.lessons.lessons_moduleId_modules_id_fkey",
+        "n|con|public.lessons.lessons_moduleId_modules_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public",
+        "n|tbl|public.modules",
+        "n|sch|public",
+        "n|col|public.lessons.moduleId",
+        "n|col|public.modules.id",
+        "e|uniqueness|public.modules.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "user_lesson_progress"
+      ],
+      "writes": [
+        "s|fk|public.user_lesson_progress.user_lesson_progress_userId_users_id_fkey",
+        "n|fk|public.user_lesson_progress.user_lesson_progress_userId_users_id_fkey",
+        "e|fk|public.user_lesson_progress.user_lesson_progress_userId_users_id_fkey",
+        "n|con|public.user_lesson_progress.user_lesson_progress_userId_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.user_lesson_progress.userId",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "user_lesson_progress"
+      ],
+      "writes": [
+        "s|fk|public.user_lesson_progress.user_lesson_progress_lessonId_lessons_id_fkey",
+        "n|fk|public.user_lesson_progress.user_lesson_progress_lessonId_lessons_id_fkey",
+        "e|fk|public.user_lesson_progress.user_lesson_progress_lessonId_lessons_id_fkey",
+        "n|con|public.user_lesson_progress.user_lesson_progress_lessonId_lessons_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public",
+        "n|tbl|public.lessons",
+        "n|sch|public",
+        "n|col|public.user_lesson_progress.lessonId",
+        "n|col|public.lessons.id",
+        "e|uniqueness|public.lessons.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "lessons",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "modules",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "user_lesson_progress",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": {
+          "type": "byDefault",
+          "name": "lessons_id_seq",
+          "increment": "1",
+          "startWith": "1",
+          "minValue": "1",
+          "maxValue": "2147483647",
+          "cache": 1,
+          "cycle": false
+        },
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "moduleId",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "title",
+        "type": "varchar(100)",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "lessonNo",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": {
+          "type": "byDefault",
+          "name": "modules_id_seq",
+          "increment": "1",
+          "startWith": "1",
+          "minValue": "1",
+          "maxValue": "2147483647",
+          "cache": 1,
+          "cycle": false
+        },
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "title",
+        "type": "varchar(100)",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "description",
+        "type": "varchar(500)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "moduleNo",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": {
+          "type": "byDefault",
+          "name": "user_lesson_progress_id_seq",
+          "increment": "1",
+          "startWith": "1",
+          "minValue": "1",
+          "maxValue": "2147483647",
+          "cache": 1,
+          "cycle": false
+        },
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "userId",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "lessonId",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "status",
+        "type": "lesson_status",
+        "typeSchema": "public",
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'not started'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "completedAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "users",
+        "name": "isPremiumUser",
+        "type": "boolean",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": "false",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "lessons_moduleId_modules_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "moduleId"
+        ],
+        "schemaTo": "public",
+        "tableTo": "modules",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "NO ACTION",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "user_lesson_progress_userId_users_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "userId"
+        ],
+        "schemaTo": "public",
+        "tableTo": "users",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "NO ACTION",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "user_lesson_progress_lessonId_lessons_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "lessonId"
+        ],
+        "schemaTo": "public",
+        "tableTo": "lessons",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "NO ACTION",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "lessons_pkey",
+        "columns": [
+          "id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "modules_pkey",
+        "columns": [
+          "id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "user_lesson_progress_pkey",
+        "columns": [
+          "id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "modules_moduleNo_key",
+        "nameExplicit": false,
+        "columns": [
+          "moduleNo"
+        ],
+        "nullsNotDistinct": false,
+        "entityType": "uniques"
+      }
+    }
+  ]
+}

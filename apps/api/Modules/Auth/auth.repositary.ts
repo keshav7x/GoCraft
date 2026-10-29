@@ -14,6 +14,15 @@ export class authRepositoryClass {
     return this.authDB;
   };
 
+  public isAdmin = async (userId: number, tx?: any) => {
+    const DbClient = this.getClient(tx)
+    const user = await DbClient.select({
+      userType:usersTable.userType
+    }).from(usersTable).where(eq(usersTable.id, userId)).limit(1)
+    const admin = user.userType == "admin"
+    return admin
+  }
+
   public findUserByEmail = async (email: string, tx?: any) => {
     const DbClient = this.getClient(tx);
     const [user] = await DbClient
@@ -26,7 +35,7 @@ export class authRepositoryClass {
   };
 
   public findUserById = async (id: number, tx?: any) => {
-        const DbClient = this.getClient(tx);
+    const DbClient = this.getClient(tx);
     const [user] = await DbClient
       .select()
       .from(this.users)

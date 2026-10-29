@@ -2,18 +2,16 @@ import { authRepositoryClass } from "./auth.repositary";
 import { db } from "../../Infra/Database";
 import type { UserCreateInput } from "../../Types/auth.types";
 import { AppError, InvalidCredentialsError, UserAlreadyExistsError, UserCreationFailedError } from "../../Infra/Error/errors";
-import type { VerificationRepositoryClass } from "../verification/verification.repo";
+import { VerificationRepositoryClass } from "../verification/verification.repo";
 import { AuthUtils } from "./auth.utils";
-import type { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
+import { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
 
 
-export class authServiceClass{
-  constructor(
-    private readonly authRepo: authRepositoryClass,
-    private readonly verificationRepo: VerificationRepositoryClass,
-    private readonly authUtils: AuthUtils,
-    private readonly outbox:OutboxRepository
-  ) { }
+export class authServiceClass {
+  private authRepo = new authRepositoryClass()
+  private verificationRepo = new VerificationRepositoryClass()
+  private authUtils = new AuthUtils()
+  private outbox = new OutboxRepository()
 
   register = async (input: UserCreateInput) => {
     const email = input.email.trim().toLowerCase();
@@ -48,7 +46,7 @@ export class authServiceClass{
       const tokenExpiry =
         this.authUtils.getVerificationTokenExpiry();
 
-      const tokenHash=this.authUtils.hashToken(verificationToken)
+      const tokenHash = this.authUtils.hashToken(verificationToken)
 
       const [verification] =
         await this.verificationRepo.createVerificationToken(
@@ -70,7 +68,7 @@ export class authServiceClass{
           payload: {
             userId: newUser.id,
             email: newUser.email,
-            token: verificationToken,
+            token: tokenHash,
             expiresAt: tokenExpiry.toISOString(),
           },
         },
@@ -83,17 +81,17 @@ export class authServiceClass{
 
   login = async (INPUT: {
     email: string,
-    password:string
+    password: string
   }) => {
     const email = INPUT.email.toLowerCase()
-    const input={...INPUT,email}
+    const input = { ...INPUT, email }
     if (!input.email) throw new AppError("No email provided", 400)
     if (!input.password) throw new AppError("No password provided", 400)
 
     const user = await this.authRepo.findUserByEmail(input.email)
     if (!user) throw new AppError("User not found", 404)
 
-    if(!user.emailVerified) throw new AppError("Email not verified",401)
+    if (!user.emailVerified) throw new AppError("Email not verified", 401)
 
     const password = await this.authUtils.verifyPassword(input.password, user.password)
 
@@ -101,23 +99,15 @@ export class authServiceClass{
 
     const token = this.authUtils.generateJwtToken({
       userId: user.id,
-      email:email
+      email: email
     })
-    return token
-  }
-
-  getMe = async (jwtToken: string) => {
-    if (!jwtToken) throw new AppError("JWT token not found", 404)
-    const userId = this.authUtils.verifyJwtToken(jwtToken).userId
-    if (!userId) throw new AppError("User Id not found", 401)
-    if (typeof userId !== "number") {
-      throw new AppError("Invalid user ID in token", 401)
+    return {
+      user,
+      token
     }
-    if(Number.isFinite(userId)) throw new AppError("Invalid user id",401)
-    const [user] = await this.authRepo.findUserById(Number(userId))
-    if (!user) throw new AppError("User not found", 404)
-
-    return user
-
   }
-}t
+
+  getMe = async (userId: number) => {
+    return await this.authRepo.findUserById(userId)
+  }
+}

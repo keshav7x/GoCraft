@@ -20,6 +20,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "cookie": "^2.0.1",
     "cookie-parser": "^1.4.7",
     "dotenv": "^18.0.9",
     "drizzle-orm": "^1.0.0-rc.5",

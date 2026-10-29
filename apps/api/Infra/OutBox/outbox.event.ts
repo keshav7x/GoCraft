@@ -1,0 +1,19 @@
+export type OutboxEventType =
+  // Authentication
+  | "VERIFY_EMAIL"
+  | "PASSWORD_RESET"
+  | "EMAIL_VERIFIED"
+
+  // Learning progress
+  | "LESSON_STARTED"
+  | "LESSON_COMPLETED"
+  | "MODULE_UNLOCKED"
+  | "MODULE_CREATED"
+  | "MODULE_UPDATED"
+  | "MODULE_DELETED"
+  |"MODULES_REORDERED"
+
+  // Gamification
+  | "XP_AWARDED"
+  | "ACHIEVEMENT_UNLOCKED"
+  | "STREAK_UPDATED";
