@@ -47,7 +47,7 @@ function tokenizeLine(line: string): Token[] {
         }
         j += 1;
       }
-      tokens.push({ text: line.slice(i, j), className: "text-easy" });
+      tokens.push({ text: line.slice(i, j), className: "text-blue-500" });
       i = j;
       continue;
     }
@@ -55,7 +55,7 @@ function tokenizeLine(line: string): Token[] {
     if (/[0-9]/.test(ch)) {
       let j = i;
       while (j < line.length && /[0-9a-fA-FxXbBoO_.]/.test(line[j] ?? "")) j += 1;
-      tokens.push({ text: line.slice(i, j), className: "text-medium" });
+      tokens.push({ text: line.slice(i, j), className: "text-blue-500" });
       i = j;
       continue;
     }
@@ -65,9 +65,9 @@ function tokenizeLine(line: string): Token[] {
       while (j < line.length && /[A-Za-z0-9_]/.test(line[j] ?? "")) j += 1;
       const word = line.slice(i, j);
       let className = "text-ink";
-      if (GO_KEYWORDS.has(word)) className = "text-accent-strong font-medium";
-      else if (GO_TYPES.has(word)) className = "text-violet-600";
-      else if (BUILTIN.has(word)) className = "text-violet-600";
+      if (GO_KEYWORDS.has(word)) className = "text-blue-600 font-medium";
+      else if (GO_TYPES.has(word)) className = "text-blue-700";
+      else if (BUILTIN.has(word)) className = "text-blue-700";
       else if (/^[A-Z]/.test(word)) className = "text-ink";
       tokens.push({ text: word, className });
       i = j;
@@ -97,14 +97,14 @@ export function CodeBlock({ code, filename, className }: CodeBlockProps) {
   return (
     <figure
       className={cn(
-        "group overflow-hidden rounded-xl border border-edge bg-[#0c0e12]",
+        "group overflow-hidden rounded-xl border border-edge bg-panel",
         className,
       )}
     >
       {filename ? (
-        <figcaption className="flex items-center justify-between border-b border-white/10 px-4 py-2">
-          <span className="font-mono text-[11px] text-slate-400">{filename}</span>
-          <span className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-slate-500">
+        <figcaption className="flex items-center justify-between border-b border-edge px-4 py-2">
+          <span className="font-mono text-[11px] text-ink-muted">{filename}</span>
+          <span className="rounded bg-panel-muted px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
             Go
           </span>
         </figcaption>
