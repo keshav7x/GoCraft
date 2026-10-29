@@ -1,4 +1,4 @@
-import { eq, and, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { modulesTable, lessonsTable } from "../../Infra/Database/schema";
 
@@ -71,7 +71,14 @@ export class ModuleRepository {
     return result.length > 0;
   }
 
-  async findLessonCounOfModule(moduleID:number,tx?: any): Promise<(DBModule & { lessonsCount: number })[]> {
+  async deleteLessonsByModuleId(moduleId: number, tx?: any): Promise<void> {
+    const client = this.getClient(tx);
+    await client
+      .delete(lessonsTable)
+      .where(eq(lessonsTable.moduleId, moduleId));
+  }
+
+  async findLessonCountOfModule(moduleID: number, tx?: any): Promise<(DBModule & { lessonsCount: number })[]> {
     const client = this.getClient(tx);
     const results = await client
       .select({
@@ -82,7 +89,8 @@ export class ModuleRepository {
         lessonsCount: sql<number>`cast(count(${lessonsTable.id}) as integer)`,
       })
       .from(modulesTable)
-      .leftJoin(lessonsTable, eq(modulesTable.id, moduleID))
+      .leftJoin(lessonsTable, eq(lessonsTable.moduleId, modulesTable.id))
+      .where(eq(modulesTable.id, moduleID))
       .groupBy(modulesTable.id)
       .orderBy(modulesTable.moduleNo);
     return results;

@@ -41,16 +41,15 @@ export class moduleService {
     if (!id) throw new AppError("No module ID provided", 400);
 
     const result = await this.Db.transaction(async (tx) => {
-      const module = await this.moduleRepo.findById(id, tx);
-      if (!module) throw new AppError("Module not found", 404);
+      const stats = await this.moduleRepo.findLessonCountOfModule(id, tx);
+      const currentModuleStats = stats[0];
+      if (!currentModuleStats) throw new AppError("Module not found", 404);
 
-      const stats = await this.moduleRepo.findWithLessonsCount(tx);
-      const currentModuleStats = stats.find(s => s.id === id);
-      const lessonCount = currentModuleStats ? currentModuleStats.lessonsCount : 0;
+      const { lessonsCount, ...module } = currentModuleStats;
 
       return {
         module,
-        lessonCount
+        lessonCount: lessonsCount
       };
     });
     return result;
@@ -106,6 +105,8 @@ export class moduleService {
       const existing = await this.moduleRepo.findById(id, tx);
       if (!existing) throw new AppError("Module not found", 404);
 
+      await this.moduleRepo.deleteLessonsByModuleId(id, tx);
+
       const deleted = await this.moduleRepo.delete(id, tx);
       if (!deleted) throw new AppError("Module could not be deleted", 400);
 
@@ -128,13 +129,16 @@ export class moduleService {
       if (!isAdmin) throw new AppError("Unauthorized access", 401);
 
       for (const pair of movementPairs) {
+        await this.moduleRepo.update(pair.id, { moduleNo: -pair.id }, tx);
+      }
+
+      for (const pair of movementPairs) {
         await this.moduleRepo.update(pair.id, { moduleNo: pair.targetModuleNo }, tx);
       }
 
       await this.outBoxRepo.create({
         type: "MODULES_REORDERED",
-        //@ts-ignore
-        payload: movementPairs
+        payload: { movementPairs }
       }, tx);
     });
   };
