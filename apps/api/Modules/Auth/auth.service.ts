@@ -5,6 +5,7 @@ import { AppError, InvalidCredentialsError, UserAlreadyExistsError, UserCreation
 import { VerificationRepositoryClass } from "../verification/verification.repo";
 import { AuthUtils } from "./auth.utils";
 import { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
+import { redis } from "../../Infra/Redis/redis";
 
 
 export class authServiceClass {
@@ -108,6 +109,11 @@ export class authServiceClass {
   }
 
   getMe = async (userId: number) => {
-    return await this.authRepo.findUserById(userId)
+    let user;
+    user = await redis.get(`user-${userId}`)
+    if(user) return JSON.parse(user)
+    user = await this.authRepo.findUserById(userId)
+    await redis.set(`user-${userId}`, JSON.stringify(user),"EX",300)
+    return user
   }
 }
