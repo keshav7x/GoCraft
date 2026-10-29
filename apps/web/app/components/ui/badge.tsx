@@ -1,37 +1,55 @@
 import type { HTMLAttributes } from "react";
+import type { Difficulty } from "../../lib/demo/types";
 import { cn } from "../../lib/utils";
 
-type BadgeVariant =
+type Tone =
   | "neutral"
   | "accent"
   | "success"
   | "warning"
   | "danger"
-  | "outline";
-
-const badgeStyles: Record<BadgeVariant, string> = {
-  neutral: "bg-slate-100 text-slate-700",
-  accent: "bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200",
-  success: "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200",
-  warning: "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200",
-  danger: "bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-200",
-  outline: "bg-white text-slate-600 ring-1 ring-inset ring-slate-200",
-};
+  | "outline"
+  | "Easy"
+  | "Medium"
+  | "Hard"
+  | "easy"
+  | "medium"
+  | "hard";
 
 type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
-  variant?: BadgeVariant;
+  /** Current API */
+  variant?: Tone;
+  /** Legacy alias kept so both component generations render correctly */
+  tone?: Tone;
+};
+
+const TONES: Record<Tone, string> = {
+  neutral: "border-line bg-surface-2 text-ink-3",
+  accent: "border-accent bg-accent-soft text-accent-ink",
+  Easy: "border-easy/20 bg-easy-soft text-easy",
+  Medium: "border-medium/25 bg-medium-soft text-medium",
+  Hard: "border-hard/20 bg-hard-soft text-hard",
+  easy: "border-easy/20 bg-easy-soft text-easy",
+  medium: "border-medium/25 bg-medium-soft text-medium",
+  hard: "border-hard/20 bg-hard-soft text-hard",
+  success: "border-easy/20 bg-easy-soft text-easy",
+  warning: "border-medium/25 bg-medium-soft text-medium",
+  danger: "border-hard/20 bg-hard-soft text-hard",
+  outline: "border-line bg-white text-ink-3",
 };
 
 export function Badge({
-  variant = "neutral",
   className,
+  variant,
+  tone = "neutral",
   ...props
 }: BadgeProps) {
+  const resolved = variant ?? tone;
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium",
-        badgeStyles[variant],
+        "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-medium leading-4",
+        TONES[resolved] ?? TONES.neutral,
         className,
       )}
       {...props}
@@ -39,28 +57,18 @@ export function Badge({
   );
 }
 
-const difficultyStyles: Record<string, string> = {
-  Easy: "text-emerald-700 bg-emerald-50 ring-emerald-200",
-  Medium: "text-amber-700 bg-amber-50 ring-amber-200",
-  Hard: "text-rose-700 bg-rose-50 ring-rose-200",
-};
-
 export function DifficultyBadge({
   difficulty,
   className,
 }: {
-  difficulty: "Easy" | "Medium" | "Hard";
+  difficulty: Difficulty;
   className?: string;
 }) {
+  const label = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+  const resolved = (["Easy", "Medium", "Hard"].includes(label) ? label : "neutral") as Tone;
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset",
-        difficultyStyles[difficulty],
-        className,
-      )}
-    >
-      {difficulty}
-    </span>
+    <Badge variant={resolved} className={className}>
+      {label}
+    </Badge>
   );
 }

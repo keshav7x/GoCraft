@@ -1,16 +1,313 @@
 @import "tailwindcss";
 
-@theme {
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ------------------------------------------------------------------ */
+/* Theme attribute is controlled by next-themes (data-theme on <html>) */
+/* and by subtree overrides (e.g. marketing pages force data-theme=    */
+/* "light"). Accent presets are applied via [data-accent] for          */
+/* marketplace themes.                                                 */
+/* ------------------------------------------------------------------ */
+
+:root,
+[data-theme="light"] {
+  --c-canvas: #f7f8fa;
+  --c-surface: #ffffff;
+  --c-surface-2: #f3f4f7;
+  --c-inset: #f8f9fb;
+  --c-line: #e7e9ef;
+  --c-line-strong: #d5d9e2;
+  --c-ink: #0a0d14;
+  --c-ink-2: #3d4454;
+  --c-ink-3: #6b7385;
+  --c-ink-4: #99a0b0;
+  --c-accent-contrast: #ffffff;
+  --c-success: #16845b;
+  --c-success-soft: #e7f6ef;
+  --c-warning: #9a6700;
+  --c-warning-soft: #fdf3d7;
+  --c-danger: #c1342c;
+  --c-danger-soft: #fdeceb;
+  --c-easy: #16845b;
+  --c-easy-soft: #e7f6ef;
+  --c-medium: #9a6700;
+  --c-medium-soft: #fdf3d7;
+  --c-hard: #c1342c;
+  --c-hard-soft: #fdeceb;
+  --c-focus: #4f66f2;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --c-canvas: #0c0e13;
+  --c-surface: #12151c;
+  --c-surface-2: #181c25;
+  --c-inset: #151922;
+  --c-line: #232833;
+  --c-line-strong: #323947;
+  --c-ink: #f2f4f8;
+  --c-ink-2: #b4bccb;
+  --c-ink-3: #8992a5;
+  --c-ink-4: #5f6879;
+  --c-accent-contrast: #ffffff;
+  --c-success: #34c48f;
+  --c-success-soft: #10291f;
+  --c-warning: #e0a82e;
+  --c-warning-soft: #2b2312;
+  --c-danger: #f0685f;
+  --c-danger-soft: #2d1614;
+  --c-easy: #34c48f;
+  --c-easy-soft: #10291f;
+  --c-medium: #e0a82e;
+  --c-medium-soft: #2b2312;
+  --c-hard: #f0685f;
+  --c-hard-soft: #2d1614;
+  --c-focus: #7c8cff;
+  color-scheme: dark;
+}
+
+/* Accent presets (marketplace themes). Graphite is the default. */
+:root,
+[data-accent="graphite"] {
+  --c-accent: #10131a;
+  --c-accent-hover: #242a36;
+  --c-accent-soft: #eef0f5;
+  --c-accent-ink: #10131a;
+}
+
+[data-theme="dark"] {
+  --c-accent: #e8ebf2;
+  --c-accent-hover: #cfd5e0;
+  --c-accent-soft: #1d222c;
+  --c-accent-ink: #0c0e13;
+}
+
+[data-accent="go"] {
+  --c-accent: #0d84b6;
+  --c-accent-hover: #0e6a93;
+  --c-accent-soft: #eef9fd;
+  --c-accent-ink: #0b5f84;
+}
+
+[data-theme="dark"][data-accent="go"] {
+  --c-accent: #44b9e1;
+  --c-accent-hover: #7dd2ed;
+  --c-accent-soft: #0f2733;
+  --c-accent-ink: #b2e4f5;
+}
+
+[data-accent="indigo"] {
+  --c-accent: #4f46e5;
+  --c-accent-hover: #4338ca;
+  --c-accent-soft: #eceafd;
+  --c-accent-ink: #3730a3;
+}
+
+[data-theme="dark"][data-accent="indigo"] {
+  --c-accent: #818cf8;
+  --c-accent-hover: #a5b4fc;
+  --c-accent-soft: #1e1f3a;
+  --c-accent-ink: #e0e1ff;
+}
+
+[data-accent="emerald"] {
+  --c-accent: #0f7a55;
+  --c-accent-hover: #0c6547;
+  --c-accent-soft: #e3f5ed;
+  --c-accent-ink: #0a5c40;
+}
+
+[data-theme="dark"][data-accent="emerald"] {
+  --c-accent: #34c48f;
+  --c-accent-hover: #5ad6a9;
+  --c-accent-soft: #11291f;
+  --c-accent-ink: #d9f7ea;
+}
+
+[data-accent="amber"] {
+  --c-accent: #b45309;
+  --c-accent-hover: #92400e;
+  --c-accent-soft: #fdf0dd;
+  --c-accent-ink: #7c3c08;
+}
+
+[data-theme="dark"][data-accent="amber"] {
+  --c-accent: #e0a82e;
+  --c-accent-hover: #f0be55;
+  --c-accent-soft: #2a2212;
+  --c-accent-ink: #ffe9bf;
+}
+
+[data-accent="rose"] {
+  --c-accent: #be3455;
+  --c-accent-hover: #a02946;
+  --c-accent-soft: #fce8ed;
+  --c-accent-ink: #8f2440;
+}
+
+[data-theme="dark"][data-accent="rose"] {
+  --c-accent: #f0708e;
+  --c-accent-hover: #f592a9;
+  --c-accent-soft: #2d151d;
+  --c-accent-ink: #ffdbe4;
+}
+
+@theme inline {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
-    monospace;
+    "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo,
+    Consolas, monospace;
 
-  /* Canvas + surfaces: clean white, neutral borders */
-  --color-canvas: #f7f8fa;
-  --color-surface: #ffffff;
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-inset: var(--c-inset);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-3);
+  --color-ink-4: var(--c-ink-4);
+  --color-accent: var(--c-accent);
+  --color-accent-hover: var(--c-accent-hover);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-accent-contrast: var(--c-accent-contrast);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-success: var(--c-success);
+  --color-success-soft: var(--c-success-soft);
+  --color-warning: var(--c-warning);
+  --color-warning-soft: var(--c-warning-soft);
+  --color-danger: var(--c-danger);
+  --color-danger-soft: var(--c-danger-soft);
+  --color-easy: var(--c-easy);
+  --color-easy-soft: var(--c-easy-soft);
+  --color-medium: var(--c-medium);
+  --color-medium-soft: var(--c-medium-soft);
+  --color-hard: var(--c-hard);
+  --color-hard-soft: var(--c-hard-soft);
+  --color-focus: var(--c-focus);
 
-  /* Restrained accent — Go brand cyan, used sparingly */
+  /* Alias tokens used across app components */
+  --color-panel: var(--c-surface);
+  --color-panel-muted: var(--c-surface-2);
+  --color-edge: var(--c-line);
+  --color-edge-strong: var(--c-line-strong);
+  --color-ink-muted: var(--c-ink-3);
+  --color-ink-faint: var(--c-ink-4);
+  --color-accent-strong: var(--c-accent-ink);
+  --color-accent-border: color-mix(in srgb, var(--c-accent) 28%, transparent);
+
+  --shadow-card: 0 1px 2px 0 rgb(10 13 20 / 0.04);
+  --shadow-pop: 0 12px 32px -8px rgb(10 13 20 / 0.18),
+    0 2px 8px -2px rgb(10 13 20 / 0.06);
+}
+
+@layer base {
+  * {
+    border-color: var(--c-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--c-canvas);
+    color: var(--c-ink);
+    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+
+  code,
+  pre,
+  kbd {
+    font-family: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo,
+      Consolas, monospace;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--c-accent-soft);
+    color: var(--c-accent-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .gc-focus-ring {
+    &:focus-visible {
+      outline: 2px solid var(--c-focus);
+      outline-offset: 2px;
+    }
+  }
+
+  .focus-ring {
+    &:focus-visible {
+      outline: 2px solid var(--c-focus);
+      outline-offset: 2px;
+    }
+  }
+
+  .scrollbar-subtle {
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-line-strong) transparent;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--c-line-strong);
+      border-radius: 999px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+
+  .gc-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-line-strong) transparent;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--c-line-strong);
+      border-radius: 999px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Additive stepwise accent scale (Go cyan). Coexists with the preset  */
+/* --color-accent token above; used by step utilities like             */
+/* bg-accent-600 / text-accent-700.                                     */
+/* ------------------------------------------------------------------ */
+@theme {
   --color-accent-50: #eef9fd;
   --color-accent-100: #d7f1fa;
   --color-accent-200: #b2e4f5;
@@ -21,65 +318,4 @@
   --color-accent-700: #0e6a93;
   --color-accent-800: #125878;
   --color-accent-900: #144a65;
-
-  /* Difficulty scale */
-  --color-difficulty-easy: #0f7b4f;
-  --color-difficulty-medium: #a2651a;
-  --color-difficulty-hard: #b4322f;
-}
-
-@layer base {
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
-
-  body {
-    background-color: var(--color-canvas);
-    color: #020617;
-    font-family: var(--font-sans);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    text-rendering: optimizeLegibility;
-  }
-
-  ::selection {
-    background-color: var(--color-accent-100);
-    color: var(--color-accent-900);
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--color-accent-600);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  button,
-  a,
-  input,
-  select,
-  textarea {
-    outline-color: var(--color-accent-600);
-  }
-}
-
-@layer utilities {
-  /* Quiet scrollbar for sidebar / long lists */
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
-  }
-
-  .tabular-nums {
-    font-variant-numeric: tabular-nums;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
 }

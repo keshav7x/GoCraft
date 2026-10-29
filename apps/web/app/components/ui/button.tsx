@@ -3,49 +3,41 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-  [
-    "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium",
-    "transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50",
-    "active:translate-y-px select-none whitespace-nowrap",
-  ],
+  "focus-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-[background-color,border-color,color,box-shadow,transform] duration-150 disabled:pointer-events-none disabled:opacity-50 active:translate-y-px",
   {
     variants: {
       variant: {
         primary:
-          "bg-slate-950 text-white shadow-sm hover:bg-slate-800 active:bg-slate-900",
+          "bg-ink text-white shadow-[0_1px_2px_rgba(11,13,16,0.16)] hover:bg-ink/90",
         secondary:
-          "border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950",
-        ghost:
-          "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
-        danger:
-          "bg-[#b4322f] text-white shadow-sm hover:bg-[#982724]",
+          "border border-edge bg-panel text-ink hover:border-edge-strong hover:bg-panel-muted",
+        ghost: "text-ink-muted hover:bg-panel-muted hover:text-ink",
         accent:
-          "bg-accent-600 text-white shadow-sm hover:bg-accent-700",
+          "bg-accent text-white shadow-[0_1px_2px_rgba(2,132,184,0.25)] hover:bg-accent-strong",
+        danger:
+          "border border-hard/30 bg-hard-soft text-hard hover:border-hard/50",
+        link: "text-accent-strong underline-offset-4 hover:underline",
       },
       size: {
         sm: "h-8 px-3 text-[13px]",
         md: "h-9 px-4",
-        lg: "h-11 px-5 text-[15px]",
+        lg: "h-11 px-5",
         icon: "h-9 w-9",
       },
     },
-    defaultVariants: { variant: "primary", size: "md" },
+    defaultVariants: {
+      variant: "secondary",
+      size: "md",
+    },
   },
 );
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants>;
 
-export function Button({
-  className,
-  variant,
-  size,
-  type = "button",
-  ...props
-}: ButtonProps) {
+export function Button({ className, variant, size, ...props }: ButtonProps) {
   return (
     <button
-      type={type}
       className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     />

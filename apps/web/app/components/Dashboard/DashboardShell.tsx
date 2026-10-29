@@ -1,52 +1,42 @@
-
 "use client";
 
-import {
-  Bell,
-  BookOpen,
-  ChevronDown,
-  Code2,
-  LayoutDashboard,
-  Menu,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Settings,
-  ShoppingBag,
-  Users,
-  X,
-  Zap,
-} from "lucide-react";
+import { Code2, Menu, PanelLeftClose, PanelLeftOpen, X, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-
-const NAV_ITEMS = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Lessons", href: "/dashboard/lessons", icon: BookOpen },
-  { label: "Problems", href: "/dashboard/problems", icon: Code2 },
-  { label: "Friends", href: "/dashboard/friends", icon: Users },
-  { label: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingBag },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
-];
+import { useEffect, useRef, useState } from "react";
+import { ProfileMenu } from "@/app/components/shell/profile-menu";
+import { NotificationsPopover } from "@/app/components/shell/notifications-popover";
+import { findNavItem, NAV_ITEMS } from "@/app/lib/nav";
+import { getMarketItem } from "@/app/lib/demo/marketplace";
+import { useDemoStore as useSessionDemoStore } from "@/app/lib/demo-store";
+import { useDemoStore } from "@/app/lib/store/demo";
+import { useUiStore } from "@/app/lib/store/ui";
+import { cn, levelFromXp } from "@/app/lib/utils";
 
 type DashboardShellProps = {
   children: React.ReactNode;
 };
 
-export default function DashboardShell({
-  children,
-}: DashboardShellProps) {
+export default function DashboardShell({ children }: DashboardShellProps) {
   const pathname = usePathname();
 
-  const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  const activeItem =
-    NAV_ITEMS.find((item) =>
-      item.href === "/dashboard"
-        ? pathname === item.href
-        : pathname.startsWith(item.href),
-    ) ?? NAV_ITEMS[0];
+  const collapsed = useUiStore((state) => state.sidebarCollapsed);
+  const toggleSidebar = useUiStore((state) => state.toggleSidebar);
+
+  const xp = useDemoStore((state) => state.xp);
+  const equippedTheme = useDemoStore((state) => state.equippedTheme);
+
+  const activeItem = findNavItem(pathname);
+  const { level, title: levelTitle } = levelFromXp(xp);
+  const sessionAccent = useSessionDemoStore((state) => state.settings.accent);
+  const equippedAccent = getMarketItem(equippedTheme)?.accent;
+  // A non-default marketplace theme wins; otherwise the Settings accent applies.
+  const accent =
+    equippedAccent && equippedAccent !== "graphite" ? equippedAccent : sessionAccent;
 
   useEffect(() => {
     setMobileOpen(false);
@@ -55,106 +45,103 @@ export default function DashboardShell({
   useEffect(() => {
     if (!mobileOpen) return;
 
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") setMobileOpen(false);
     }
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = overflow;
+      previousFocusRef.current?.focus();
+    };
   }, [mobileOpen]);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] text-slate-900">
+    <div
+      data-accent={accent}
+      className="min-h-screen bg-canvas text-ink"
+    >
       {/* Mobile backdrop */}
-      {mobileOpen && (
+      {mobileOpen ? (
         <button
           type="button"
           aria-label="Close navigation"
           onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 z-40 bg-slate-950/30 backdrop-blur-[2px] lg:hidden"
+          className="fixed inset-0 z-40 bg-ink/30 backdrop-blur-[2px] lg:hidden"
         />
-      )}
+      ) : null}
 
       {/* Sidebar */}
       <aside
-        className={[
-          "fixed inset-y-0 left-0 z-50 flex flex-col border-r border-slate-200 bg-white",
+        aria-label="Primary"
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 flex flex-col border-r border-line bg-surface",
           "transition-[width,transform] duration-200 ease-out",
           "lg:translate-x-0",
           collapsed ? "lg:w-[76px]" : "lg:w-[248px]",
           mobileOpen
             ? "w-[280px] translate-x-0"
             : "w-[280px] -translate-x-full lg:translate-x-0",
-        ].join(" ")}
+        )}
       >
         {/* Brand */}
         <div
-          className={[
-            "flex h-[68px] shrink-0 items-center border-b border-slate-100",
+          className={cn(
+            "flex h-[64px] shrink-0 items-center border-b border-line",
             collapsed ? "lg:justify-center lg:px-0" : "justify-between px-5",
             "px-5",
-          ].join(" ")}
+          )}
         >
           <Link
             href="/dashboard"
-            aria-label="GoCraft home"
-            className="flex min-w-0 items-center gap-3"
+            aria-label="GoCraft overview"
+            className="gc-focus-ring flex min-w-0 items-center gap-3 rounded-lg"
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white">
-              <Code2 size={19} strokeWidth={2} />
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-contrast">
+              <Code2 size={17} strokeWidth={2} />
             </span>
-
             <span
-              className={[
-                "text-[17px] font-semibold tracking-tight",
+              className={cn(
+                "text-[15px] font-semibold tracking-tight",
                 collapsed ? "lg:hidden" : "",
-              ].join(" ")}
+              )}
             >
               GoCraft
             </span>
           </Link>
 
           <button
+            ref={closeRef}
             type="button"
             aria-label="Close mobile navigation"
             onClick={() => setMobileOpen(false)}
-            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 lg:hidden"
+            className="gc-focus-ring rounded-lg p-2 text-ink-3 transition hover:bg-surface-2 hover:text-ink lg:hidden"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Workspace navigation */}
-        <div className="flex-1 overflow-y-auto px-3 py-6">
-          <div
-            className={[
-              "mb-3 flex items-center px-3",
-              collapsed ? "lg:justify-center lg:px-0" : "justify-between",
-            ].join(" ")}
-          >
-            <p
-              className={[
-                "text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400",
-                collapsed ? "lg:hidden" : "",
-              ].join(" ")}
-            >
-              Workspace
-            </p>
-
-            {collapsed && (
-              <span className="hidden text-slate-400 lg:inline">
-                <Zap size={14} />
-              </span>
+        {/* Navigation */}
+        <div className="gc-scrollbar flex-1 overflow-y-auto px-3 py-5">
+          <p
+            className={cn(
+              "mb-2.5 px-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-4",
+              collapsed ? "lg:hidden" : "",
             )}
-          </div>
+          >
+            Workspace
+          </p>
 
-          <nav aria-label="Dashboard navigation" className="space-y-1">
+          <nav aria-label="Dashboard" className="space-y-0.5">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
-              const active =
-                item.href === "/dashboard"
-                  ? pathname === item.href
-                  : pathname.startsWith(item.href);
+              const active = item.href === activeItem.href;
 
               return (
                 <Link
@@ -162,26 +149,28 @@ export default function DashboardShell({
                   href={item.href}
                   title={collapsed ? item.label : undefined}
                   aria-current={active ? "page" : undefined}
-                  className={[
-                    "group relative flex min-h-10 items-center gap-3 rounded-lg px-3 text-[13px] font-medium",
-                    "transition-colors duration-150",
+                  className={cn(
+                    "gc-focus-ring group relative flex min-h-9 items-center gap-3 rounded-lg px-3 text-[13px] font-medium transition-colors duration-150",
                     collapsed ? "lg:justify-center lg:px-0" : "",
                     active
-                      ? "bg-slate-100 text-slate-950"
-                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900",
-                  ].join(" ")}
-                >
-                  {active && (
-                    <span className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-full bg-slate-900" />
+                      ? "bg-accent-soft text-accent-ink"
+                      : "text-ink-3 hover:bg-surface-2 hover:text-ink",
                   )}
+                >
+                  {active ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute bottom-1.5 left-0 top-1.5 w-[3px] rounded-r-full bg-accent"
+                    />
+                  ) : null}
 
                   <Icon
-                    size={18}
+                    size={17}
                     strokeWidth={active ? 2 : 1.7}
                     className="shrink-0"
                   />
 
-                  <span className={collapsed ? "lg:hidden" : ""}>
+                  <span className={cn(collapsed ? "lg:hidden" : "")}>
                     {item.label}
                   </span>
                 </Link>
@@ -189,106 +178,102 @@ export default function DashboardShell({
             })}
           </nav>
 
-          {/* XP card */}
+          {/* Progress card */}
           <div
-            className={[
-              "mt-8 rounded-xl border border-slate-200 bg-slate-50/80 p-4",
+            className={cn(
+              "mt-7 rounded-xl border border-line bg-inset p-3.5",
               collapsed ? "lg:hidden" : "",
-            ].join(" ")}
+            )}
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">
-                Your progress
+              <span className="text-[11px] font-medium text-ink-3">
+                Demo progress
               </span>
-              <Zap size={15} className="text-amber-500" />
+              <Zap size={14} className="text-warning" />
             </div>
 
-            <div className="mt-3 flex items-baseline gap-1.5">
-              <span className="text-xl font-semibold tracking-tight">840</span>
-              <span className="text-xs text-slate-500">XP</span>
+            <div className="mt-2.5 flex items-baseline gap-1.5">
+              <span className="text-lg font-semibold tracking-tight tabular-nums">
+                {xp.toLocaleString()}
+              </span>
+              <span className="text-[11px] text-ink-3">XP</span>
             </div>
 
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200">
-              <div className="h-full w-[68%] rounded-full bg-slate-900" />
+            <div
+              role="progressbar"
+              aria-valuenow={xp % 400}
+              aria-valuemin={0}
+              aria-valuemax={400}
+              aria-label="Progress to next level"
+              className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface-2 ring-1 ring-inset ring-line"
+            >
+              <div
+                className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out"
+                style={{ width: `${((xp % 400) / 400) * 100}%` }}
+              />
             </div>
 
-            <p className="mt-2 text-[11px] text-slate-500">
-              Level 3 · Keep the streak going
+            <p className="mt-2 text-[11px] text-ink-3">
+              Level {level} · {levelTitle}
             </p>
           </div>
         </div>
 
-        {/* User profile */}
-        <div className="shrink-0 border-t border-slate-100 p-3">
+        {/* Profile */}
+        <div className="shrink-0 border-t border-line p-2.5">
           <Link
-            href="/dashboard/settings"
-            title={collapsed ? "Your profile" : undefined}
-            className={[
-              "flex items-center gap-3 rounded-xl p-2.5 transition hover:bg-slate-50",
+            href="/dashboard/friends/you"
+            title={collapsed ? "Your demo profile" : undefined}
+            className={cn(
+              "gc-focus-ring flex items-center gap-3 rounded-lg p-2 transition hover:bg-surface-2",
               collapsed ? "lg:justify-center" : "",
-            ].join(" ")}
+            )}
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold">
-              K
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line bg-surface-2 text-[11px] font-semibold">
+              Y
             </span>
-
-            <span
-              className={[
-                "min-w-0 flex-1",
-                collapsed ? "lg:hidden" : "",
-              ].join(" ")}
-            >
-              <span className="block truncate text-xs font-semibold text-slate-900">
+            <span className={cn("min-w-0 flex-1", collapsed ? "lg:hidden" : "")}>
+              <span className="block truncate text-xs font-semibold text-ink">
                 Your profile
               </span>
-              <span className="mt-0.5 block truncate text-[11px] text-slate-500">
-                Level 3 developer
+              <span className="mt-0.5 block truncate text-[11px] text-ink-3">
+                Level {level} · demo
               </span>
             </span>
-
-            <ChevronDown
-              size={15}
-              className={[
-                "shrink-0 text-slate-400",
-                collapsed ? "lg:hidden" : "",
-              ].join(" ")}
-            />
           </Link>
         </div>
       </aside>
 
-      {/* Main application */}
+      {/* Application frame */}
       <div
-        className={[
-          "min-h-screen transition-[padding] duration-200",
+        className={cn(
+          "flex min-h-screen flex-col transition-[padding] duration-200",
           collapsed ? "lg:pl-[76px]" : "lg:pl-[248px]",
-        ].join(" ")}
+        )}
       >
         {/* Topbar */}
-        <header className="sticky top-0 z-30 flex h-[68px] items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
-          <div className="flex min-w-0 items-center gap-3">
-            {/* Mobile menu */}
+        <header className="sticky top-0 z-30 flex h-[64px] shrink-0 items-center justify-between gap-3 border-b border-line bg-surface/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-2.5">
             <button
               type="button"
               aria-label="Open navigation"
               onClick={() => setMobileOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition hover:bg-slate-100 lg:hidden"
+              className="gc-focus-ring flex h-9 w-9 items-center justify-center rounded-lg text-ink-2 transition hover:bg-surface-2 lg:hidden"
             >
               <Menu size={19} />
             </button>
 
-            {/* Desktop collapse */}
             <button
               type="button"
               aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
               aria-expanded={!collapsed}
-              onClick={() => setCollapsed((value) => !value)}
-              className="hidden h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 lg:flex"
+              onClick={toggleSidebar}
+              className="gc-focus-ring hidden h-9 w-9 items-center justify-center rounded-lg text-ink-3 transition hover:bg-surface-2 hover:text-ink lg:flex"
             >
               {collapsed ? (
-                <PanelLeftOpen size={18} />
+                <PanelLeftOpen size={17} />
               ) : (
-                <PanelLeftClose size={18} />
+                <PanelLeftClose size={17} />
               )}
             </button>
 
@@ -296,40 +281,31 @@ export default function DashboardShell({
               <p className="truncate text-sm font-semibold tracking-tight">
                 {activeItem.label}
               </p>
-              <p className="hidden text-[11px] text-slate-500 sm:block">
-                Your developer workspace
+              <p className="hidden truncate text-[11px] text-ink-3 sm:block">
+                {activeItem.description}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 sm:flex">
-              <Zap size={14} className="text-amber-500" />
-              <span className="text-xs font-semibold">840</span>
-              <span className="text-xs text-slate-500">XP</span>
-            </div>
-
-            <button
-              type="button"
-              aria-label="Notifications"
-              className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
+            <span
+              title="Demo XP balance"
+              className="hidden items-center gap-1.5 rounded-lg border border-line bg-surface px-2.5 py-1.5 sm:inline-flex"
             >
-              <Bell size={18} />
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-blue-600 ring-2 ring-white" />
-            </button>
+              <Zap size={13} className="text-warning" />
+              <span className="text-xs font-semibold tabular-nums">
+                {xp.toLocaleString()}
+              </span>
+              <span className="text-[11px] text-ink-3">XP</span>
+            </span>
 
-            <Link
-              href="/dashboard/settings"
-              aria-label="Open settings"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-semibold transition hover:border-slate-300"
-            >
-              K
-            </Link>
+            <NotificationsPopover />
+            <ProfileMenu />
           </div>
         </header>
 
-        {/* Individual pages render here */}
-        <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
+        {/* Page content */}
+        <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
           {children}
         </main>
       </div>

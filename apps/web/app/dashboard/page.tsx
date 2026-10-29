@@ -1,530 +1,492 @@
-
 "use client";
 
-import { useState } from "react";
 import {
-  ArrowDownRight,
   ArrowRight,
-  Bell,
   Check,
+  CheckCircle2,
   ChevronRight,
-  Flame,
-  Home,
-  Menu,
-  Search,
-  Sparkles,
+  Clock,
+  Compass,
+  Lock,
+  Play,
   Trophy,
-  X,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
+import { useMemo } from "react";
+import { Badge, DifficultyBadge } from "../components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Progress } from "../components/ui/progress";
+import { CURRICULUM } from "../lib/demo/curriculum";
+import { PROBLEMS } from "../lib/demo/problems";
+import type { CourseModule, Lesson } from "../lib/demo/types";
+import { DAILY_QUEST, DEMO_USER, NEXT_UNLOCK } from "../lib/demo/user";
+import { useDemoStore as useSessionDemoStore } from "../lib/demo-store";
+import { getLevelInfo, type LevelInfo } from "../lib/levels";
+import { useDemoStore } from "../lib/progress-store";
+import { cn } from "../lib/utils";
 
+type ContinueTarget = {
+  module: CourseModule;
+  lesson: Lesson;
+  href: string;
+  completedInModule: number;
+  lessonsInModule: number;
+} | null;
 
-import {
-  LayoutDashboard,
-  BookOpen,
-  Code2,
-  Users,
-  Target,
-  ShoppingBag,
-  Settings,
-} from "lucide-react";
+function useOverviewData() {
+  const xp = useDemoStore((s) => s.xp);
+  const completedLessons = useDemoStore((s) => s.completedLessonIds);
+  const completedProblems = useDemoStore((s) => s.completedProblemIds);
+  // The goal is edited in Settings (demo-store); read the same store so the
+  // quest target always matches what the user configured there.
+  const dailyGoal = useSessionDemoStore((s) => s.settings.dailyGoal);
 
-const NAV_ITEMS = [
-  { label: "Overview", icon: LayoutDashboard, href: "#overview" },
-  { label: "Lessons", icon: BookOpen, href: "#lessons" },
-  { label: "Problems", icon: Code2, href: "#problems" },
-  { label: "Friends", icon: Users, href: "#friends" },
-  { label: "Marketplace", icon: ShoppingBag, href: "#marketplace" },
-  { label: "Settings", icon: Settings, href: "#settings" },
-];
+  const levelInfo = getLevelInfo(xp);
 
+  const totalLessons = CURRICULUM.reduce((n, m) => n + m.lessons.length, 0);
 
-const ACTIVITIES = [
-  {
-    title: "Variables & Types",
-    detail: "Completed a challenge",
-    time: "Today",
-    xp: "+100 XP",
-    icon: Check,
-  },
-  {
-    title: "Go fundamentals",
-    detail: "Learning path progress updated",
-    time: "Yesterday",
-    xp: "+40 XP",
-    icon: BookOpen,
-  },
-  {
-    title: "First steps",
-    detail: "Reached your first milestone",
-    time: "Yesterday",
-    xp: "+25 XP",
-    icon: Trophy,
-  },
-];
+  const continueTarget = useMemo<ContinueTarget>(() => {
+    for (const module of CURRICULUM) {
+      const completedInModule = module.lessons.filter((l) =>
+        completedLessons.includes(`${module.id}/${l.id}`),
+      ).length;
+      if (completedInModule === module.lessons.length) continue;
+      const lesson =
+        module.lessons.find(
+          (l) => !completedLessons.includes(`${module.id}/${l.id}`),
+        ) ?? module.lessons[0];
+      if (lesson) {
+        return {
+          module,
+          lesson,
+          href: `/dashboard/learn/${module.id}/${lesson.id}`,
+          completedInModule,
+          lessonsInModule: module.lessons.length,
+        };
+      }
+    }
+    return null;
+  }, [completedLessons]);
 
-export default function DashboardPage() {
-  const [activeNav, setActiveNav] = useState("Overview");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const recommended = useMemo(() => {
+    const open = PROBLEMS.filter((p) => !completedProblems.includes(p.slug));
+    const focus = open.filter((p) =>
+      p.tags.some((t) => t.includes("slice") || t.includes("map")),
+    );
+    return [...focus, ...open.filter((p) => !focus.includes(p))]
+      .filter((p, i, arr) => arr.findIndex((x) => x.slug === p.slug) === i)
+      .slice(0, 3);
+  }, [completedProblems]);
+
+  return {
+    xp,
+    levelInfo,
+    totalLessons,
+    completedLessonCount: completedLessons.length,
+    completedProblemCount: completedProblems.length,
+    continueTarget,
+    recommended,
+    dailyGoal,
+  };
+}
+
+function PageHeader({ nextLevelTitle }: { nextLevelTitle: string | null }) {
+  const hour = new Date().getHours();
+  const part =
+    hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
-    <main className="min-h-screen bg-[#f8f9fb] text-slate-950">
-      <div className="flex min-h-screen">
-        {/* Mobile sidebar backdrop */}
-        {sidebarOpen && (
-          <button
-            aria-label="Close navigation"
-            className="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
-
-        {/* Sidebar */}
-        <aside
-          className={`fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col border-r border-slate-200 bg-white transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        >
-          <div className="flex h-[72px] items-center justify-between border-b border-slate-100 px-6">
-            <a
-              href="#overview"
-              className="inline-flex items-center gap-2.5 text-lg font-semibold tracking-tight"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white">
-                <Code2 size={19} />
-              </span>
-              GoCraft
-            </a>
-
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
-              aria-label="Close sidebar"
-            >
-              <X size={19} />
-            </button>
-          </div>
-
-          <div className="px-4 pt-7">
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-              Workspace
-            </p>
-
-            <nav className="mt-3 space-y-1" aria-label="Dashboard navigation">
-              {NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const active = activeNav === item.label;
-
-                return (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => {
-                      setActiveNav(item.label);
-                      setSidebarOpen(false);
-                    }}
-                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-                      active
-                        ? "bg-slate-100 text-slate-950"
-                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-950"
-                    }`}
-                  >
-                    <Icon size={18} strokeWidth={1.8} />
-                    {item.label}
-                    {active && (
-                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-slate-950" />
-                    )}
-                  </a>
-                );
-              })}
-            </nav>
-          </div>
-
-          {/* Learning path card */}
-          <div className="mx-4 mt-10 rounded-2xl border border-slate-200 p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">
-                CURRENT PATH
-              </span>
-              <Code2 size={16} className="text-slate-400" />
-            </div>
-
-            <h3 className="mt-3 font-semibold">Go fundamentals</h3>
-            <p className="mt-1 text-xs leading-5 text-slate-500">
-              Build a strong foundation in Go.
-            </p>
-
-            <div className="mt-4 flex items-center justify-between text-xs">
-              <span className="text-slate-500">Progress</span>
-              <span className="font-semibold text-slate-800">32%</span>
-            </div>
-
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-              <div className="h-full w-[32%] rounded-full bg-slate-950" />
-            </div>
-
-            <a
-              href="#learning"
-              className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-slate-800 hover:text-slate-500"
-            >
-              Continue learning <ArrowRight size={13} />
-            </a>
-          </div>
-
-          <div className="mt-auto border-t border-slate-100 p-4">
-            <a
-              href="#settings"
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
-            >
-              <Settings size={18} />
-              Settings
-            </a>
-
-            <div className="mt-3 flex items-center gap-3 rounded-xl bg-slate-50 p-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold">
-                K
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">Your profile</p>
-                <p className="mt-0.5 text-xs text-slate-500">Level 3 learner</p>
-              </div>
-              <ChevronRight size={16} className="text-slate-400" />
-            </div>
-          </div>
-        </aside>
-
-        {/* Main dashboard */}
-        <section className="min-w-0 flex-1">
-          {/* Topbar */}
-          <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-slate-200 bg-white/90 px-5 backdrop-blur-xl sm:px-8 lg:px-10">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
-                aria-label="Open navigation"
-              >
-                <Menu size={20} />
-              </button>
-
-              <div>
-                <p className="text-sm font-semibold">{activeNav}</p>
-                <p className="hidden text-xs text-slate-400 sm:block">
-                  Your developer workspace
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button
-                aria-label="Search"
-                className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
-              >
-                <Search size={18} />
-              </button>
-
-              <button
-                aria-label="Notifications"
-                className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
-              >
-                <Bell size={18} />
-                <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-blue-600" />
-              </button>
-
-              <div className="hidden h-7 w-px bg-slate-200 sm:block" />
-
-              <a
-                href="#profile"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold"
-                aria-label="Your profile"
-              >
-                K
-              </a>
-            </div>
-          </header>
-
-          <div className="mx-auto max-w-[1440px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-            {/* Welcome */}
-            <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-              <div>
-                <p className="text-sm text-slate-500">
-                  Tuesday, October 27
-                </p>
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Keep building.
-                </h1>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Every challenge is another rep toward becoming a better
-                  developer.
-                </p>
-              </div>
-
-              <a
-                href="#challenges"
-                className="inline-flex h-11 w-fit items-center gap-2 rounded-xl bg-slate-950 px-5 text-sm font-medium text-white transition hover:bg-slate-800"
-              >
-                Explore challenges
-                <ArrowRight size={16} />
-              </a>
-            </div>
-
-            {/* Stats */}
-            <div className="mt-8 grid grid-cols-2 gap-4 xl:grid-cols-4">
-              {[
-                {
-                  label: "Total XP",
-                  value: "840",
-                  detail: "Keep earning",
-                  icon: Zap,
-                },
-                {
-                  label: "Current streak",
-                  value: "7 days",
-                  detail: "Consistency counts",
-                  icon: Flame,
-                },
-                {
-                  label: "Challenges solved",
-                  value: "12",
-                  detail: "One rep at a time",
-                  icon: Check,
-                },
-                {
-                  label: "Current level",
-                  value: "Level 3",
-                  detail: "Apprentice",
-                  icon: Trophy,
-                },
-              ].map((stat) => {
-                const Icon = stat.icon;
-
-                return (
-                  <div
-                    key={stat.label}
-                    className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-slate-300"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-500">
-                        {stat.label}
-                      </span>
-                      <Icon size={17} className="text-slate-400" />
-                    </div>
-                    <p className="mt-5 text-2xl font-semibold tracking-tight">
-                      {stat.value}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">
-                      {stat.detail}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Main content grid */}
-            <div className="mt-8 grid gap-6 xl:grid-cols-[1.55fr_1fr]">
-              {/* Daily challenge */}
-              <section
-                id="challenges"
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-              >
-                <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
-                  <div>
-                    <p className="text-sm font-semibold">Your next challenge</p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      A little practice goes a long way.
-                    </p>
-                  </div>
-                  <span className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-600">
-                    Beginner
-                  </span>
-                </div>
-
-                <div className="p-6 sm:p-8">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
-                    <Code2 size={23} />
-                  </div>
-
-                  <h2 className="mt-5 text-2xl font-semibold tracking-tight">
-                    Build a word counter
-                  </h2>
-
-                  <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500">
-                    Write a Go function that counts how often each word appears
-                    in a sentence. Practice maps, strings, and basic
-                    data processing.
-                  </p>
-
-                  <div className="mt-6 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                    <span className="rounded-lg bg-slate-100 px-3 py-2">
-                      Go
-                    </span>
-                    <span className="rounded-lg bg-slate-100 px-3 py-2">
-                      Maps
-                    </span>
-                    <span className="rounded-lg bg-slate-100 px-3 py-2">
-                      ~15 min
-                    </span>
-                    <span className="inline-flex items-center gap-1 font-medium text-slate-700">
-                      <Zap size={14} /> 100 XP
-                    </span>
-                  </div>
-
-                  <a
-                    href="#preview"
-                    className="mt-8 inline-flex h-11 items-center gap-2 rounded-xl bg-slate-950 px-5 text-sm font-medium text-white transition hover:bg-slate-800"
-                  >
-                    Start challenge <ArrowRight size={16} />
-                  </a>
-                </div>
-              </section>
-
-              {/* Right column */}
-              <div className="space-y-6">
-                {/* Weekly goal */}
-                <section
-                  id="progress"
-                  className="rounded-2xl border border-slate-200 bg-white p-6"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="text-sm font-semibold">Weekly goal</h2>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Build a consistent habit.
-                      </p>
-                    </div>
-                    <Target size={19} className="text-slate-400" />
-                  </div>
-
-                  <div className="mt-6 flex items-end justify-between">
-                    <p className="text-3xl font-semibold tracking-tight">
-                      3
-                      <span className="text-base font-normal text-slate-400">
-                        {" "}
-                        / 5
-                      </span>
-                    </p>
-                    <span className="text-xs font-medium text-slate-500">
-                      60% complete
-                    </span>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-5 gap-2">
-                    {[true, true, true, false, false].map((done, index) => (
-                      <div
-                        key={index}
-                        className={`flex h-9 items-center justify-center rounded-lg ${
-                          done
-                            ? "bg-slate-950 text-white"
-                            : "border border-slate-200 bg-white text-slate-300"
-                        }`}
-                      >
-                        {done ? (
-                          <Check size={15} />
-                        ) : (
-                          <span className="text-xs">{index + 1}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <p className="mt-4 text-xs leading-5 text-slate-500">
-                    Two more challenge sessions to hit your goal.
-                  </p>
-                </section>
-
-                {/* Learning path */}
-                <section
-                  id="learning"
-                  className="rounded-2xl border border-slate-200 bg-white p-6"
-                >
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-semibold">Learning path</h2>
-                    <a
-                      href="#learn"
-                      className="text-xs font-medium text-slate-500 hover:text-slate-950"
-                    >
-                      View path
-                    </a>
-                  </div>
-
-                  <div className="mt-5 flex items-center gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                      <Code2 size={22} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold">Go fundamentals</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        4 of 12 lessons completed
-                      </p>
-                    </div>
-                    <ChevronRight size={17} className="text-slate-400" />
-                  </div>
-
-                  <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                    <div className="h-full w-1/3 rounded-full bg-slate-950" />
-                  </div>
-                </section>
-              </div>
-            </div>
-
-            {/* Recent activity */}
-            <section className="mt-8 rounded-2xl border border-slate-200 bg-white">
-              <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
-                <div>
-                  <h2 className="text-sm font-semibold">Recent activity</h2>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Your latest steps forward.
-                  </p>
-                </div>
-                <a
-                  href="#activity"
-                  className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 transition hover:text-slate-950"
-                >
-                  View all <ArrowRight size={14} />
-                </a>
-              </div>
-
-              <div className="divide-y divide-slate-100 px-6">
-                {ACTIVITIES.map((activity) => {
-                  const Icon = activity.icon;
-
-                  return (
-                    <div
-                      key={activity.title}
-                      className="flex items-center gap-4 py-4"
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-600">
-                        <Icon size={17} />
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">
-                          {activity.title}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-500">
-                          {activity.detail}
-                        </p>
-                      </div>
-
-                      <div className="shrink-0 text-right">
-                        <p className="text-xs font-semibold text-slate-800">
-                          {activity.xp}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-400">
-                          {activity.time}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
-            <p className="mt-6 text-center text-xs text-slate-400">
-              Dashboard preview · Sample data, not connected to an account
-            </p>
-          </div>
-        </section>
+    <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-faint">
+          Overview
+        </p>
+        <h1 className="mt-2 text-[28px] font-semibold tracking-tight sm:text-[32px]">
+          {part}, {DEMO_USER.name}.
+        </h1>
+        <p className="mt-1.5 max-w-xl text-sm leading-6 text-ink-muted">
+          {nextLevelTitle
+            ? `One focused session today moves you closer to ${nextLevelTitle}.`
+            : "You have reached the top rank. Keep the reps coming."}
+        </p>
       </div>
-    </main>
+      <div className="flex shrink-0 items-center gap-2">
+        <Link
+          href="/dashboard/problems"
+          className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-edge bg-panel px-4 text-sm font-medium text-ink transition-colors hover:border-edge-strong hover:bg-panel-muted"
+        >
+          Browse problems
+        </Link>
+        <Link
+          href="/dashboard/learn"
+          className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink/90"
+        >
+          Open curriculum
+          <ArrowRight size={15} />
+        </Link>
+      </div>
+    </header>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  note,
+}: {
+  label: string;
+  value: string;
+  note: string;
+}) {
+  return (
+    <Card className="shadow-card">
+      <CardContent className="px-5 py-4">
+        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink-faint">
+          {label}
+        </p>
+        <p className="mt-2.5 text-[26px] font-semibold leading-none tracking-tight tabular-nums">
+          {value}
+        </p>
+        <p className="mt-2.5 text-[12px] leading-4 text-ink-muted">{note}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function DailyQuest({
+  progress,
+  target,
+}: {
+  progress: number;
+  target: number;
+}) {
+  const complete = progress >= target;
+
+  return (
+    <Card className="shadow-card">
+      <div className="border-b border-edge bg-panel-muted/50 px-5 py-3.5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Compass size={15} className="text-accent" />
+            <p className="text-[13px] font-semibold">Daily quest</p>
+          </div>
+          <Badge tone={complete ? "success" : "accent"}>
+            {complete ? "Completed" : `+${DAILY_QUEST.xpReward} XP`}
+          </Badge>
+        </div>
+      </div>
+
+      <CardContent className="px-5 py-5">
+        <h2 className="text-[15px] font-semibold tracking-tight">
+          {DAILY_QUEST.title}
+        </h2>
+        <p className="mt-1 text-[13px] leading-5 text-ink-muted">
+          {DAILY_QUEST.detail}
+        </p>
+
+        <div className="mt-4 grid grid-cols-2 gap-1.5">
+          {Array.from({ length: target }).map((_, i) => (
+            <div
+              key={i}
+              className={cn(
+                "flex h-8 items-center justify-center gap-1.5 rounded-md border text-[11px] font-medium",
+                i < progress
+                  ? "border-accent/30 bg-accent-soft text-accent-strong"
+                  : "border-edge bg-panel text-ink-faint",
+              )}
+            >
+              {i < progress ? (
+                <Check size={12} />
+              ) : (
+                <Clock size={12} />
+              )}
+              <span>Problem {i + 1}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 flex items-center justify-between gap-3 border-t border-edge pt-4">
+          <p className="text-[12px] text-ink-muted">
+            <span className="font-semibold tabular-nums text-ink">
+              {Math.min(progress, target)}/{target}
+            </span>{" "}
+            done today
+          </p>
+          <Link
+            href="/dashboard/problems?difficulty=easy"
+            className="focus-ring inline-flex h-9 items-center gap-2 rounded-lg bg-ink px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-ink/90"
+          >
+            {complete ? "Practice more" : "Continue quest"}
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LevelCard({ levelInfo }: { levelInfo: LevelInfo }) {
+  const next = levelInfo.nextLevel;
+  const remaining = levelInfo.xpForLevel - levelInfo.xpIntoLevel;
+
+  return (
+    <Card className="shadow-card">
+      <CardHeader>
+        <div>
+          <CardTitle>Level progress</CardTitle>
+          <p className="mt-1 text-xs text-ink-muted">
+            Level {levelInfo.level} · {levelInfo.title}
+          </p>
+        </div>
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent-border bg-accent-soft text-accent-strong">
+          <Trophy size={16} strokeWidth={1.8} />
+        </div>
+      </CardHeader>
+      <CardContent className="px-5 py-5">
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="text-[28px] font-semibold leading-none tracking-tight tabular-nums">
+            {Math.round(levelInfo.progress * 100)}%
+          </p>
+          <p className="text-[12px] tabular-nums text-ink-muted">
+            {levelInfo.xpIntoLevel.toLocaleString()} /{" "}
+            {levelInfo.xpForLevel.toLocaleString()} XP
+          </p>
+        </div>
+        <Progress
+          value={levelInfo.progress * 100}
+          className="mt-3.5"
+          ariaLabel="Level progress"
+        />
+        <p className="mt-2 text-[11px] text-ink-faint">
+          {next
+            ? `${remaining.toLocaleString()} XP to ${next.title}`
+            : "Top rank reached"}
+        </p>
+
+        <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-edge bg-panel-muted/60 px-3 py-2.5">
+          <Lock size={13} className="mt-0.5 shrink-0 text-ink-faint" />
+          <div>
+            <p className="text-[11px] text-ink-muted">Next unlock</p>
+            <p className="mt-0.5 text-[13px] font-medium">
+              {NEXT_UNLOCK.label}
+            </p>
+            <p className="mt-0.5 text-[11px] text-ink-faint">
+              Reach level {NEXT_UNLOCK.level}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ContinueCard({ target }: { target: ContinueTarget }) {
+  if (!target) {
+    return (
+      <Card className="shadow-card">
+        <CardContent className="px-5 py-6 text-center">
+          <CheckCircle2 size={22} className="mx-auto text-easy" />
+          <p className="mt-3 text-sm font-semibold">Curriculum complete</p>
+          <p className="mt-1 text-xs text-ink-muted">
+            Every published lesson is done. More modules are on the way.
+          </p>
+          <Link
+            href="/dashboard/problems"
+            className="focus-ring mt-4 inline-flex h-9 items-center gap-2 rounded-lg border border-edge px-3.5 text-[13px] font-medium transition-colors hover:bg-panel-muted"
+          >
+            Practice problems <ArrowRight size={14} />
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const modulePct = Math.round(
+    (target.completedInModule / target.lessonsInModule) * 100,
+  );
+
+  return (
+    <Card className="shadow-card">
+      <CardHeader>
+        <div>
+          <CardTitle>Continue learning</CardTitle>
+          <p className="mt-1 text-xs text-ink-muted">
+            Pick up exactly where you left off.
+          </p>
+        </div>
+        <span className="shrink-0 rounded-md border border-edge bg-panel-muted px-2 py-1 text-[11px] font-medium tabular-nums text-ink-muted">
+          {target.completedInModule}/{target.lessonsInModule} in module
+        </span>
+      </CardHeader>
+      <CardContent className="px-5 py-5">
+        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink-faint">
+          {target.module.title}
+        </p>
+        <h3 className="mt-1.5 text-xl font-semibold tracking-tight">
+          {target.lesson.title}
+        </h3>
+        <p className="mt-1.5 max-w-2xl text-[13px] leading-5 text-ink-muted">
+          {target.lesson.summary}
+        </p>
+
+        <div className="mt-3.5 flex flex-wrap gap-2 text-[11px] text-ink-muted">
+          <span className="rounded-md border border-edge px-2 py-1">
+            <Clock size={11} className="mr-1 inline align-[-2px]" />
+            {target.lesson.minutes} min
+          </span>
+          <span className="rounded-md border border-edge px-2 py-1">
+            <Zap size={11} className="mr-1 inline align-[-2px] text-accent" />+
+            {target.lesson.xp} XP
+          </span>
+        </div>
+
+        <div className="mt-5">
+          <div className="flex items-center justify-between text-[11px] text-ink-muted">
+            <span>Module progress</span>
+            <span className="tabular-nums">{modulePct}%</span>
+          </div>
+          <Progress
+            value={modulePct}
+            className="mt-2"
+            ariaLabel="Module progress"
+          />
+        </div>
+
+        <Link
+          href={target.href}
+          className="focus-ring mt-5 inline-flex h-10 items-center gap-2 rounded-lg bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink/90"
+        >
+          <Play size={14} />
+          Resume lesson
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
+function RecommendedCard({
+  problems,
+}: {
+  problems: (typeof PROBLEMS)[number][];
+}) {
+  return (
+    <Card className="shadow-card">
+      <CardHeader>
+        <div>
+          <CardTitle>Recommended challenges</CardTitle>
+          <p className="mt-1 text-xs text-ink-muted">
+            Matched to your current focus: maps and slices.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/problems"
+          className="focus-ring shrink-0 rounded text-[12px] font-medium text-ink-muted transition-colors hover:text-ink"
+        >
+          View all
+        </Link>
+      </CardHeader>
+
+      {problems.length === 0 ? (
+        <CardContent className="px-5 py-8 text-center text-sm text-ink-muted">
+          You have solved every available problem. New sets arrive weekly.
+        </CardContent>
+      ) : (
+        <ul className="divide-y divide-edge">
+          {problems.map((problem) => (
+            <li key={problem.slug}>
+              <Link
+                href={`/dashboard/problems/${problem.slug}`}
+                className="focus-ring group flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-panel-muted/60"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13px] font-medium group-hover:text-ink">
+                    {problem.title}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] text-ink-muted">
+                    {problem.topics[0] ?? "Go"} · {problem.estMinutes} min · +
+                    {problem.xp} XP
+                  </p>
+                </div>
+                <DifficultyBadge difficulty={problem.difficulty} />
+                <ChevronRight
+                  size={15}
+                  className="shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
+export default function OverviewPage() {
+  const {
+    xp,
+    levelInfo,
+    totalLessons,
+    completedLessonCount,
+    completedProblemCount,
+    continueTarget,
+    recommended,
+    dailyGoal,
+  } = useOverviewData();
+
+  const lessonPct =
+    totalLessons > 0 ? Math.round((completedLessonCount / totalLessons) * 100) : 0;
+
+  return (
+    <div className="space-y-6">
+      <PageHeader nextLevelTitle={levelInfo.nextLevel?.title ?? null} />
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="Total XP"
+          value={xp.toLocaleString()}
+          note="All-time earned"
+        />
+        <StatCard
+          label="Level"
+          value={String(levelInfo.level)}
+          note={
+            levelInfo.nextLevel
+              ? `${levelInfo.title} · ${Math.round(levelInfo.progress * 100)}% to ${levelInfo.nextLevel.title}`
+              : `${levelInfo.title} · top rank`
+          }
+        />
+        <StatCard
+          label="Lessons"
+          value={`${completedLessonCount}/${totalLessons}`}
+          note={`${lessonPct}% of the curriculum`}
+        />
+        <StatCard
+          label="Problems solved"
+          value={String(completedProblemCount)}
+          note={`of ${PROBLEMS.length} published`}
+        />
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
+        <div className="space-y-6">
+          <ContinueCard target={continueTarget} />
+          <RecommendedCard problems={recommended} />
+        </div>
+
+        <div className="space-y-6">
+          <DailyQuest
+            progress={Math.min(DEMO_USER.weeklyGoalCompleted, dailyGoal)}
+            target={dailyGoal}
+          />
+          <LevelCard levelInfo={levelInfo} />
+        </div>
+      </div>
+
+      <p className="pt-2 text-center text-[11px] text-ink-faint">
+        Sample workspace · progress persists in this browser only · no account
+        or backend connected
+      </p>
+    </div>
   );
 }
