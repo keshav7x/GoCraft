@@ -1,11 +1,14 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "../../lib/utils";
 
-export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export function Card({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-slate-200 bg-white shadow-sm",
+        "rounded-xl border border-edge bg-panel text-ink",
         className,
       )}
       {...props}
@@ -20,7 +23,7 @@ export function CardHeader({
   return (
     <div
       className={cn(
-        "flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4",
+        "flex items-start justify-between gap-3 border-b border-edge px-5 py-4",
         className,
       )}
       {...props}
@@ -35,7 +38,7 @@ export function CardTitle({
   return (
     <h2
       className={cn(
-        "text-sm font-semibold tracking-tight text-slate-950",
+        "text-sm font-semibold tracking-tight text-ink",
         className,
       )}
       {...props}
@@ -48,7 +51,10 @@ export function CardDescription({
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("mt-1 text-xs text-slate-500", className)} {...props} />
+    <p
+      className={cn("mt-1 text-xs leading-5 text-ink-muted", className)}
+      {...props}
+    />
   );
 }
 
@@ -56,5 +62,17 @@ export function CardContent({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-5", className)} {...props} />;
+  return <div className={cn("px-5 py-4", className)} {...props} />;
+}
+
+export function CardFooter({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("border-t border-edge px-5 py-3", className)}
+      {...props}
+    />
+  );
 }

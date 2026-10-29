@@ -173,6 +173,7 @@ export function LearningPath() {
   const reduceMotion = useReducedMotion();
 
   const stage = stages[active];
+  if (!stage) return null;
   const Icon = stage.icon;
 
   function selectStage(index: number) {
@@ -327,7 +328,7 @@ export function LearningPath() {
             <div className="min-w-0 p-5 sm:p-8 lg:p-10">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
-                  key={stage.id}
+                  key={stage.number}
                   initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
