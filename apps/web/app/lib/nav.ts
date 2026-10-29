@@ -3,7 +3,6 @@ import {
   Code2,
   LayoutDashboard,
   type LucideIcon,
-  Rabbit,
   Settings,
   ShoppingBag,
   Users,
@@ -34,12 +33,6 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/dashboard/problems",
     icon: Code2,
     description: "Practice challenges",
-  },
-  {
-    label: "Rabbit Hole",
-    href: "/dashboard/rabbit-hole",
-    icon: Rabbit,
-    description: "Deep dives and engineering essays",
   },
   {
     label: "Friends",
