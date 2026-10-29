@@ -31,6 +31,8 @@ export default function DashboardShell({ children }: DashboardShellProps) {
   const equippedTheme = useDemoStore((state) => state.equippedTheme);
 
   const activeItem = findNavItem(pathname);
+  // Problem detail pages use a full-bleed LeetCode-style split layout.
+  const fullBleed = pathname.startsWith("/dashboard/problems/");
   const { level, title: levelTitle } = levelFromXp(xp);
   const sessionAccent = useSessionDemoStore((state) => state.settings.accent);
   const equippedAccent = getMarketItem(equippedTheme)?.accent;
@@ -305,7 +307,14 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         </header>
 
         {/* Page content */}
-        <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
+        <main
+          className={cn(
+            "mx-auto w-full flex-1",
+            fullBleed
+              ? "max-w-none p-0"
+              : "max-w-[1440px] px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8",
+          )}
+        >
           {children}
         </main>
       </div>
