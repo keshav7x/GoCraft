@@ -1,7 +1,6 @@
 import { lessonsTable } from "./lessons.schema";
 import { blockTypeEnum } from "../enum";
 import { pgEnum, pgTable, integer, varchar, text, jsonb } from "drizzle-orm/pg-core";
-import { modulesTable } from "./modules.schema";
 import { problemsTable } from "./problems.schema";
 export const lessonBlocksTable = pgTable("lesson_blocks", {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
