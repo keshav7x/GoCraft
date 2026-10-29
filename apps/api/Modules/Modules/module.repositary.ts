@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { modulesTable, lessonsTable } from "../../Infra/Database/schema";
-
+import { lessonsTable } from "../../Infra/Database/schema";
+import { modulesTable } from "../../Infra/Database/newFile";
 export type DBModule = typeof modulesTable.$inferSelect;
 export type DBModuleInsert = typeof modulesTable.$inferInsert;
 
@@ -95,7 +95,7 @@ export class ModuleRepository {
       .orderBy(modulesTable.moduleNo);
     return results;
   }
-  
+
   async findWithLessonsCount(tx?: any): Promise<(DBModule & { lessonsCount: number })[]> {
     const client = this.getClient(tx);
     const results = await client

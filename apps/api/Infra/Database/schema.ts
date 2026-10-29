@@ -7,3 +7,4 @@ export { problemsTable } from "./Schemas/problems.schema";
 export { lessonProblemsTable } from "./Schemas/lesson-problems.schema";
 export { userLessonProgressTable } from "./Schemas/user-lesson-progress.schema";
 export { userProblemSubmissionsTable } from "./Schemas/user-problem-submissions.schema";
+export {lessonBlocksTable} from './Schemas/block.schema'

@@ -17,6 +17,12 @@ export type OutboxEventType =
   | "MODULE_DELETED"
   |"MODULES_REORDERED"
 
+  //Block
+  | "LESSON_BLOCKS_REORDERED"
+  | "LESSON_BLOCK_DELETED"
+  | "LESSON_BLOCK_UPDATED"
+  |"LESSON_BLOCK_CREATED"
+
   // Gamification
   | "XP_AWARDED"
   | "ACHIEVEMENT_UNLOCKED"
