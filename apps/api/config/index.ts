@@ -3,7 +3,8 @@ import {z} from 'zod'
 
 const config = z.object({
   PORT: z.number(),
-  DATABASE_URL:z.string()
+  DATABASE_URL: z.string(),
+  REDIS_URL:z.string()
 })
 
 
