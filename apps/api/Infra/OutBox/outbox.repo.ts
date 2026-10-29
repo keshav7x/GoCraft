@@ -1,7 +1,8 @@
 import { outboxEventsTable } from "../Database/schema";
 import { outboxStatusEnum } from "../Database/enum";
+import type { OutboxEventType } from "./outbox.event";
 type CreateOutboxEventInput = {
-  type: "VERIFY_EMAIL" | "PASSWORD_RESET";
+  type:OutboxEventType
   payload: Record<string, unknown>;
 };
 
