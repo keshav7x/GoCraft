@@ -7,6 +7,10 @@ export type OutboxEventType =
   // Learning progress
   | "LESSON_STARTED"
   | "LESSON_COMPLETED"
+  | "LESSON_CREATED"
+  | "LESSON_UPDATED"
+  | "LESSON_DELETED"
+  | "LESSONS_REORDERED"
   | "MODULE_UNLOCKED"
   | "MODULE_CREATED"
   | "MODULE_UPDATED"
