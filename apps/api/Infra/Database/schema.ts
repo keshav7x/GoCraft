@@ -1,3 +1,11 @@
+export {outboxStatusEnum} from "./enum"
+export {userType} from "./enum"
+export {xpEventTypeEnum} from "./enum"
+export {problemTypeEnum} from "./enum"
+export {blockTypeEnum} from "./enum"
+export { lessonStatusEnum } from "./enum"
+
+
 export {usersTable} from "./Schemas/user.schema"
 export { outboxEventsTable } from "./Schemas/outbox.schema";
 export { verificationTokensTable } from "./Schemas/verfication.schema";
@@ -7,4 +15,6 @@ export { problemsTable } from "./Schemas/problems.schema";
 export { lessonProblemsTable } from "./Schemas/lesson-problems.schema";
 export { userLessonProgressTable } from "./Schemas/user-lesson-progress.schema";
 export { userProblemSubmissionsTable } from "./Schemas/user-problem-submissions.schema";
-export {lessonBlocksTable} from './Schemas/block.schema'
+export { lessonBlocksTable } from './Schemas/block.schema'
+export { modulesTable } from "./Schemas/modules.schema";
+

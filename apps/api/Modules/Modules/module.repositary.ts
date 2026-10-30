@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { lessonsTable } from "../../Infra/Database/schema";
-import { modulesTable } from "../../Infra/Database/newFile";
+import { modulesTable } from "../../Infra/Database/schema";
 export type DBModule = typeof modulesTable.$inferSelect;
 export type DBModuleInsert = typeof modulesTable.$inferInsert;
 

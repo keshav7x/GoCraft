@@ -2,7 +2,7 @@ import 'dotenv/config'
 import {z} from 'zod'
 
 const config = z.object({
-  PORT: z.number(),
+  PORT: z.string(),
   DATABASE_URL: z.string(),
   REDIS_URL:z.string()
 })
