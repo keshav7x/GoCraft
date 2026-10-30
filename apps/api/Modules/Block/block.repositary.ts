@@ -1,4 +1,4 @@
-import { lessonBlocksTable } from "../../Infra/Database/Schemas/block.schema";
+import { lessonBlocksTable } from "../../Infra/Database/schema"
 import { db } from "../../Infra/Database";
 import { LessonRepository } from "../Lessons/lesson.repositary";
 import { type DBLessonBlockInsert, type DBLessonBlock } from "./block.types";

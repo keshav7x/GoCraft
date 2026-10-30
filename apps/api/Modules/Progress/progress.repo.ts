@@ -4,7 +4,8 @@ import {
   userLessonProgressTable,
   xpEventsTable,
   usersTable,
-  userProblemSubmissionsTable
+  userProblemSubmissionsTable,
+  lessonsTable
 } from "../../Infra/Database/schema";
 
 type DBUserLessonProgress = typeof userLessonProgressTable.$inferSelect;
@@ -47,6 +48,28 @@ export class ProgressRepository {
       .where(eq(userLessonProgressTable.userId, userId));
   }
 
+  async getModuleLessonProgress(
+    userId: number,
+    moduleId: number,
+    tx?: any
+  ): Promise<{ lessonId: number; status: "not started" | "in progress" | "completed" | null }[]> {
+    const client = this.getClient(tx);
+    return await client
+      .select({
+        lessonId: lessonsTable.id,
+        status: userLessonProgressTable.status,
+      })
+      .from(lessonsTable)
+      .leftJoin(
+        userLessonProgressTable,
+        and(
+          eq(userLessonProgressTable.lessonId, lessonsTable.id),
+          eq(userLessonProgressTable.userId, userId)
+        )
+      )
+      .where(eq(lessonsTable.moduleId, moduleId));
+  }
+
   async createProgress(
     data: DBUserLessonProgressInsert,
     tx?: any
@@ -83,12 +106,14 @@ export class ProgressRepository {
     return result;
   }
 
-  async logXpEvent(xpEvent: DBXpEventInsert, tx?: any): Promise<void> {
+  async logXpEvent(xpEvent: DBXpEventInsert, tx?: any): Promise<boolean> {
     const client = this.getClient(tx);
-    await client
+    const rows = await client
       .insert(xpEventsTable)
       .values(xpEvent)
-      .onConflictDoNothing();
+      .onConflictDoNothing()
+      .returning({ id: xpEventsTable.id });
+    return rows.length > 0;
   }
 
   async updateUserXp(userId: number, amount: number, tx?: any): Promise<void> {
@@ -117,25 +142,58 @@ export class ProgressRepository {
     xpAmount: number,
     sourceId: string,
     tx?: any
-  ): Promise<void> {
+  ): Promise<{ xpAwarded: number; alreadyCompleted: boolean }> {
     const runWorkflow = async (transactionContext: any) => {
-      await this.updateProgressStatus(userId, lessonId, "completed", new Date(), transactionContext);
-      await this.logXpEvent({
+      await transactionContext.execute(
+        sql`select pg_advisory_xact_lock(${userId}::int, ${lessonId}::int)`
+      );
+
+      const existing = await this.getLessonProgress(
         userId,
-        amount: xpAmount,
-        type: "lesson_completion",
-        sourceId: String(sourceId)
-      }, transactionContext);
-      await this.updateUserXp(userId, xpAmount, transactionContext);
+        lessonId,
+        transactionContext
+      );
+
+      if (existing?.status === "completed") {
+        return { xpAwarded: 0, alreadyCompleted: true };
+      }
+
+      if (existing) {
+        await this.updateProgressStatus(
+          userId,
+          lessonId,
+          "completed",
+          new Date(),
+          transactionContext
+        );
+      } else {
+        await this.createProgress(
+          { userId, lessonId, status: "completed", completedAt: new Date() },
+          transactionContext
+        );
+      }
+
+      const logged = await this.logXpEvent(
+        {
+          userId,
+          amount: xpAmount,
+          type: "lesson_completion",
+          sourceId: String(sourceId),
+        },
+        transactionContext
+      );
+
+      if (logged) {
+        await this.updateUserXp(userId, xpAmount, transactionContext);
+      }
+
+      return { xpAwarded: logged ? xpAmount : 0, alreadyCompleted: false };
     };
 
     if (tx) {
-      await runWorkflow(tx);
-    } else {
-      await this.moduleDb.transaction(async (newTx) => {
-        await runWorkflow(newTx);
-      });
+      return runWorkflow(tx);
     }
+    return this.moduleDb.transaction(runWorkflow);
   }
 
   async solveProblemAndAwardXp(
@@ -153,14 +211,19 @@ export class ProgressRepository {
         isPassed: true
       }, transactionContext);
 
-      await this.logXpEvent({
-        userId,
-        amount: xpAmount,
-        type: "problem_solved",
-        sourceId: String(problemId)
-      }, transactionContext);
+      const logged = await this.logXpEvent(
+        {
+          userId,
+          amount: xpAmount,
+          type: "problem_solved",
+          sourceId: String(problemId),
+        },
+        transactionContext
+      );
 
-      await this.updateUserXp(userId, xpAmount, transactionContext);
+      if (logged) {
+        await this.updateUserXp(userId, xpAmount, transactionContext);
+      }
     };
 
     if (tx) {

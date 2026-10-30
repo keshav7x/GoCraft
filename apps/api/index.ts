@@ -11,11 +11,14 @@ const server = Fastify({
 //Import routes
 import { authRouter } from "./Modules/Auth/auth.routes";
 import { envConfig } from "./config";
+import { registerUploadRoutes } from "./Modules/Upload/upload.route";
+import { startOutboxWorker } from "./Infra/OutBox/outbox.worker";
 
 async function main() {
   server.register(fastifyCookie, {
     secret:process.env.COOKIE_SECRET!
   })
+  registerUploadRoutes(server);
   await server.register(fastifyTRPCPlugin, {
     prefix: "/trpc",
     trpcOptions: {
@@ -23,7 +26,7 @@ async function main() {
       createContext,
     },
   });
-  
+
 
   server.get("/health", async () => {
     return {
@@ -39,6 +42,7 @@ async function main() {
   });
   console.log(`Server is listening on port ${port}`)
 
+  startOutboxWorker();
 }
 
 main().catch((error: unknown) => {
