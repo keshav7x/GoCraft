@@ -8,39 +8,33 @@ const blockService = new BlockService();
 
 export const blockRouter = router({
   createBlock: protectedProcedure
-    .input(
-      z.object({
-        lessonId: z.number().int(),
-        type: blockTypeEnum,
-        contentValue: z.string().nullable().optional(),
-        problemId: z.number().int().nullable().optional(),
-        orderNo: z.number().int().optional(),
-        properties: z.record(z.string(), z.any()).optional().default({}),
-      })
-    )
+    .input(createBlockSchema.extend({ lessonId: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.user.userId;
       const { lessonId, ...blockData } = input;
-      const block = await blockService.createBlock(userId, lessonId, blockData as any);
+      const block = await blockService.createBlock(userId, lessonId, blockData);
       if (!block) throw new AppError("Block could not be created", 400);
       return block;
+    }),
+
+  addBlocks: protectedProcedure
+    .input(addBlocksSchema)
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.user.userId;
+      const blocks = await blockService.addBlocksToLesson(userId, input.lessonId, input.blocks);
+      return blocks;
     }),
 
   updateBlock: protectedProcedure
     .input(
       z.object({
         id: z.number().int(),
-        data: z.object({
-          contentValue: z.string().nullable().optional(),
-          problemId: z.number().int().nullable().optional(),
-          orderNo: z.number().int().optional(),
-          properties: z.record(z.string(), z.any()).optional(),
-        }).partial()
+        data: updateBlockSchema,
       })
     )
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.user.userId;
-      const updatedBlock = await blockService.updateBlock(userId, input.id, input.data as any);
+      const updatedBlock = await blockService.updateBlock(userId, input.id, input.data);
       if (!updatedBlock) throw new AppError("Block could not be updated", 400);
       return updatedBlock;
     }),

@@ -29,7 +29,7 @@ export class blockRepositaryClass {
     return result.length > 0;
   };
 
-  public create = async (lessonId: number, input: DBLessonBlockInsert, tx?: any): Promise<DBLessonBlock> => {
+  public create = async (lessonId: number, input: Omit<DBLessonBlockInsert, "lessonId">, tx?: any): Promise<DBLessonBlock> => {
     const client = this.getClient(tx);
     const [block] = await client
       .insert(lessonBlocksTable)

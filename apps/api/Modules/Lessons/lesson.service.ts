@@ -1,41 +1,68 @@
 import { LessonRepository } from "./lesson.repositary";
 import { db } from "../../Infra/Database";
 import type { DBLesson, DBLessonInsert } from "./lessons.types";
+import type { DBLessonBlock, BlockContentInput } from "../Block/block.types";
 import { authRepositoryClass } from "../Auth/auth.repositary";
 import { ModuleRepository } from "../Modules/module.repositary";
+import { blockRepositaryClass } from "../Block/block.repositary";
 import { AppError } from "../../Infra/Error/errors";
 import { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
+
+export type CreateLessonWithBlocksInput = DBLessonInsert & {
+  blocks?: BlockContentInput[];
+};
 
 export class lessonService {
   private Db = db;
   constructor(
     private readonly lessonRepo = new LessonRepository(db),
     private readonly moduleRepo = new ModuleRepository(db),
+    private readonly blockRepo = new blockRepositaryClass(),
     private readonly authRepo = new authRepositoryClass(db),
     private readonly outBoxRepo = new OutboxRepository()
   ) {}
 
-  create = async (userId: number, input: DBLessonInsert): Promise<DBLesson> => {
+  create = async (
+    userId: number,
+    input: CreateLessonWithBlocksInput
+  ): Promise<DBLesson & { blocks: DBLessonBlock[] }> => {
     if (!userId) throw new AppError("Unauthorized access", 401);
     if (!input.title) throw new AppError("Lesson title is required", 400);
     if (!input.moduleId) throw new AppError("No module ID provided", 400);
+
+    const { blocks, ...lessonData } = input;
 
     const lesson = await this.Db.transaction(async (tx) => {
       const isAdmin = await this.authRepo.isAdmin(userId, tx);
       if (!isAdmin) throw new AppError("Unauthorized access", 401);
 
-      const module = await this.moduleRepo.findById(input.moduleId, tx);
+      const module = await this.moduleRepo.findById(lessonData.moduleId, tx);
       if (!module) throw new AppError("Module not found", 404);
 
-      const newLesson = await this.lessonRepo.create(input, tx);
+      const newLesson = await this.lessonRepo.create(lessonData, tx);
       if (!newLesson) throw new AppError("Lesson can't be created", 400);
 
-      await this.outBoxRepo.create({
-        type: "LESSON_CREATED",
-        payload: newLesson
-      }, tx);
+      let createdBlocks: DBLessonBlock[] = [];
+      if (blocks && blocks.length > 0) {
+        createdBlocks = await this.blockRepo.createMany(
+          blocks.map((block, index) => ({
+            ...block,
+            lessonId: newLesson.id,
+            orderNo: block.orderNo ?? index + 1,
+          })),
+          tx
+        );
+      }
 
-      return newLesson;
+      await this.outBoxRepo.create(
+        {
+          type: "LESSON_CREATED",
+          payload: { ...newLesson, blocks: createdBlocks },
+        },
+        tx
+      );
+
+      return { ...newLesson, blocks: createdBlocks };
     });
     return lesson;
   };
@@ -50,10 +77,12 @@ export class lessonService {
       if (!currentLessonStats) throw new AppError("Lesson not found", 404);
 
       const { problemsCount, ...lesson } = currentLessonStats;
+      const blocks = await this.blockRepo.findBlocksByLessonId(id, tx);
 
       return {
         lesson,
-        problemsCount
+        problemsCount,
+        blocks,
       };
     });
     return result;
@@ -94,10 +123,13 @@ export class lessonService {
       const result = await this.lessonRepo.update(id, input, tx);
       if (!result) throw new AppError("Lesson could not be updated", 400);
 
-      await this.outBoxRepo.create({
-        type: "LESSON_UPDATED",
-        payload: result
-      }, tx);
+      await this.outBoxRepo.create(
+        {
+          type: "LESSON_UPDATED",
+          payload: result,
+        },
+        tx
+      );
 
       return result;
     });
@@ -118,10 +150,13 @@ export class lessonService {
       const deleted = await this.lessonRepo.delete(id, tx);
       if (!deleted) throw new AppError("Lesson could not be deleted", 400);
 
-      await this.outBoxRepo.create({
-        type: "LESSON_DELETED",
-        payload: { id }
-      }, tx);
+      await this.outBoxRepo.create(
+        {
+          type: "LESSON_DELETED",
+          payload: { id },
+        },
+        tx
+      );
 
       return true;
     });
@@ -144,10 +179,13 @@ export class lessonService {
         await this.lessonRepo.update(pair.id, { lessonNo: pair.targetLessonNo }, tx);
       }
 
-      await this.outBoxRepo.create({
-        type: "LESSONS_REORDERED",
-        payload: { movementPairs }
-      }, tx);
+      await this.outBoxRepo.create(
+        {
+          type: "LESSONS_REORDERED",
+          payload: { movementPairs },
+        },
+        tx
+      );
     });
   };
 }
