@@ -4,6 +4,7 @@ import type { DBModuleInsert, DBModule } from "./modules.types";
 import { authRepositoryClass } from "../Auth/auth.repositary";
 import { AppError } from "../../Infra/Error/errors";
 import { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
+import { redis } from "../../Infra/Redis/redis";
 
 export class moduleService {
   private Db = db;
@@ -19,9 +20,10 @@ export class moduleService {
       throw new AppError("Title not found or must be greater than 10 characters", 400);
     }
 
+    const isAdmin = await this.authRepo.isAdmin(userId);
+    if (!isAdmin) throw new AppError("Unauthorized access", 401);
+    
     const module = await this.Db.transaction(async (tx) => {
-      const isAdmin = await this.authRepo.isAdmin(userId, tx);
-      if (!isAdmin) throw new AppError("Unauthorized access", 401);
 
       const newModule = await this.moduleRepo.create(input, tx);
       if (!newModule) throw new AppError("Module can't be created", 400);
@@ -40,13 +42,18 @@ export class moduleService {
     if (!userId) throw new AppError("Unauthorized access", 401);
     if (!id) throw new AppError("No module ID provided", 400);
 
+    const cacheKey = `module-${id}`
+    const cacheModule = await redis.get(cacheKey)
+    if (cacheModule !== null) {
+      return JSON.parse(cacheModule)
+    }
     const result = await this.Db.transaction(async (tx) => {
       const stats = await this.moduleRepo.findLessonCountOfModule(id, tx);
       const currentModuleStats = stats[0];
       if (!currentModuleStats) throw new AppError("Module not found", 404);
 
       const { lessonsCount, ...module } = currentModuleStats;
-
+      
       return {
         module,
         lessonCount: lessonsCount

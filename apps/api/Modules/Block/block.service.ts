@@ -3,7 +3,7 @@ import { authRepositoryClass } from "../Auth/auth.repositary";
 import { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
 import { AppError } from "../../Infra/Error/errors";
 import { db } from "../../Infra/Database";
-import type { DBLessonBlockInsert, DBLessonBlock, BlockContentInput } from "./block.types";
+import type { DBLessonBlockInsert, DBLessonBlock } from "./block.types";
 
 export class BlockService {
   private Db = db;
@@ -16,7 +16,7 @@ export class BlockService {
   public createBlock = async (
     userId: number,
     lessonId: number,
-    input: BlockContentInput
+    input: DBLessonBlockInsert
   ): Promise<DBLessonBlock> => {
     if (!userId) throw new AppError("Unauthorized access", 401);
     if (!lessonId) throw new AppError("No lesson ID provided", 400);
@@ -28,23 +28,20 @@ export class BlockService {
       const lessonExists = await this.blockRepo.lessonExist(lessonId, tx);
       if (!lessonExists) throw new AppError("Target lesson not found", 404);
 
-      let orderNo = input.orderNo;
-      if (orderNo !== undefined) {
-        await this.blockRepo.incrementOrderNumbers(lessonId, orderNo, tx);
+      if (input.orderNo !== undefined) {
+        await this.blockRepo.incrementOrderNumbers(lessonId, input.orderNo, tx);
       } else {
-        orderNo = (await this.blockRepo.findMaxOrderNo(lessonId, tx)) + 1;
+        const existingBlocks = await this.blockRepo.findBlocksByLessonId(lessonId, tx);
+        input.orderNo = existingBlocks.length + 1;
       }
 
-      const newBlock = await this.blockRepo.create(lessonId, { ...input, orderNo }, tx);
+      const newBlock = await this.blockRepo.create(lessonId, input, tx);
       if (!newBlock) throw new AppError("Block could not be created", 400);
 
-      await this.outBoxRepo.create(
-        {
-          type: "LESSON_BLOCK_CREATED",
-          payload: newBlock,
-        },
-        tx
-      );
+      await this.outBoxRepo.create({
+        type: "LESSON_BLOCK_CREATED",
+        payload: newBlock
+      }, tx);
 
       return newBlock;
     });

@@ -2,11 +2,7 @@ import { AppError } from "../../Infra/Error/errors";
 import { protectedProcedure, router } from "../../trpc";
 import { z } from "zod";
 import { BlockService } from "./block.service";
-import {
-  addBlocksSchema,
-  createBlockSchema,
-  updateBlockSchema,
-} from "./block.types";
+import { blockTypeEnum } from "../../Infra/Database/enum";
 
 const blockService = new BlockService();
 

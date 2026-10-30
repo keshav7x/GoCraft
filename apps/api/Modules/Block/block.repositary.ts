@@ -94,15 +94,6 @@ export class blockRepositaryClass {
       .where(eq(lessonBlocksTable.lessonId, lessonId));
   };
 
-  public findMaxOrderNo = async (lessonId: number, tx?: any): Promise<number> => {
-    const client = this.getClient(tx);
-    const [result] = await client
-      .select({ max: sql<number>`coalesce(max(${lessonBlocksTable.orderNo}), 0)` })
-      .from(lessonBlocksTable)
-      .where(eq(lessonBlocksTable.lessonId, lessonId));
-    return result?.max ?? 0;
-  };
-
   public incrementOrderNumbers = async (lessonId: number, fromOrderNo: number, tx?: any): Promise<void> => {
     const client = this.getClient(tx);
     await client
