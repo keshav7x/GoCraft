@@ -1,32 +1,37 @@
 import Fastify from "fastify";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { appRouter } from "./appRouter";
+import { createContext } from "./context";
 import fastifyCookie from "@fastify/cookie";
 
 const server = Fastify({
   logger: true,
 });
 
+//Import routes
+import { authRouter } from "./Modules/Auth/auth.routes";
+import { envConfig } from "./config";
 
 async function main() {
+  server.register(fastifyCookie, {
+    secret:process.env.COOKIE_SECRET!
+  })
   await server.register(fastifyTRPCPlugin, {
     prefix: "/trpc",
     trpcOptions: {
       router: appRouter,
-      createContext: () => ({}),
+      createContext,
     },
   });
-  server.register(fastifyCookie, {
-    secret:process.env.COOKIE_SECRET!
-  })
   
+
   server.get("/health", async () => {
     return {
       status: "ok",
       service: "gocraft-api",
     };
   });
-  const port = Number(4000);
+  const port = Number(envConfig.PORT || 5000);
 
   await server.listen({
     port,

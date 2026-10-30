@@ -1,6 +1,6 @@
 import { and, eq, gt } from "drizzle-orm";
 import { db } from "../../Infra/Database";
-import { usersTable, verificationTokensTable } from "../../Infra/Database/schema";
+import { usersTable, userType, verificationTokensTable } from "../../Infra/Database/schema";
 import type { UserCreateInput,VerificationTokenInsertInput } from "../../Types/auth.types";
 export class authRepositoryClass {
   constructor(
@@ -19,7 +19,7 @@ export class authRepositoryClass {
     const user = await DbClient.select({
       userType:usersTable.userType
     }).from(usersTable).where(eq(usersTable.id, userId)).limit(1)
-    const admin = user.userType == "admin"
+    const admin = user[0].userType ==="admin"
     return admin
   }
 

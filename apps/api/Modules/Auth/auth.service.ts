@@ -27,7 +27,7 @@ export class authServiceClass {
         throw new UserAlreadyExistsError();
       }
 
-      const [newUser] = await this.authRepo.create(
+      const newUser = await this.authRepo.create(
         {
           ...input,
           password,
@@ -49,7 +49,7 @@ export class authServiceClass {
 
       const tokenHash = this.authUtils.hashToken(verificationToken)
 
-      const [verification] =
+      const verification =
         await this.verificationRepo.createVerificationToken(
           {
             userId: newUser.id,
