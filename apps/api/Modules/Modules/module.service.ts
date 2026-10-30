@@ -20,9 +20,10 @@ export class moduleService {
       throw new AppError("Title not found or must be greater than 10 characters", 400);
     }
 
+    const isAdmin = await this.authRepo.isAdmin(userId);
+    if (!isAdmin) throw new AppError("Unauthorized access", 401);
+    
     const module = await this.Db.transaction(async (tx) => {
-      const isAdmin = await this.authRepo.isAdmin(userId, tx);
-      if (!isAdmin) throw new AppError("Unauthorized access", 401);
 
       const newModule = await this.moduleRepo.create(input, tx);
       if (!newModule) throw new AppError("Module can't be created", 400);
