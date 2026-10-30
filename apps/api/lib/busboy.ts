@@ -10,7 +10,7 @@ const ALLOWED_TYPES = [
   "image/webp",
 ];
 
-export async function parseAndUpload(req: IncomingMessage) {
+export async function parseAndUpload(req: IncomingMessage, folder = "gocraft/content") {
   const bb = Busboy({
     headers: req.headers,
     limits: {
@@ -50,7 +50,7 @@ export async function parseAndUpload(req: IncomingMessage) {
       uploadError = new Error("File size exceeds 5 MB");
     });
 
-    uploadPromise = uploadService.upload(file, "gocraft/avatars");
+    uploadPromise = uploadService.upload(file, folder);
   });
 
   const parserPromise = new Promise<void>((resolve, reject) => {

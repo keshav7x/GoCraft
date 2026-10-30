@@ -1,6 +1,6 @@
 import { authServiceClass } from "./auth.service";
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
-import { loginInputSchema, registerInputSchema } from "./auth.types";
+import { loginInputSchema, registerInputSchema, verifyEmailInputSchema } from "./auth.types";
 
 const authService = new authServiceClass();
 
@@ -35,6 +35,12 @@ export const authRouter = router({
       return {
         user: data.user
       };
+    }),
+
+  verifyEmail: publicProcedure
+    .input(verifyEmailInputSchema)
+    .mutation(async ({ input }) => {
+      return await authService.verifyEmail(input.token);
     }),
 
   getMe: protectedProcedure.query(async (user) => {

@@ -69,7 +69,7 @@ export class authServiceClass {
           payload: {
             userId: newUser.id,
             email: newUser.email,
-            token: tokenHash,
+            token: verificationToken,
             expiresAt: tokenExpiry.toISOString(),
           },
         },
@@ -78,6 +78,22 @@ export class authServiceClass {
 
       return newUser;
     });
+  };
+
+  verifyEmail = async (token: string) => {
+    if (!token) throw new AppError("Verification token is required", 400);
+
+    const tokenHash = this.authUtils.hashToken(token);
+    const record = await this.verificationRepo.findValidVerificationToken(tokenHash);
+
+    if (!record) {
+      throw new AppError("The verification token is invalid or has expired", 400);
+    }
+
+    await this.authRepo.verifyUser(record.userId);
+    await this.verificationRepo.deleteVerificationToken(record.id);
+
+    return { success: true as const };
   };
 
   login = async (INPUT: {
