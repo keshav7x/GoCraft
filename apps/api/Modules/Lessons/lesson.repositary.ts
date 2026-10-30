@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { lessonsTable, lessonProblemsTable } from "../../Infra/Database/schema";
+import { lessonsTable, lessonProblemsTable, userLessonProgressTable } from "../../Infra/Database/schema";
 
 export type DBLesson = typeof lessonsTable.$inferSelect;
 export type DBLessonInsert = typeof lessonsTable.$inferInsert;
@@ -65,11 +65,23 @@ export class LessonRepository {
 
   async delete(id: number, tx?: any): Promise<boolean> {
     const client = this.getClient(tx);
+    await client
+      .delete(userLessonProgressTable)
+      .where(eq(userLessonProgressTable.lessonId, id));
     const result = await client
       .delete(lessonsTable)
       .where(eq(lessonsTable.id, id))
       .returning({ id: lessonsTable.id });
     return result.length > 0;
+  }
+
+  async findMaxLessonNo(moduleId: number, tx?: any): Promise<number> {
+    const client = this.getClient(tx);
+    const [result] = await client
+      .select({ max: sql<number>`coalesce(max(${lessonsTable.lessonNo}), 0)` })
+      .from(lessonsTable)
+      .where(eq(lessonsTable.moduleId, moduleId));
+    return result?.max ?? 0;
   }
 
   async findWithProblemsCount(

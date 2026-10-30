@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import type { lessonsTable } from "../../Infra/Database/schema";
+import { createBlockSchema } from "../Block/block.types";
 
 export type DBLesson = InferSelectModel<typeof lessonsTable>;
 export type DBLessonInsert = InferInsertModel<typeof lessonsTable>;
@@ -14,6 +15,7 @@ export const createLessonSchema = z.object({
   estimatedTimeMinutes: z.number().int().min(0).optional(),
   xpReward: z.number().int().min(0).optional(),
   contents: z.array(z.any()).optional(),
+  blocks: z.array(createBlockSchema).optional(),
 });
 
 export const updateLessonSchema = z.object({
