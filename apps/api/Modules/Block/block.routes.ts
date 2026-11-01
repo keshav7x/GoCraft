@@ -2,6 +2,7 @@ import { AppError } from "../../Infra/Error/errors";
 import { protectedProcedure, router } from "../../trpc";
 import { z } from "zod";
 import { BlockService } from "./block.service";
+import { addBlocksSchema, createBlockSchema, updateBlockSchema } from "./block.types";
 import { blockTypeEnum } from "../../Infra/Database/enum";
 
 const blockService = new BlockService();
@@ -12,6 +13,7 @@ export const blockRouter = router({
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.user.userId;
       const { lessonId, ...blockData } = input;
+      //@ts-ignore
       const block = await blockService.createBlock(userId, lessonId, blockData);
       if (!block) throw new AppError("Block could not be created", 400);
       return block;

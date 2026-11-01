@@ -108,4 +108,13 @@ export class blockRepositaryClass {
         )
       );
   };
+
+  public findMaxOrderNo = async (lessonId: number, tx?: any): Promise<number> => {
+    const client = this.getClient(tx);
+    const [result] = await client
+      .select({ maxOrderNo: sql`MAX(${lessonBlocksTable.orderNo})` })
+      .from(lessonBlocksTable)
+      .where(eq(lessonBlocksTable.lessonId, lessonId));
+    return result.maxOrderNo ?? 0;
+  };
 }
