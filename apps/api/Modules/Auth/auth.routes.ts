@@ -43,7 +43,7 @@ export const authRouter = router({
       return await authService.verifyEmail(input.token);
     }),
 
-  getMe: protectedProcedure.query(async (user) => {
-    return await authService.getMe(user.ctx.user.userId)
+  getMe: protectedProcedure.query(async ({ ctx }) => {
+    return await authService.getMe(ctx.user.userId)
   })
 });
