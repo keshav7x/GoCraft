@@ -117,7 +117,7 @@ export function highlightGo(source: string): GoToken[] {
       cls = CLS.number;
     } else if (match[4]) {
       let next = TOKEN_RE.lastIndex;
-      while (next < source.length && /\s/.test(source[next])) next += 1;
+      while (next < source.length && /\s/.test(source[next] ?? "")) next += 1;
       const following = source[next];
 
       if (CONTROL.has(text)) cls = CLS.control;

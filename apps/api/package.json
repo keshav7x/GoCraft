@@ -1,8 +1,14 @@
+
 {
   "name": "api",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+      ".": {
+        "types": "./appRouter.ts"
+      }
+    },
   "scripts": {
     "dev": "bunx tsx --watch index.ts"
   },
@@ -19,7 +25,7 @@
     "@fastify/cookie": "^11.1.5",
     "@fastify/multipart": "^10.1.6",
     "@imagekit/nodejs": "^7.13.0",
-    "@trpc/server": "^11.19.0",
+    "@trpc/server": "^11.22.1",
     "@types/busboy": "^1.5.5",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",

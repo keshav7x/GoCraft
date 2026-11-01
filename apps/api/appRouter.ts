@@ -1,4 +1,4 @@
-import { authRouter } from './Modules/Auth/auth.routes';
+import { authRouter, toUserResponse } from './Modules/Auth/auth.routes';
 import { blockRouter } from './Modules/Block/block.routes';
 import { lessonRouter } from './Modules/Lessons/lesson.routes';
 import { moduleRouter } from './Modules/Modules/module.routes';
@@ -18,7 +18,8 @@ export const appRouter = router({
     }
   }),
   me: protectedProcedure.query(async ({ ctx }) => {
-    return await authService.getMe(ctx.user.userId);
+    const user = await authService.getMe(ctx.user.userId);
+    return user ? toUserResponse(user) : null;
   }),
   auth: authRouter,
   module: moduleRouter,
