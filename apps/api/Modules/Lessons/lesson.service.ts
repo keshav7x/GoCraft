@@ -172,10 +172,6 @@ export class lessonService {
       if (!isAdmin) throw new AppError("Unauthorized access", 401);
 
       for (const pair of movementPairs) {
-        await this.lessonRepo.update(pair.id, { lessonNo: -pair.id }, tx);
-      }
-
-      for (const pair of movementPairs) {
         await this.lessonRepo.update(pair.id, { lessonNo: pair.targetLessonNo }, tx);
       }
 
