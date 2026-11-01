@@ -21,7 +21,7 @@ export const moduleRouter = router({
     }),
 
   getModuleById: protectedProcedure
-    .input(z.object({moduleId:z.number()}))
+    .input(z.object({moduleId:z.number().int()}))
     .query(async ({ input, ctx }) => {
       const module = await moduleServiceInstance.getModuleById(input.moduleId, ctx.user.userId);
       if (!module) throw new AppError("Module not found", 404);
