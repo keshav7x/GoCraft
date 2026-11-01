@@ -141,6 +141,7 @@ export function ProblemWorkspace({ problem }: { problem: Problem }) {
     pushLog("$ go test -count=1 -run TestExample .", "cmd");
     for (let i = 0; i < problem.testCases.length; i += 1) {
       const tc = problem.testCases[i];
+      if (!tc) continue;
       pushLog(
         `  case "${tc.name}": ${tc.input}  →  expected ${tc.expected}`,
         "info",
@@ -290,7 +291,7 @@ export function ProblemWorkspace({ problem }: { problem: Problem }) {
     if (e.key === "Backspace" && s === selEnd && s > 0) {
       const prev = value[s - 1];
       const next = value[s];
-      if (prev in PAIRS && PAIRS[prev] === next) {
+      if (prev !== undefined && prev in PAIRS && PAIRS[prev] === next) {
         e.preventDefault();
         applyEdit(value.slice(0, s - 1) + value.slice(s + 1), s - 1);
       }

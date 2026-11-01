@@ -1,14 +1,14 @@
 import type { ActorActivity } from "./types";
 
 export const DEMO_USER = {
-  name: "Kesha",
-  fullName: "Kesha Verma",
-  handle: "@kesha",
+  name: "Keshavv",
+  fullName: "Keshavv Chetri",
+  handle: "@keshvv",
   initials: "K",
   headline: "Learning Go · Building daily",
   joinedLabel: "Learning since September 2026",
-  baseXp: 840,
-  streakDays: 7,
+  baseXp: 50,
+  streakDays: 8,
   longestStreak: 12,
   weeklyGoalCompleted: 3,
   weeklyGoalTarget: 5,

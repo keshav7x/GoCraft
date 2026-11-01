@@ -1,4 +1,8 @@
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
+// Ensures @fastify/cookie's FastifyRequest/FastifyReply augmentations
+// (req.cookies, reply.setCookie, ...) are loaded in every compilation
+// that includes this file, not only when index.ts is the entrypoint.
+import type {} from '@fastify/cookie';
 import { AuthUtils } from './Modules/Auth/auth.utils';
 const authUtils=new AuthUtils()
 async function verifySessionToken(token?: string) {

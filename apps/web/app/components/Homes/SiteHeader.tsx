@@ -3,7 +3,9 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { fetchSession } from "@/app/lib/trpc";
 import { BrandMark } from "./BrandMark";
 
 const NAV_ITEMS = [
@@ -17,6 +19,20 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const reduceMotion = useReducedMotion();
+  const router = useRouter();
+  const enterInFlightRef = useRef(false);
+
+  const handleEnter = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (enterInFlightRef.current) return;
+    enterInFlightRef.current = true;
+    try {
+      const user = await fetchSession();
+      router.push(user ? "/dashboard" : "/register");
+    } finally {
+      enterInFlightRef.current = false;
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -76,10 +92,11 @@ export function SiteHeader() {
         {/* Actions */}
         <div className="flex items-center gap-3">
           <a
-            href="#preview"
+            href="/register"
+            onClick={handleEnter}
             className="hidden h-10 items-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-medium text-white transition-colors hover:bg-slate-800 sm:inline-flex"
           >
-            Try the preview
+            Enter GoCraft
             <ArrowRight size={15} aria-hidden="true" />
           </a>
 
@@ -131,11 +148,14 @@ export function SiteHeader() {
               ))}
 
               <a
-                href="#preview"
+                href="/register"
+                onClick={(event) => {
+                  setMenuOpen(false);
+                  handleEnter(event);
+                }}
                 className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-medium text-white transition-colors hover:bg-slate-800 sm:hidden"
-                onClick={() => setMenuOpen(false)}
               >
-                Try the preview
+                Enter GoCraft
                 <ArrowRight size={15} aria-hidden="true" />
               </a>
             </nav>

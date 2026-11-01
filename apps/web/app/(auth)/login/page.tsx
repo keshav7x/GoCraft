@@ -2,17 +2,45 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
+import { getTrpcErrorInfo } from "@/app/lib/trpc";
+import { AuthSuccessOverlay } from "@/app/components/Auth/AuthSuccessOverlay";
+import { homePathForRole, type SimulatedRole } from "@/app/lib/admin/role";
 import {
   ArrowRight,
   Code2,
   Eye,
   EyeOff,
   Check,
+  Loader2,
 } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [role, setRole] = useState<SimulatedRole>("user");
+  const router = useRouter();
+  const trpc = useTRPC();
+
+  const login = useMutation(
+    trpc.auth.login.mutationOptions({
+      onSuccess: (data) => {
+        setError(null);
+        const userType = (data as { user?: { userType?: string } } | undefined)?.user?.userType;
+        setRole(userType === "admin" ? "admin" : "user");
+        setShowSuccess(true);
+      },
+      onError: (err) => {
+        setError(getTrpcErrorInfo(err).message);
+      },
+    }),
+  );
 
   return (
     <main className="min-h-screen bg-white text-slate-950">
@@ -65,11 +93,21 @@ export default function LoginPage() {
               <div className="h-px flex-1 bg-slate-200" />
             </div>
 
+            {error && (
+              <p
+                role="alert"
+                className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+              >
+                {error}
+              </p>
+            )}
+
             <form
               className="space-y-5"
               onSubmit={(event) => {
                 event.preventDefault();
-                // Connect your login API here.
+                setError(null);
+                login.mutate({ email, password });
               }}
             >
               <div>
@@ -87,6 +125,8 @@ export default function LoginPage() {
                   autoComplete="email"
                   placeholder="you@example.com"
                   required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
                 />
               </div>
@@ -116,6 +156,8 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     placeholder="Enter your password"
                     required
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
                     className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 pr-12 text-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
                   />
 
@@ -138,13 +180,23 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 text-sm font-medium text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+                disabled={login.isPending}
+                className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 text-sm font-medium text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60"
               >
-                Sign in
-                <ArrowRight
-                  size={16}
-                  className="transition-transform group-hover:translate-x-0.5"
-                />
+                {login.isPending ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Signing in…
+                  </>
+                ) : (
+                  <>
+                    Sign in
+                    <ArrowRight
+                      size={16}
+                      className="transition-transform group-hover:translate-x-0.5"
+                    />
+                  </>
+                )}
               </button>
             </form>
 
@@ -227,6 +279,15 @@ export default function LoginPage() {
           />
         </section>
       </div>
+
+      {showSuccess && (
+        <AuthSuccessOverlay
+          onDone={() => {
+            router.push(homePathForRole(role));
+            router.refresh();
+          }}
+        />
+      )}
     </main>
   );
 }
