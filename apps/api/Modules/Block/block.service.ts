@@ -3,7 +3,7 @@ import { authRepositoryClass } from "../Auth/auth.repositary";
 import { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
 import { AppError } from "../../Infra/Error/errors";
 import { db } from "../../Infra/Database";
-import type { DBLessonBlockInsert, DBLessonBlock } from "./block.types";
+import type { DBLessonBlockInsert, DBLessonBlock, BlockContentInput } from "./block.types";
 
 export class BlockService {
   private Db = db;
@@ -181,10 +181,6 @@ export class BlockService {
       }
       if (orderedBlockIds.length !== lessonBlocks.length) {
         throw new AppError("orderedBlockIds must contain every block of the lesson exactly once", 400);
-      }
-
-      for (let i = 0; i < orderedBlockIds.length; i++) {
-        await this.blockRepo.update(orderedBlockIds[i]!, { orderNo: -(i + 1) }, tx);
       }
 
       for (let i = 0; i < orderedBlockIds.length; i++) {
