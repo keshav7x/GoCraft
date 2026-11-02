@@ -2,6 +2,7 @@ import { authRouter } from './Modules/Auth/auth.routes';
 import { blockRouter } from './Modules/Block/block.routes';
 import { lessonRouter } from './Modules/Lessons/lesson.routes';
 import { moduleRouter } from './Modules/Modules/module.routes';
+import { progressRouter } from './Modules/Progress/progress.routes';
 
 
 import {publicProcedure,protectedProcedure,router} from './trpc'
@@ -23,8 +24,9 @@ export const appRouter = router({
   auth: authRouter,
   module: moduleRouter,
   block: blockRouter,
-  lesson:lessonRouter
-  
+  lesson:lessonRouter,
+  progress: progressRouter
+
 });
 
 export type AppRouter = typeof appRouter;

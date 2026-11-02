@@ -1,0 +1,994 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "1fc27633-63ca-4771-86a5-2a0d1fb582f2",
+  "prevIds": [
+    "f169d245-5f60-47c2-bb21-53fc062fe257"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "content_status"
+      ],
+      "writes": [
+        "s|enum|public.content_status",
+        "n|enum|public.content_status",
+        "e|enum|public.content_status",
+        "n|type|public.content_status"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "alter_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "xp_event_type"
+      ],
+      "writes": [
+        "s|enum|public.xp_event_type"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lesson_blocks",
+        "content"
+      ],
+      "writes": [
+        "s|col|public.lesson_blocks.content",
+        "n|col|public.lesson_blocks.content",
+        "e|col|public.lesson_blocks.content"
+      ],
+      "reads": [
+        "n|tbl|public.lesson_blocks",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lesson_blocks",
+        "createdAt"
+      ],
+      "writes": [
+        "s|col|public.lesson_blocks.createdAt",
+        "n|col|public.lesson_blocks.createdAt",
+        "e|col|public.lesson_blocks.createdAt"
+      ],
+      "reads": [
+        "n|tbl|public.lesson_blocks",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lesson_blocks",
+        "updatedAt"
+      ],
+      "writes": [
+        "s|col|public.lesson_blocks.updatedAt",
+        "n|col|public.lesson_blocks.updatedAt",
+        "e|col|public.lesson_blocks.updatedAt"
+      ],
+      "reads": [
+        "n|tbl|public.lesson_blocks",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lessons",
+        "slug"
+      ],
+      "writes": [
+        "s|col|public.lessons.slug",
+        "n|col|public.lessons.slug",
+        "e|col|public.lessons.slug"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lessons",
+        "description"
+      ],
+      "writes": [
+        "s|col|public.lessons.description",
+        "n|col|public.lessons.description",
+        "e|col|public.lessons.description"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lessons",
+        "learningObjectives"
+      ],
+      "writes": [
+        "s|col|public.lessons.learningObjectives",
+        "n|col|public.lessons.learningObjectives",
+        "e|col|public.lessons.learningObjectives"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lessons",
+        "status"
+      ],
+      "writes": [
+        "s|col|public.lessons.status",
+        "n|col|public.lessons.status",
+        "e|col|public.lessons.status"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public",
+        "n|enum|public.content_status"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lessons",
+        "createdAt"
+      ],
+      "writes": [
+        "s|col|public.lessons.createdAt",
+        "n|col|public.lessons.createdAt",
+        "e|col|public.lessons.createdAt"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lessons",
+        "updatedAt"
+      ],
+      "writes": [
+        "s|col|public.lessons.updatedAt",
+        "n|col|public.lessons.updatedAt",
+        "e|col|public.lessons.updatedAt"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "slug"
+      ],
+      "writes": [
+        "s|col|public.modules.slug",
+        "n|col|public.modules.slug",
+        "e|col|public.modules.slug"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "shortDescription"
+      ],
+      "writes": [
+        "s|col|public.modules.shortDescription",
+        "n|col|public.modules.shortDescription",
+        "e|col|public.modules.shortDescription"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "coverImage"
+      ],
+      "writes": [
+        "s|col|public.modules.coverImage",
+        "n|col|public.modules.coverImage",
+        "e|col|public.modules.coverImage"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "difficulty"
+      ],
+      "writes": [
+        "s|col|public.modules.difficulty",
+        "n|col|public.modules.difficulty",
+        "e|col|public.modules.difficulty"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "status"
+      ],
+      "writes": [
+        "s|col|public.modules.status",
+        "n|col|public.modules.status",
+        "e|col|public.modules.status"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public",
+        "n|enum|public.content_status"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "estimatedDuration"
+      ],
+      "writes": [
+        "s|col|public.modules.estimatedDuration",
+        "n|col|public.modules.estimatedDuration",
+        "e|col|public.modules.estimatedDuration"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "createdAt"
+      ],
+      "writes": [
+        "s|col|public.modules.createdAt",
+        "n|col|public.modules.createdAt",
+        "e|col|public.modules.createdAt"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "modules",
+        "updatedAt"
+      ],
+      "writes": [
+        "s|col|public.modules.updatedAt",
+        "n|col|public.modules.updatedAt",
+        "e|col|public.modules.updatedAt"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "user_lesson_progress",
+        "startedAt"
+      ],
+      "writes": [
+        "s|col|public.user_lesson_progress.startedAt",
+        "n|col|public.user_lesson_progress.startedAt",
+        "e|col|public.user_lesson_progress.startedAt"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "user_lesson_progress",
+        "lastAccessedAt"
+      ],
+      "writes": [
+        "s|col|public.user_lesson_progress.lastAccessedAt",
+        "n|col|public.user_lesson_progress.lastAccessedAt",
+        "e|col|public.user_lesson_progress.lastAccessedAt"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "user_lesson_progress",
+        "lastBlockId"
+      ],
+      "writes": [
+        "s|col|public.user_lesson_progress.lastBlockId",
+        "n|col|public.user_lesson_progress.lastBlockId",
+        "e|col|public.user_lesson_progress.lastBlockId"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "user_lesson_progress",
+        "completedBlockIds"
+      ],
+      "writes": [
+        "s|col|public.user_lesson_progress.completedBlockIds",
+        "n|col|public.user_lesson_progress.completedBlockIds",
+        "e|col|public.user_lesson_progress.completedBlockIds"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "user_lesson_progress",
+        "xpAwarded"
+      ],
+      "writes": [
+        "s|col|public.user_lesson_progress.xpAwarded",
+        "n|col|public.user_lesson_progress.xpAwarded",
+        "e|col|public.user_lesson_progress.xpAwarded"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "lesson_blocks",
+        "type"
+      ],
+      "writes": [
+        "s|colprop|public.lesson_blocks.type.type",
+        "s|colprop|public.lesson_blocks.type.default"
+      ],
+      "reads": [
+        "n|tbl|public.lesson_blocks",
+        "n|sch|public",
+        "n|col|public.lesson_blocks.type"
+      ],
+      "sqlHash": "20a5e7d49baaa66a"
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "lessons",
+        "lessons_module_slug_unique"
+      ],
+      "writes": [
+        "s|idx|public.lessons_module_slug_unique",
+        "n|idx|public.lessons_module_slug_unique",
+        "e|idx|public.lessons_module_slug_unique",
+        "n|rel|public.lessons_module_slug_unique"
+      ],
+      "reads": [
+        "n|tbl|public.lessons",
+        "n|sch|public",
+        "n|col|public.lessons.moduleId",
+        "n|col|public.lessons.slug"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "modules",
+        "modules_slug_unique"
+      ],
+      "writes": [
+        "s|idx|public.modules_slug_unique",
+        "n|idx|public.modules_slug_unique",
+        "e|idx|public.modules_slug_unique",
+        "n|rel|public.modules_slug_unique"
+      ],
+      "reads": [
+        "n|tbl|public.modules",
+        "n|sch|public",
+        "n|col|public.modules.slug"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "user_lesson_progress",
+        "user_lesson_progress_user_lesson_unique"
+      ],
+      "writes": [
+        "s|idx|public.user_lesson_progress_user_lesson_unique",
+        "n|idx|public.user_lesson_progress_user_lesson_unique",
+        "e|idx|public.user_lesson_progress_user_lesson_unique",
+        "n|rel|public.user_lesson_progress_user_lesson_unique"
+      ],
+      "reads": [
+        "n|tbl|public.user_lesson_progress",
+        "n|sch|public",
+        "n|col|public.user_lesson_progress.userId",
+        "n|col|public.user_lesson_progress.lessonId"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "content_status",
+        "values": [
+          "draft",
+          "published",
+          "archived"
+        ],
+        "entityType": "enums"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lesson_blocks",
+        "name": "content",
+        "type": "jsonb",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'{}'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lesson_blocks",
+        "name": "createdAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lesson_blocks",
+        "name": "updatedAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "slug",
+        "type": "varchar(140)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "description",
+        "type": "varchar(1000)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "learningObjectives",
+        "type": "jsonb",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'[]'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "status",
+        "type": "content_status",
+        "typeSchema": "public",
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'draft'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "createdAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "updatedAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "slug",
+        "type": "varchar(120)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "shortDescription",
+        "type": "varchar(300)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "coverImage",
+        "type": "varchar(500)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "difficulty",
+        "type": "varchar(20)",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'beginner'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "status",
+        "type": "content_status",
+        "typeSchema": "public",
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'draft'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "estimatedDuration",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "createdAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "updatedAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "startedAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "lastAccessedAt",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "lastBlockId",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "completedBlockIds",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 1,
+        "default": "'{}'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "xpAwarded",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "lessons",
+        "name": "lessons_module_slug_unique",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "moduleId",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "slug",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": true,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "modules",
+        "name": "modules_slug_unique",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "slug",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": true,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_lesson_progress",
+        "name": "user_lesson_progress_user_lesson_unique",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "userId",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "lessonId",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": true,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "alter",
+      "key": "enums\u0000[\"public\",\"xp_event_type\"]",
+      "set": {
+        "values": [
+          "lesson_completion",
+          "problem_solved",
+          "quiz_completed",
+          "challenge_solved"
+        ]
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"lesson_blocks\",\"type\"]",
+      "set": {
+        "type": "varchar(50)",
+        "typeSchema": null
+      }
+    }
+  ]
+}

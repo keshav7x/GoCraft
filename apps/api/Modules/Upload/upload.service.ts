@@ -1,7 +1,7 @@
 import { cloudinarySetup as cloudinary } from "../../Infra/clodinary/cloudinary";
 import { Readable } from "node:stream";
 
-interface UploadResult {
+export interface UploadResult {
   publicId: string;
   url: string;
   secureUrl: string;

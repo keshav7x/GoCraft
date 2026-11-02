@@ -234,4 +234,52 @@ export class ProgressRepository {
       });
     }
   }
+
+  /**
+   * Award XP exactly once per (userId, type, sourceId) via the xp_events
+   * unique index. Returns the amount actually awarded (0 if already granted).
+   */
+  async awardXpOnce(
+    userId: number,
+    type: "quiz_completed" | "challenge_solved" | "lesson_completion" | "problem_solved",
+    amount: number,
+    sourceId: string,
+    tx?: any
+  ): Promise<{ xpAwarded: number }> {
+    const runWorkflow = async (transactionContext: any) => {
+      const logged = await this.logXpEvent(
+        { userId, amount, type, sourceId },
+        transactionContext
+      );
+      if (logged) {
+        await this.updateUserXp(userId, amount, transactionContext);
+        return { xpAwarded: amount };
+      }
+      return { xpAwarded: 0 };
+    };
+
+    if (tx) return runWorkflow(tx);
+    return this.moduleDb.transaction(runWorkflow);
+  }
+
+  /** Track XP earned inside a lesson's progress row (display only). */
+  async incrementXpAwarded(
+    userId: number,
+    lessonId: number,
+    amount: number,
+    tx?: any
+  ): Promise<void> {
+    const client = this.getClient(tx);
+    await client
+      .update(userLessonProgressTable)
+      .set({
+        xpAwarded: sql`${userLessonProgressTable.xpAwarded} + ${amount}`,
+      })
+      .where(
+        and(
+          eq(userLessonProgressTable.userId, userId),
+          eq(userLessonProgressTable.lessonId, lessonId)
+        )
+      );
+  }
 }

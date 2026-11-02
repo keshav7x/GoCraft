@@ -1,26 +1,37 @@
 import { ArrowLeft, Clock, Zap } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { ModuleLessonList } from "../../../components/learn/ModuleLessonList";
-import { ModuleProgress } from "../../../components/learn/ModuleProgress";
+import { notFound, redirect } from "next/navigation";
+import { caller } from "@/trpc/server";
+import { LessonRows } from "../../../components/learning/curriculum/LessonRows";
 import { Badge } from "../../../components/ui/badge";
-import { CURRICULUM, findModule } from "../../../lib/demo/curriculum";
+
+export const metadata = {
+  title: "Module — GoCraft",
+};
 
 export default async function ModulePage({
   params,
 }: {
   params: Promise<{ moduleId: string }>;
 }) {
-  const { moduleId } = await params;
-  const module = findModule(moduleId);
-  if (!module || !("lessons" in module)) notFound();
+  const { moduleId: raw } = await params;
+  const moduleId = Number(raw);
+  if (!Number.isInteger(moduleId) || moduleId <= 0) notFound();
 
-  const published = CURRICULUM.find((m) => m.id === moduleId);
-  if (!published) notFound();
+  let detail;
+  let lessons;
+  let progress;
+  try {
+    [detail, lessons, progress] = await Promise.all([
+      caller.module.getModuleById({ moduleId }),
+      caller.lesson.getLessonsByModuleId({ moduleId }),
+      caller.progress.getModuleProgress({ moduleId }),
+    ]);
+  } catch {
+    redirect("/login");
+  }
 
-  const prereqTitles = published.prerequisites.map(
-    (id) => findModule(id)?.title ?? id,
-  );
+  const { module, lessonCount } = detail;
 
   return (
     <div className="space-y-6">
@@ -37,34 +48,47 @@ export default async function ModulePage({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="text-2xl font-semibold tracking-tight sm:text-[28px]">
-                {published.title}
+                {module.title}
               </h1>
               <Badge>
-                {published.lessons.length} lesson
-                {published.lessons.length === 1 ? "" : "s"}
+                {lessonCount} lesson{lessonCount === 1 ? "" : "s"}
               </Badge>
+              <Badge className="border border-edge">{module.difficulty}</Badge>
             </div>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">
-              {published.objective}
+              {module.shortDescription ?? module.description ?? ""}
             </p>
 
-            <div className="mt-3 flex flex-wrap items-center gap-4 text-[12.5px] text-ink-muted">
-              <span className="inline-flex items-center gap-1.5">
-                <Clock size={13} className="text-ink-faint" />
-                {published.lessons.reduce((n, l) => n + l.minutes, 0)} minutes
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Zap size={13} className="text-accent" />
-                {published.lessons.reduce((n, l) => n + l.xp, 0)} XP available
-              </span>
-            </div>
+            {module.estimatedDuration > 0 && (
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-[12.5px] text-ink-muted">
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock size={13} className="text-ink-faint" />
+                  {module.estimatedDuration} minutes
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Zap size={13} className="text-accent" />
+                  {lessons.reduce((n, l) => n + l.xpReward, 0)} XP available
+                </span>
+              </div>
+            )}
           </div>
 
-          <ModuleProgress moduleId={published.id} />
+          <div className="shrink-0 rounded-xl border border-edge bg-panel px-4 py-3 shadow-card">
+            <div className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-faint">
+              Your progress
+            </div>
+            <div className="mt-1 font-mono text-xl font-semibold text-ink tabular-nums">
+              {
+                progress.filter((p) => p.status === "completed").length
+              }
+              /{lessons.length}
+            </div>
+            <div className="text-[12px] text-ink-muted">lessons completed</div>
+          </div>
         </div>
       </div>
 
-      <ModuleLessonList module={published} prereqTitles={prereqTitles} />
+      <LessonRows moduleId={module.id} lessons={lessons} progress={progress} />
     </div>
   );
 }

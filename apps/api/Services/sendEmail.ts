@@ -11,7 +11,7 @@ export const sendEmail = async (input: SendEmailInput) => {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${envConfig.RESEND_API_KEY}`,
+      Authorization: `Bearer ${envConfig.RESEND_API_KEY ?? ""}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

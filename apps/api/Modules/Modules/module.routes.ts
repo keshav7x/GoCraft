@@ -66,7 +66,7 @@ export const moduleRouter = router({
       z.array(
         z.object({
           id: z.number().int(),
-          targetModuleNo: z.number().int()
+          targetModuleNo: z.number().int(),
         })
       )
     )
@@ -74,5 +74,23 @@ export const moduleRouter = router({
       const userId = ctx.user.userId;
       await moduleServiceInstance.reorderModules(userId, input);
       return { success: true };
-    })
+    }),
+
+  getModuleBySlug: protectedProcedure
+    .input(z.object({ slug: z.string().min(1).max(120) }))
+    .query(async ({ input, ctx }) => {
+      return await moduleServiceInstance.getModuleBySlug(input.slug, ctx.user.userId);
+    }),
+
+  publishModule: protectedProcedure
+    .input(z.object({ id: z.number().int() }))
+    .mutation(async ({ input, ctx }) => {
+      return await moduleServiceInstance.publish(ctx.user.userId, input.id);
+    }),
+
+  archiveModule: protectedProcedure
+    .input(z.object({ id: z.number().int() }))
+    .mutation(async ({ input, ctx }) => {
+      return await moduleServiceInstance.archive(ctx.user.userId, input.id);
+    }),
 });

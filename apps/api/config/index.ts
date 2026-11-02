@@ -8,7 +8,7 @@ const config = z.object({
   CLOUDINARY_CLOUD_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
-  RESEND_API_KEY: z.string(),
+  RESEND_API_KEY: z.string().optional(),
   RESEND_FROM: z.string().default("GoCraft <onboarding@resend.dev>"),
   APP_URL: z.string().default("http://localhost:3000"),
 })

@@ -68,7 +68,7 @@ export const lessonRouter = router({
       z.array(
         z.object({
           id: z.number().int(),
-          targetLessonNo: z.number().int()
+          targetLessonNo: z.number().int(),
         })
       )
     )
@@ -76,5 +76,17 @@ export const lessonRouter = router({
       const userId = ctx.user.userId;
       await lessonServiceInstance.reorderLessons(userId, input);
       return { success: true };
-    })
+    }),
+
+  publishLesson: protectedProcedure
+    .input(z.object({ id: z.number().int() }))
+    .mutation(async ({ input, ctx }) => {
+      return await lessonServiceInstance.publish(ctx.user.userId, input.id);
+    }),
+
+  archiveLesson: protectedProcedure
+    .input(z.object({ id: z.number().int() }))
+    .mutation(async ({ input, ctx }) => {
+      return await lessonServiceInstance.archive(ctx.user.userId, input.id);
+    }),
 });
