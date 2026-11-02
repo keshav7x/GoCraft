@@ -1,14 +1,14 @@
 import { AppError } from "../../Infra/Error/errors";
 import { protectedProcedure, router } from "../../trpc";
 import { z } from "zod";
-import { moduleService } from "./module.service";
+import { moduleService } from "../../Infra/container/services";
 import {
   createModuleSchema,
   getModuleByIdSchema,
   updateModuleSchema
 } from "./modules.types";
 
-const moduleServiceInstance = new moduleService();
+const moduleServiceInstance = moduleService
 
 export const moduleRouter = router({
   createModule: protectedProcedure

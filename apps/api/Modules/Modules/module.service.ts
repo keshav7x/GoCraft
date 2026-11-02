@@ -16,11 +16,12 @@ function slugify(title: string): string {
 }
 
 export class moduleService {
+
   constructor(
-    private readonly Db: typeof db,
-    private readonly moduleRepo: ModuleRepository,
-    private readonly authRepo: authRepositoryClass,
-    private readonly outBoxRepo: OutboxRepository
+    private readonly Db:typeof db,
+    private readonly moduleRepo:ModuleRepository,
+    private readonly authRepo :authRepositoryClass,
+    private readonly outBoxRepo :OutboxRepository
   ) {}
 
   private async requireAdmin(userId: number, tx?: any): Promise<void> {

@@ -54,7 +54,8 @@ export class lessonService {
     private readonly blockRepo: blockRepositaryClass,
     private readonly authRepo: authRepositoryClass,
     private readonly outBoxRepo: OutboxRepository
-  ) {}
+  ) { }
+  
 
   create = async (
     userId: number,
@@ -67,7 +68,7 @@ export class lessonService {
     const { blocks, ...lessonData } = input;
     if (blocks) validateBlocks(blocks);
 
-    const lesson = await this.Db.transaction(async (tx:any) => {
+    const lesson = await this.Db.transaction(async (tx: any) => {
       const isAdmin = await this.authRepo.isAdmin(userId, tx);
       if (!isAdmin) throw new AppError("Unauthorized access", 401);
 
@@ -268,5 +269,5 @@ export class lessonService {
         tx
       );
     });
-  };
+  }
 }

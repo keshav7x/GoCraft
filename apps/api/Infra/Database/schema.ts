@@ -4,6 +4,7 @@ export {xpEventTypeEnum} from "./enum"
 export {problemTypeEnum} from "./enum"
 export {blockTypeEnum} from "./enum"
 export { lessonStatusEnum } from "./enum"
+export { contentStatusEnum } from "./enum"
 
 
 export {usersTable} from "./Schemas/user.schema"

@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { useEffect } from "react";
 import { useDemoStore } from "@/app/lib/store/demo";
 import { useUiStore } from "@/app/lib/store/ui";
+import { TRPCReactProvider } from "@/trpc/client";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -13,16 +14,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem>
-      {children}
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          classNames: {
-            toast: "!rounded-xl !border-line !bg-surface !text-ink !shadow-pop !font-sans",
-          },
-        }}
-      />
-    </ThemeProvider>
+    <TRPCReactProvider>
+      <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem>
+        {children}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            classNames: {
+              toast: "!rounded-xl !border-line !bg-surface !text-ink !shadow-pop !font-sans",
+            },
+          }}
+        />
+      </ThemeProvider>
+    </TRPCReactProvider>
   );
 }

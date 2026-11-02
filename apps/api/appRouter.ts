@@ -1,4 +1,4 @@
-import { authRouter } from './Modules/Auth/auth.routes';
+import { authRouter, toUserResponse } from './Modules/Auth/auth.routes';
 import { blockRouter } from './Modules/Block/block.routes';
 import { lessonRouter } from './Modules/Lessons/lesson.routes';
 import { moduleRouter } from './Modules/Modules/module.routes';
@@ -7,8 +7,9 @@ import { progressRouter } from './Modules/Progress/progress.routes';
 
 import {publicProcedure,protectedProcedure,router} from './trpc'
 import { authServiceClass } from './Modules/Auth/auth.service';
+import { authService as AuthService} from './Infra/container/services';
 
-const authService = new authServiceClass();
+const authService = AuthService
 
 export const appRouter = router({
   health: publicProcedure.query(() => {
@@ -19,7 +20,8 @@ export const appRouter = router({
     }
   }),
   me: protectedProcedure.query(async ({ ctx }) => {
-    return await authService.getMe(ctx.user.userId);
+    const user = await authService.getMe(ctx.user.userId);
+    return user ? toUserResponse(user) : null;
   }),
   auth: authRouter,
   module: moduleRouter,
