@@ -55,7 +55,7 @@ export class lessonService {
     private readonly authRepo: authRepositoryClass,
     private readonly outBoxRepo: OutboxRepository
   ) { }
-  
+
 
   create = async (
     userId: number,
