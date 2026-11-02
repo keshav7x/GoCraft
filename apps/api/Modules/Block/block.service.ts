@@ -8,9 +8,9 @@ import type { DBLessonBlockInsert, DBLessonBlock, BlockContentInput } from "./bl
 export class BlockService {
   private Db = db;
   constructor(
-    private readonly blockRepo = new blockRepositaryClass(),
-    private readonly authRepo = new authRepositoryClass(db),
-    private readonly outBoxRepo = new OutboxRepository()
+    private readonly blockRepo :blockRepositaryClass,
+    private readonly authRepo :authRepositoryClass,
+    private readonly outBoxRepo : OutboxRepository
   ) {}
 
   public createBlock = async (

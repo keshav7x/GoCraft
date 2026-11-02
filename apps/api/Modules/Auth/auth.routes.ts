@@ -1,11 +1,11 @@
 import { TRPCError } from "@trpc/server";
-import { authServiceClass } from "./auth.service";
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import { loginInputSchema, registerInputSchema, verifyEmailInputSchema } from "./auth.types";
 import type { DBUser, UserResponse } from "./auth.types";
 import { AppError } from "../../Infra/Error/errors";
+import { authService as AuthService } from "../../Infra/container/services";
 
-const authService = new authServiceClass();
+const authService = AuthService
 
 const TRPC_ERROR_CODE_BY_STATUS: Record<number, TRPCError["code"]> = {
   400: "BAD_REQUEST",

@@ -13,14 +13,15 @@ export type CreateLessonWithBlocksInput = DBLessonInsert & {
 };
 
 export class lessonService {
-  private Db = db;
   constructor(
-    private readonly lessonRepo = new LessonRepository(db),
-    private readonly moduleRepo = new ModuleRepository(db),
-    private readonly blockRepo = new blockRepositaryClass(),
-    private readonly authRepo = new authRepositoryClass(db),
-    private readonly outBoxRepo = new OutboxRepository()
-  ) {}
+     private readonly Db: typeof db,
+     private readonly lessonRepo: LessonRepository,
+     private readonly moduleRepo: ModuleRepository,
+     private readonly blockRepo: blockRepositaryClass,
+     private readonly authRepo: authRepositoryClass,
+     private readonly outBoxRepo: OutboxRepository
+  ) { }
+  
 
   create = async (
     userId: number,

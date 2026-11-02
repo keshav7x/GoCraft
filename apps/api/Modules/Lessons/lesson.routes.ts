@@ -1,7 +1,7 @@
 import { AppError } from "../../Infra/Error/errors";
 import { protectedProcedure, router } from "../../trpc";
 import { z } from "zod";
-import { lessonService } from "./lesson.service";
+import { LessonService } from "../../Infra/container/services";
 import {
   createLessonSchema,
   getLessonByIdSchema,
@@ -9,7 +9,7 @@ import {
   updateLessonSchema
 } from "./lessons.types";
 
-const lessonServiceInstance = new lessonService();
+const lessonServiceInstance = LessonService
 
 export const lessonRouter = router({
   createLesson: protectedProcedure

@@ -9,11 +9,14 @@ import { redis } from "../../Infra/Redis/redis";
 
 
 export class authServiceClass {
-  private authRepo = new authRepositoryClass()
-  private verificationRepo = new VerificationRepositoryClass()
   private authUtils = new AuthUtils()
-  private outbox = new OutboxRepository()
 
+  constructor(
+    private readonly authRepo :authRepositoryClass,
+    private readonly verificationRepo: VerificationRepositoryClass,
+    private readonly outbox:OutboxRepository
+    
+  ){}
   register = async (input: UserCreateInput) => {
     const email = input.email.trim().toLowerCase();
     const password = await this.authUtils.hashPassword(input.password)

@@ -7,11 +7,12 @@ import { OutboxRepository } from "../../Infra/OutBox/outbox.repo";
 import { redis } from "../../Infra/Redis/redis";
 
 export class moduleService {
-  private Db = db;
+
   constructor(
-    private readonly moduleRepo = new ModuleRepository(db),
-    private readonly authRepo = new authRepositoryClass(db),
-    private readonly outBoxRepo = new OutboxRepository()
+    private readonly Db:typeof db,
+    private readonly moduleRepo:ModuleRepository,
+    private readonly authRepo :authRepositoryClass,
+    private readonly outBoxRepo :OutboxRepository
   ) {}
 
   create = async (userId: number, input: DBModuleInsert): Promise<DBModule> => {
@@ -22,7 +23,7 @@ export class moduleService {
 
     const isAdmin = await this.authRepo.isAdmin(userId);
     if (!isAdmin) throw new AppError("Unauthorized access", 401);
-    
+
     const module = await this.Db.transaction(async (tx) => {
 
       const newModule = await this.moduleRepo.create(input, tx);
@@ -53,7 +54,7 @@ export class moduleService {
       if (!currentModuleStats) throw new AppError("Module not found", 404);
 
       const { lessonsCount, ...module } = currentModuleStats;
-      
+
       return {
         module,
         lessonCount: lessonsCount
