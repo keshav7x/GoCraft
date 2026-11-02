@@ -69,4 +69,25 @@ export const blockRouter = router({
       const userId = ctx.user.userId;
       return await blockService.getBlocksByLesson(userId, input.lessonId);
     }),
+
+  saveBlocks: protectedProcedure
+    .input(
+      z.object({
+        lessonId: z.number().int(),
+        blocks: z
+          .array(
+            z.object({
+              id: z.number().int().optional(),
+              type: z.string().min(1).max(50),
+              content: z.record(z.string(), z.unknown()),
+              problemId: z.number().int().nullable().optional(),
+            })
+          )
+          .max(200),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.user.userId;
+      return await blockService.saveBlocks(userId, input.lessonId, input.blocks);
+    }),
 });

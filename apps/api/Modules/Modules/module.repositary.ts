@@ -44,12 +44,23 @@ export class ModuleRepository {
     return result;
   }
 
-  async findAll(tx?: any): Promise<DBModule[]> {
+  async findBySlug(slug: string, tx?: any): Promise<DBModule | undefined> {
     const client = this.getClient(tx);
-    return await client
+    const [result] = await client
       .select()
       .from(modulesTable)
-      .orderBy(modulesTable.moduleNo);
+      .where(eq(modulesTable.slug, slug))
+      .limit(1);
+    return result;
+  }
+
+  async findAll(status?: "draft" | "published" | "archived", tx?: any): Promise<DBModule[]> {
+    const client = this.getClient(tx);
+    const query = client.select().from(modulesTable).orderBy(modulesTable.moduleNo);
+    if (status) {
+      return await query.where(eq(modulesTable.status, status));
+    }
+    return await query;
   }
 
   async update(id: number, data: Partial<DBModuleInsert>, tx?: any): Promise<DBModule | undefined> {
@@ -82,10 +93,7 @@ export class ModuleRepository {
     const client = this.getClient(tx);
     const results = await client
       .select({
-        id: modulesTable.id,
-        title: modulesTable.title,
-        description: modulesTable.description,
-        moduleNo: modulesTable.moduleNo,
+        module: modulesTable,
         lessonsCount: sql<number>`cast(count(${lessonsTable.id}) as integer)`,
       })
       .from(modulesTable)
@@ -93,23 +101,31 @@ export class ModuleRepository {
       .where(eq(modulesTable.id, moduleID))
       .groupBy(modulesTable.id)
       .orderBy(modulesTable.moduleNo);
-    return results;
+    return results.map((r: { module: DBModule; lessonsCount: number }) => ({
+      ...r.module,
+      lessonsCount: r.lessonsCount,
+    }));
   }
 
-  async findWithLessonsCount(tx?: any): Promise<(DBModule & { lessonsCount: number })[]> {
+  async findWithLessonsCount(status?: "draft" | "published" | "archived", tx?: any): Promise<(DBModule & { lessonsCount: number })[]> {
     const client = this.getClient(tx);
-    const results = await client
+    let results = await client
       .select({
-        id: modulesTable.id,
-        title: modulesTable.title,
-        description: modulesTable.description,
-        moduleNo: modulesTable.moduleNo,
+        module: modulesTable,
         lessonsCount: sql<number>`cast(count(${lessonsTable.id}) as integer)`,
       })
       .from(modulesTable)
       .leftJoin(lessonsTable, eq(modulesTable.id, lessonsTable.moduleId))
       .groupBy(modulesTable.id)
       .orderBy(modulesTable.moduleNo);
-    return results;
+    if (status) {
+      results = results.filter(
+        (r: { module: DBModule; lessonsCount: number }) => r.module.status === status
+      );
+    }
+    return results.map((r: { module: DBModule; lessonsCount: number }) => ({
+      ...r.module,
+      lessonsCount: r.lessonsCount,
+    }));
   }
 }

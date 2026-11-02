@@ -1,6 +1,7 @@
 import Busboy from "busboy";
 import type { IncomingMessage } from "node:http";
 import { uploadService } from "../Modules/Upload/upload.service";
+import type { UploadResult } from "../Modules/Upload/upload.service";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -10,7 +11,10 @@ const ALLOWED_TYPES = [
   "image/webp",
 ];
 
-export async function parseAndUpload(req: IncomingMessage, folder = "gocraft/content") {
+export async function parseAndUpload(
+  req: IncomingMessage,
+  folder = "gocraft/content"
+): Promise<UploadResult> {
   const bb = Busboy({
     headers: req.headers,
     limits: {

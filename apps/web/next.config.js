@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // The `api` workspace ships TypeScript source (block schemas shared with
+  // the backend); compile it as part of the app bundle.
+  transpilePackages: ["api"],
   async rewrites() {
     // The API (Fastify + tRPC) has no CORS setup, and the session cookie it
     // sets must stay first-party. Proxy /api/trpc/* to the API server-side so

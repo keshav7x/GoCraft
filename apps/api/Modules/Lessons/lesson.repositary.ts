@@ -32,21 +32,36 @@ export class LessonRepository {
     return result;
   }
 
-  async findByModuleId(moduleId: number, tx?: any): Promise<DBLesson[]> {
+  async findByModuleId(
+    moduleId: number,
+    status?: "draft" | "published" | "archived",
+    tx?: any
+  ): Promise<DBLesson[]> {
     const client = this.getClient(tx);
-    return await client
+    let results = await client
       .select()
       .from(lessonsTable)
       .where(eq(lessonsTable.moduleId, moduleId))
       .orderBy(lessonsTable.lessonNo);
+    if (status) {
+      results = results.filter((l: DBLesson) => l.status === status);
+    }
+    return results;
   }
 
-  async findAll(tx?: any): Promise<DBLesson[]> {
+  async findAll(
+    status?: "draft" | "published" | "archived",
+    tx?: any
+  ): Promise<DBLesson[]> {
     const client = this.getClient(tx);
-    return await client
+    let results = await client
       .select()
       .from(lessonsTable)
       .orderBy(lessonsTable.lessonNo);
+    if (status) {
+      results = results.filter((l: DBLesson) => l.status === status);
+    }
+    return results;
   }
 
   async update(
@@ -91,13 +106,7 @@ export class LessonRepository {
     const client = this.getClient(tx);
     const results = await client
       .select({
-        id: lessonsTable.id,
-        moduleId: lessonsTable.moduleId,
-        title: lessonsTable.title,
-        lessonNo: lessonsTable.lessonNo,
-        estimatedTimeMinutes: lessonsTable.estimatedTimeMinutes,
-        xpReward: lessonsTable.xpReward,
-        contents: lessonsTable.contents,
+        lesson: lessonsTable,
         problemsCount: sql<number>`cast(count(${lessonProblemsTable.id}) as integer)`,
       })
       .from(lessonsTable)
@@ -107,6 +116,13 @@ export class LessonRepository {
       )
       .where(eq(lessonsTable.id, id))
       .groupBy(lessonsTable.id);
-    return results;
+    return results.map((r: { lesson: DBLesson; problemsCount: number }) => ({
+      ...r.lesson,
+      problemsCount: r.problemsCount,
+    }));
+  }
+
+  async findPublishedByModuleId(moduleId: number, tx?: any): Promise<DBLesson[]> {
+    return this.findByModuleId(moduleId, "published", tx);
   }
 }
