@@ -22,6 +22,7 @@ export type OutboxEventType =
   | "LESSON_BLOCK_DELETED"
   | "LESSON_BLOCK_UPDATED"
   |"LESSON_BLOCK_CREATED"
+  | "LESSON_BLOCKS_SAVED"
 
   // Gamification
   | "XP_AWARDED"

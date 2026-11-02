@@ -5,6 +5,7 @@ import {
   moduleRepo,
   OutboxRepo,
   verificationRepo,
+  progressRepo,
 } from "./repositories";
 import { db } from "../Database";
 
@@ -13,6 +14,7 @@ import { lessonService } from "../../Modules/Lessons/lesson.service";
 import { authServiceClass } from "../../Modules/Auth/auth.service";
 import { BlockService } from "../../Modules/Block/block.service";
 import { moduleService as ModuleService } from "../../Modules/Modules/module.service";
+import { progressService as ProgressServiceClass } from "../../Modules/Progress/progress.service";
 
 
 
@@ -42,4 +44,12 @@ export const moduleService = new ModuleService(
   moduleRepo,
   authRepo,
   OutboxRepo
+)
+
+export const progressService = new ProgressServiceClass(
+  progressRepo,
+  blockRepo,
+  lessonRepo,
+  moduleRepo,
+  authRepo
 )
