@@ -6,8 +6,9 @@ import { moduleRouter } from './Modules/Modules/module.routes';
 
 import {publicProcedure,protectedProcedure,router} from './trpc'
 import { authServiceClass } from './Modules/Auth/auth.service';
+import { authService as AuthService} from './Infra/container/services';
 
-const authService = new authServiceClass();
+const authService = AuthService
 
 export const appRouter = router({
   health: publicProcedure.query(() => {
