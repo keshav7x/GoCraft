@@ -7,6 +7,8 @@ import { OutboxRepository } from "../OutBox/outbox.repo";
 import { lessonService } from "../../Modules/Lessons/lesson.service";
 import { VerificationRepositoryClass } from "../../Modules/verification/verification.repo";
 import { db } from "../Database";
+
+
 export const lessonRepo = new LessonRepository(db)
 export const authRepo = new authRepositoryClass(db)
 export const blockRepo = new blockRepositaryClass(db)
