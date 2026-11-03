@@ -1,7 +1,25 @@
-/* Lightweight Go syntax tokenizer for the problem editor.
-   Pure function — no dependencies, no execution. */
+/* Lightweight Go syntax tokenizer.
+   Two flavors from the same scanner:
+   - tokenizeGo(): semantic tokens { kind, value } for the lesson renderer.
+   - highlightGo(): editor tokens { text, cls } (legacy shape kept for
+     ProblemWorkspace). Pure functions — no dependencies, no execution. */
 
-export type GoToken = { text: string; cls: string };
+export type GoTokenKind =
+  | "comment"
+  | "string"
+  | "number"
+  | "keyword"
+  | "type"
+  | "func"
+  | "builtin"
+  | "ident"
+  | "exported"
+  | "punct"
+  | "plain";
+
+export type GoToken = { kind: GoTokenKind; value: string };
+
+export type EditorToken = { text: string; cls: string };
 
 const CONTROL = new Set([
   "break",
@@ -89,13 +107,20 @@ const CLS = {
   literal: "text-blue-600",
   builtin: "text-blue-700",
   ident: "text-ink",
+  exported: "text-ink",
   punct: "text-ink-muted",
 } as const;
 
 const TOKEN_RE =
   /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*"|'[^'\\\n]*'|`[^`]*`)|(\b(?:0[xX][\da-fA-F_]+|\d[\d_]*(?:\.\d+)?(?:[eE][+-]?\d+)?)\b)|([A-Za-z_]\w*)|([^\sA-Za-z0-9_])/g;
 
-export function highlightGo(source: string): GoToken[] {
+function nextNonSpaceIndex(source: string, from: number): number {
+  let i = from;
+  while (i < source.length && /\s/.test(source[i] ?? "")) i += 1;
+  return i;
+}
+
+export function tokenizeGo(source: string): GoToken[] {
   const tokens: GoToken[] = [];
   let last = 0;
   let match: RegExpExecArray | null;
@@ -103,41 +128,89 @@ export function highlightGo(source: string): GoToken[] {
 
   while ((match = TOKEN_RE.exec(source)) !== null) {
     if (match.index > last) {
-      tokens.push({ text: source.slice(last, match.index), cls: "" });
+      tokens.push({ kind: "plain", value: source.slice(last, match.index) });
     }
 
-    const text = match[0];
-    let cls = "";
+    const value = match[0];
+    const end = TOKEN_RE.lastIndex;
+    let kind: GoTokenKind;
 
     if (match[1]) {
-      cls = CLS.comment;
+      kind = "comment";
     } else if (match[2]) {
-      cls = CLS.string;
+      kind = "string";
     } else if (match[3]) {
-      cls = CLS.number;
+      kind = "number";
     } else if (match[4]) {
-      let next = TOKEN_RE.lastIndex;
-      while (next < source.length && /\s/.test(source[next] ?? "")) next += 1;
-      const following = source[next];
+      const following = source[nextNonSpaceIndex(source, end)];
 
-      if (CONTROL.has(text)) cls = CLS.control;
-      else if (KEYWORDS.has(text)) cls = CLS.keyword;
-      else if (LITERALS.has(text)) cls = CLS.literal;
-      else if (TYPES.has(text)) cls = CLS.type;
-      else if (BUILTINS.has(text)) cls = CLS.builtin;
-      else if (following === "(") cls = CLS.func;
-      else cls = CLS.ident;
+      if (CONTROL.has(value) || KEYWORDS.has(value) || LITERALS.has(value)) {
+        kind = "keyword";
+      } else if (TYPES.has(value)) {
+        kind = "type";
+      } else if (BUILTINS.has(value)) {
+        kind = "builtin";
+      } else if (following === "(") {
+        kind = "func";
+      } else if (/^[A-Z]/.test(value)) {
+        kind = "exported";
+      } else {
+        kind = "ident";
+      }
     } else {
-      cls = CLS.punct;
+      kind = "punct";
     }
 
-    tokens.push({ text, cls });
-    last = TOKEN_RE.lastIndex;
+    tokens.push({ kind, value });
+    last = end;
   }
 
   if (last < source.length) {
-    tokens.push({ text: source.slice(last), cls: "" });
+    tokens.push({ kind: "plain", value: source.slice(last) });
   }
 
   return tokens;
+}
+
+/** Editor variant: semantic kinds mapped onto editor color classes. */
+export function highlightGo(source: string): EditorToken[] {
+  return tokenizeGo(source).map(({ kind, value }) => {
+    if (kind === "plain") {
+      // Whitespace/gap tokens stay unpainted, as before.
+      return { text: value, cls: "" };
+    }
+    let cls: string;
+    switch (kind) {
+      case "comment":
+        cls = CLS.comment;
+        break;
+      case "string":
+        cls = CLS.string;
+        break;
+      case "number":
+        cls = CLS.number;
+        break;
+      case "keyword":
+        cls = CLS.keyword;
+        break;
+      case "type":
+        cls = CLS.type;
+        break;
+      case "func":
+        cls = CLS.func;
+        break;
+      case "builtin":
+        cls = CLS.builtin;
+        break;
+      case "punct":
+        cls = CLS.punct;
+        break;
+      case "exported":
+        cls = CLS.exported;
+        break;
+      default:
+        cls = CLS.ident;
+    }
+    return { text: value, cls };
+  });
 }

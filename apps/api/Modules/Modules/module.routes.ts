@@ -85,6 +85,7 @@ export const moduleRouter = router({
   publishModule: protectedProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
+      console.log("hitt 1")
       return await moduleServiceInstance.publish(ctx.user.userId, input.id);
     }),
 

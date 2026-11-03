@@ -18,7 +18,7 @@ const DIFFICULTY_TONE: Record<string, string> = {
 };
 
 /**
- * Module cards for /dashboard/learn — real API data with per-module progress.
+ * Module cards for /modules — real API data with per-module progress.
  */
 export function ModuleCards({
   modules,
@@ -54,7 +54,7 @@ export function ModuleCards({
         return (
           <Link
             key={module.id}
-            href={`/dashboard/learn/${module.id}`}
+            href={`/modules/${module.id}`}
             className="focus-ring group block rounded-xl border border-edge bg-panel p-4 shadow-card transition-colors hover:bg-panel-muted/60"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">

@@ -24,7 +24,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     label: "Learn",
-    href: "/dashboard/learn",
+    href: "/modules",
     icon: BookOpen,
     description: "Interactive Go curriculum",
   },

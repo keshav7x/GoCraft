@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { getTrpcErrorInfo } from "@/app/lib/trpc";
 import { AuthSuccessOverlay } from "@/app/components/Auth/AuthSuccessOverlay";
-import { homePathForRole, type SimulatedRole } from "@/app/lib/admin/role";
+import { homePathForRole, clearSimulatedRole, writeSimulatedRole, type SimulatedRole } from "@/app/lib/admin/role";
 import {
   ArrowRight,
   Code2,
@@ -28,12 +28,22 @@ export default function LoginPage() {
   const router = useRouter();
   const trpc = useTRPC();
 
+
   const login = useMutation(
     trpc.auth.login.mutationOptions({
       onSuccess: (data) => {
         setError(null);
         const userType = (data as { user?: { userType?: string } } | undefined)?.user?.userType;
-        setRole(userType === "admin" ? "admin" : "user");
+        const nextRole: SimulatedRole = userType === "admin" ? "admin" : "user";
+        setRole(nextRole);
+        // Keep the preview flag in lockstep with the real session so a
+        // leftover simulate value from a previous account can't leak in.
+        if (nextRole === "admin") {
+          clearSimulatedRole();
+        } else {
+          writeSimulatedRole("user");
+        }
+        // Single destination: overlay onDone navigates via homePathForRole.
         setShowSuccess(true);
       },
       onError: (err) => {
@@ -72,17 +82,15 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {/* GitHub */}
+            {/* GitHub — OAuth backend not wired yet */}
             <button
               type="button"
-              onClick={() => {
-                window.location.href =
-                  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/github`;
-              }}
-              className="mt-8 inline-flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white text-sm font-medium transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+              disabled
+              title="GitHub sign-in is coming soon"
+              className="mt-8 inline-flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-400 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-70"
             >
               <FaGithub size={19} aria-hidden="true" />
-              Continue with GitHub
+              Continue with GitHub (coming soon)
             </button>
 
             <div className="my-7 flex items-center gap-4">

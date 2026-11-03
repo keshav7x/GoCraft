@@ -5,6 +5,17 @@ import { VizShell, VizEmpty } from "./viz-shared";
 
 type ExecStep = { line: number; note: string; vars?: Record<string, string> };
 
+// Authoring-time step shapes: {id,label,description} (conceptual pipelines)
+// or {line,note,vars} (concrete source walkthroughs). Both accepted.
+type RawStep = {
+  id?: string;
+  label?: string;
+  description?: string;
+  line?: number;
+  note?: string;
+  vars?: Record<string, string>;
+};
+
 const DEFAULT_CODE = `package main
 
 import "fmt"
@@ -15,13 +26,28 @@ func main() {
     fmt.Println(y)
 }`;
 
-const DEFAULT_STEPS: ExecStep[] = [
+const DEFAULT_STEPS: RawStep[] = [
   { line: 5, note: "Enter main().", vars: {} },
   { line: 6, note: "x := 1 — declare x with value 1.", vars: { x: "1" } },
   { line: 7, note: "y := x + 2 — read x (1), add 2, store 3 in y.", vars: { x: "1", y: "3" } },
   { line: 8, note: "fmt.Println(y) — print 3.", vars: { x: "1", y: "3" } },
   { line: 9, note: "main returns. Program exits with code 0.", vars: { x: "1", y: "3" } },
 ];
+
+function normalizeStep(s: RawStep, i: number): ExecStep {
+  const discrete =
+    [
+      s.label,
+      s.description,
+    ]
+      .filter((v) => typeof v === "string" && v.trim().length > 0)
+      .join(": ") || undefined;
+  return {
+    line: typeof s.line === "number" ? s.line : i + 1,
+    note: s.note ?? discrete ?? `Step ${i + 1}`,
+    vars: s.vars,
+  };
+}
 
 /**
  * Step-by-step execution flow: program counter, source highlight,
@@ -38,14 +64,23 @@ export function ExecutionFlowViz({
   takeaway?: string;
   config?: Record<string, unknown>;
 }) {
+  const hasSteps = Array.isArray(config?.steps) && config.steps.length > 0;
+  const rawSteps: RawStep[] = hasSteps
+    ? (config!.steps as RawStep[])
+    : DEFAULT_STEPS;
+  const steps = rawSteps.map(normalizeStep);
+
+  const authoredCode =
+    typeof config?.code === "string" && (config.code as string).trim()
+      ? (config.code as string)
+      : null;
+  // Without authored code, synthesize a readable pseudo-source from the
+  // step notes so line highlighting still lines up 1:1.
   const code =
-    typeof config?.code === "string" && config.code.trim()
-      ? config.code
-      : DEFAULT_CODE;
-  const steps: ExecStep[] =
-    Array.isArray(config?.steps) && config.steps.length > 0
-      ? (config.steps as ExecStep[])
-      : DEFAULT_STEPS;
+    authoredCode ??
+    (hasSteps
+      ? rawSteps.map((s, i) => `${i + 1}. ${normalizeStep(s, i).note}`).join("\n")
+      : DEFAULT_CODE);
 
   const [idx, setIdx] = useState(0);
   const step = steps[Math.min(idx, steps.length - 1)];

@@ -1,12 +1,18 @@
 "use client";
 
-import { ArrowUpRight, Check, Code2, Menu, ShieldCheck, X } from "lucide-react";
+import { ArrowUpRight, Check, Code2, LogOut, Menu, ShieldCheck, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { findAdminNavItem, ADMIN_NAV_ITEMS } from "./admin-nav";
-import { readSimulatedRole, writeSimulatedRole } from "@/app/lib/admin/role";
+import {
+  clearSimulatedRole,
+  fetchRealRole,
+  readSimulatedRole,
+  writeSimulatedRole,
+} from "@/app/lib/admin/role";
+import { logout } from "@/app/lib/auth";
 import { cn } from "@/app/lib/utils";
 
 type AdminShellProps = {
@@ -25,7 +31,19 @@ export default function AdminShell({ children }: AdminShellProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setRole(readSimulatedRole());
+    let cancelled = false;
+    (async () => {
+      const [real, simulated] = await Promise.all([
+        fetchRealRole(),
+        Promise.resolve(readSimulatedRole()),
+      ]);
+      if (cancelled) return;
+      // Prefer the live preview flag; fall back to the real session role.
+      setRole(simulated ?? real ?? "admin");
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -65,15 +83,24 @@ export default function AdminShell({ children }: AdminShellProps) {
   }, [mobileOpen]);
 
   function simulateAs(next: "admin" | "user") {
-    writeSimulatedRole(next);
     setRole(next);
     setProfileOpen(false);
     if (next === "user") {
-      toast.success("Switched to USER role");
+      writeSimulatedRole("user");
+      toast.success("Previewing USER experience");
       router.push("/");
     } else {
-      toast.success("Switched to ADMIN role");
+      clearSimulatedRole();
+      toast.success("Back to ADMIN experience");
     }
+  }
+
+  async function handleLogout() {
+    setProfileOpen(false);
+    await logout();
+    toast.success("Signed out");
+    router.push("/login");
+    router.refresh();
   }
 
   return (
@@ -255,6 +282,15 @@ export default function AdminShell({ children }: AdminShellProps) {
                   <Code2 size={14} />
                   Learner dashboard
                 </Link>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={handleLogout}
+                  className="focus-ring flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] text-ink-2 transition hover:bg-panel-muted hover:text-ink"
+                >
+                  <LogOut size={14} />
+                  Log out
+                </button>
               </div>
             ) : null}
           </div>

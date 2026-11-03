@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { lessonsTable } from "../../Infra/Database/schema";
 import { modulesTable } from "../../Infra/Database/schema";
@@ -98,7 +98,10 @@ export class ModuleRepository {
       })
       .from(modulesTable)
       .leftJoin(lessonsTable, eq(lessonsTable.moduleId, modulesTable.id))
-      .where(eq(modulesTable.id, moduleID))
+      .where(and(
+        eq(modulesTable.id, moduleID),
+        eq(modulesTable.status,"published")
+      ))
       .groupBy(modulesTable.id)
       .orderBy(modulesTable.moduleNo);
     return results.map((r: { module: DBModule; lessonsCount: number }) => ({
