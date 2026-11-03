@@ -6,10 +6,11 @@ export type SimulatedRole = "admin" | "user";
 
 const SIM_ROLE_KEY = "gocraft-sim-role";
 
-export function readSimulatedRole(): SimulatedRole {
-  if (typeof window === "undefined") return "admin";
+/** Explicit UI-preview flag; null when never set this browser. */
+export function readSimulatedRole(): SimulatedRole | null {
+  if (typeof window === "undefined") return null;
   const value = window.localStorage.getItem(SIM_ROLE_KEY);
-  return value === "user" ? "user" : "admin";
+  return value === "user" || value === "admin" ? value : null;
 }
 
 export function writeSimulatedRole(role: SimulatedRole) {
@@ -17,12 +18,13 @@ export function writeSimulatedRole(role: SimulatedRole) {
   window.localStorage.setItem(SIM_ROLE_KEY, role);
 }
 
-/**
- * Resolves the effective role for entry routing.
- * Prefers the real session role (available after login); falls back to the
- * locally simulated role so the frontend-only CMS remains reachable.
- */
-export async function resolveRole(): Promise<SimulatedRole> {
+export function clearSimulatedRole() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(SIM_ROLE_KEY);
+}
+
+/** Real session role from the API; null when signed out or API unreachable. */
+export async function fetchRealRole(): Promise<SimulatedRole | null> {
   try {
     const session = await fetchSession();
     if (session && "userType" in session) {
@@ -30,9 +32,22 @@ export async function resolveRole(): Promise<SimulatedRole> {
       if (userType === "admin" || userType === "user") return userType;
     }
   } catch {
-    // No backend session — use the simulated role instead.
+    // Signed out or API down — treat as no session.
   }
-  return readSimulatedRole();
+  return null;
+}
+
+/**
+ * UI routing role: explicit preview flag wins, then real session, then "user".
+ * Server procedures always enforce the real session role independently of this.
+ * Prefer fetchRealRole() for access-control checks (admin studio gate, etc.).
+ */
+export async function resolveRole(): Promise<SimulatedRole> {
+  const simulated = readSimulatedRole();
+  if (simulated) return simulated;
+  const real = await fetchRealRole();
+  if (real) return real;
+  return "user";
 }
 
 export function homePathForRole(role: SimulatedRole): string {

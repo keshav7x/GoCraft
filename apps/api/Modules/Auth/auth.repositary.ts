@@ -19,6 +19,7 @@ export class authRepositoryClass {
     const user = await DbClient.select({
       userType:usersTable.userType
     }).from(usersTable).where(eq(usersTable.id, userId)).limit(1)
+    console.log(user)
     const admin = user[0].userType ==="admin"
     return admin
   }

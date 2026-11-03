@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminShell from "@/app/components/admin/AdminShell";
-import { resolveRole } from "@/app/lib/admin/role";
+import { clearSimulatedRole, fetchRealRole } from "@/app/lib/admin/role";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -11,13 +11,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     let cancelled = false;
-    resolveRole().then((role) => {
+    fetchRealRole().then((realRole) => {
       if (cancelled) return;
-      if (role !== "admin") {
+      // Admin UI is gated by the real session role only — the simulate
+      // flag is a preview and never grants (or revokes) studio access.
+      if (realRole !== "admin") {
         router.replace("/");
-      } else {
-        setAllowed(true);
+        return;
       }
+      // A real admin re-entering the studio exits any user preview.
+      clearSimulatedRole();
+      setAllowed(true);
     });
     return () => {
       cancelled = true;

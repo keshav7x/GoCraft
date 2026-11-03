@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import type { LessonBlockPayload } from "api/schemas";
-import { highlightGo, type GoToken } from "@/app/lib/go-highlight";
+import { tokenizeGo, type GoToken } from "@/app/lib/go-highlight";
 import { Check, Copy, Play, RotateCcw, Terminal } from "lucide-react";
 import { VisualizationRenderer } from "../visualizations/VisualizationRenderer";
+import { TimelineViz } from "../visualizations/Timeline";
+import { FlowchartViz } from "../visualizations/NodeGraph";
 
 /* ------------------------------------------------------------------ */
 /* Rich text                                                           */
@@ -16,6 +18,16 @@ type Inline = {
   italic?: boolean;
   code?: boolean;
   href?: string;
+};
+
+type RichNode = {
+  kind: string;
+  level?: number;
+  ordered?: boolean;
+  tone?: string;
+  title?: string;
+  children?: Inline[];
+  items?: Inline[][];
 };
 
 function renderInlines(nodes: Inline[], keyPrefix = "i") {
@@ -47,13 +59,7 @@ function renderInlines(nodes: Inline[], keyPrefix = "i") {
 }
 
 function RichTextView({ content }: { content: { nodes: unknown[] } }) {
-  const nodes = content.nodes as Array<{
-    kind: string;
-    level?: number;
-    ordered?: boolean;
-    children?: Inline[];
-    items?: Inline[][];
-  }>;
+  const nodes = content.nodes as RichNode[];
 
   return (
     <div className="space-y-4">
@@ -87,6 +93,40 @@ function RichTextView({ content }: { content: { nodes: unknown[] } }) {
             </Tag>
           );
         }
+        // Flattened list authoring: one child = one bullet / number.
+        if (node.kind === "bullet_list" || node.kind === "numbered_list") {
+          const Tag = node.kind === "numbered_list" ? "ol" : "ul";
+          return (
+            <Tag
+              key={i}
+              className={`list-inside space-y-1.5 text-[14.5px] leading-6 text-ink-2 ${
+                node.kind === "numbered_list" ? "list-decimal" : "list-disc"
+              }`}
+            >
+              {(node.children ?? []).map((child, j) => (
+                <li key={j}>{renderInlines([child], `li-${i}-${j}`)}</li>
+              ))}
+            </Tag>
+          );
+        }
+        // Inline callout authored inside rich text.
+        if (node.kind === "callout") {
+          const tone = CALLOUT_TONES[node.tone ?? "info"] ?? CALLOUT_TONES.info!;
+          return (
+            <div
+              key={i}
+              className={`rounded-xl border-l-4 px-4 py-3.5 ${tone.border} ${tone.bg}`}
+              role="note"
+            >
+              <div className={`text-[11.5px] font-semibold uppercase tracking-wide ${tone.color}`}>
+                {node.title ?? tone.label}
+              </div>
+              <p className="mt-1 text-[14px] leading-6 text-ink-2">
+                {renderInlines(node.children ?? [], `c${i}`)}
+              </p>
+            </div>
+          );
+        }
         return (
           <p key={i} className="text-[14.5px] leading-7 text-ink-2">
             {renderInlines(node.children ?? [], `p${i}`)}
@@ -107,14 +147,16 @@ const TOKEN_CLASS: Record<GoToken["kind"], string> = {
   number: "text-warning",
   keyword: "text-accent font-medium",
   type: "text-accent",
+  func: "text-ink font-medium",
   builtin: "text-[#7c3aed]",
   ident: "text-ink",
   punct: "text-ink-3",
   exported: "text-[#0284c7]",
+  plain: "",
 };
 
 function GoCode({ source, highlightLines }: { source: string; highlightLines: number[] }) {
-  const tokens = highlightGo(source);
+  const tokens = tokenizeGo(source);
   // Tokenize per line for line-number rendering
   const lines = source.split("\n");
   const highlighted = new Set(highlightLines);
@@ -214,6 +256,45 @@ function CodeView({
       {content.explanation && (
         <figcaption className="border-t border-edge px-4 py-2.5 text-[13px] leading-5 text-ink-muted">
           {content.explanation}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Media (video / audio)                                               */
+/* ------------------------------------------------------------------ */
+
+function MediaView({
+  content,
+}: {
+  content: { src: string; mediaType?: string; poster?: string; caption?: string; subtitles?: string };
+}) {
+  return (
+    <figure className="overflow-hidden rounded-xl border border-edge bg-panel shadow-card">
+      {content.mediaType === "audio" ? (
+        <div className="flex items-center bg-inset px-4 py-3">
+          <audio src={content.src} controls className="w-full" preload="metadata">
+            <track kind="captions" />
+          </audio>
+        </div>
+      ) : (
+        <video
+          src={content.src}
+          poster={content.poster}
+          controls
+          preload="metadata"
+          className="block w-full bg-black"
+        >
+          {content.subtitles && (
+            <track kind="captions" src={content.subtitles} srcLang="en" label="English" />
+          )}
+        </video>
+      )}
+      {content.caption && (
+        <figcaption className="border-t border-edge px-4 py-2.5 text-[13px] leading-5 text-ink-muted">
+          {content.caption}
         </figcaption>
       )}
     </figure>
@@ -889,6 +970,264 @@ function ChallengeView({
 }
 
 /* ------------------------------------------------------------------ */
+/* Divider                                                             */
+/* ------------------------------------------------------------------ */
+
+function DividerView({
+  content,
+}: {
+  content: { style?: string; caption?: string };
+}) {
+  const style = content.style ?? "line";
+  if (style === "space") return <div className="h-6" aria-hidden />;
+  const cls =
+    style === "dashed"
+      ? "border-t border-dashed border-edge"
+      : style === "dotted"
+        ? "border-t border-dotted border-edge"
+        : "border-t border-edge";
+  return (
+    <figure className="flex items-center gap-3 py-2">
+      <div className={`flex-1 ${cls}`} aria-hidden />
+      {content.caption && (
+        <figcaption className="shrink-0 font-mono text-[11px] uppercase tracking-wide text-ink-faint">
+          {content.caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Table                                                               */
+/* ------------------------------------------------------------------ */
+
+function TableView({
+  content,
+}: {
+  content: { caption?: string; headers: string[]; rows: string[][] };
+}) {
+  return (
+    <figure className="overflow-hidden rounded-xl border border-edge bg-panel shadow-card">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="border-b border-edge bg-inset">
+              {content.headers.map((h, i) => (
+                <th
+                  key={i}
+                  className="px-4 py-2.5 text-[11.5px] font-semibold uppercase tracking-wide text-ink-muted"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {content.rows.map((row, ri) => (
+              <tr
+                key={ri}
+                className="border-b border-edge last:border-b-0 hover:bg-panel-muted/40"
+              >
+                {content.headers.map((_, ci) => (
+                  <td
+                    key={ci}
+                    className="px-4 py-2.5 align-top text-[13.5px] leading-5 text-ink-2"
+                  >
+                    {row[ci] ?? ""}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {content.caption && (
+        <figcaption className="border-t border-edge px-4 py-2.5 text-[12.5px] leading-4 text-ink-muted">
+          {content.caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Knowledge check (self-graded in browser — no XP, no server call)    */
+/* ------------------------------------------------------------------ */
+
+type AuthoredQuestion = LearnerQuestion & {
+  correctChoiceId?: string;
+  correctAnswer?: string | boolean;
+  explanation?: string;
+};
+
+function KnowledgeCheckView({
+  content,
+}: {
+  content: {
+    title?: string;
+    questions: LearnerQuestion[];
+  };
+}) {
+  return (
+    <div className="space-y-2">
+      <span className="inline-flex items-center gap-1.5 rounded-lg border border-edge bg-inset px-2.5 py-1 text-[11.5px] font-medium text-ink-muted">
+        Self-check — graded in your browser, no XP at stake
+      </span>
+      <QuizView
+        content={{ title: content.title, questions: content.questions }}
+        onSubmit={(questionId, answer) => {
+          const q = content.questions.find((x) => x.id === questionId)! as AuthoredQuestion;
+          const base = { correct: false, explanation: q.explanation };
+          if (q.kind === "multiple_choice") {
+            return Promise.resolve({ ...base, correct: q.correctChoiceId === answer });
+          }
+          if (q.kind === "true_false") {
+            return Promise.resolve({ ...base, correct: q.correctAnswer === answer });
+          }
+          const expected = String(q.correctAnswer ?? "").trim().toLowerCase();
+          return Promise.resolve({
+            ...base,
+            correct: expected === String(answer).trim().toLowerCase(),
+          });
+        }}
+      />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Exercise (ungraded practice — progressive hints + reveal solution)  */
+/* ------------------------------------------------------------------ */
+
+function ExerciseView({
+  content,
+}: {
+  content: {
+    title?: string;
+    prompt: string;
+    language?: string;
+    starterCode?: string;
+    hints?: string[];
+    solution?: string;
+  };
+}) {
+  const [code, setCode] = useState(content.starterCode ?? "");
+  const [hintsShown, setHintsShown] = useState(0);
+  const [showSolution, setShowSolution] = useState(false);
+  const hints = content.hints ?? [];
+
+  return (
+    <div className="space-y-3">
+      <h3 className="text-[15px] font-semibold tracking-tight text-ink">
+        {content.title ?? "Exercise"}
+      </h3>
+      <p className="text-[14px] leading-6 text-ink-2">{content.prompt}</p>
+
+      <textarea
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+        spellCheck={false}
+        aria-label={`Code editor for ${content.title ?? "exercise"}`}
+        className="block w-full resize-y rounded-xl border border-edge bg-inset px-4 py-3 font-mono text-[13px] leading-6 text-ink-2 outline-none focus:border-accent-border"
+        rows={Math.max(6, code.split("\n").length + 1)}
+      />
+
+      {hints.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {hints.slice(0, hintsShown).map((h, i) => (
+            <span
+              key={i}
+              className="rounded-lg border border-warning/40 bg-warning-soft px-3 py-1.5 text-[12.5px] leading-4 text-warning"
+            >
+              Hint {i + 1}: {h}
+            </span>
+          ))}
+          {hintsShown < hints.length && (
+            <button
+              type="button"
+              onClick={() => setHintsShown((n) => n + 1)}
+              className="focus-ring rounded-lg border border-edge px-3 py-1.5 text-[12.5px] font-medium text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
+            >
+              Show hint {hintsShown + 1} of {hints.length}
+            </button>
+          )}
+        </div>
+      )}
+
+      {content.solution && (
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={() => setShowSolution((s) => !s)}
+            className="focus-ring rounded-lg border border-edge px-3 py-1.5 text-[12.5px] font-medium text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
+          >
+            {showSolution ? "Hide solution" : "Reveal solution"}
+          </button>
+          {showSolution && (
+            <pre className="overflow-x-auto rounded-xl border border-success/30 bg-success-soft px-4 py-3 font-mono text-[12.5px] leading-6 text-success">
+              {content.solution}
+            </pre>
+          )}
+        </div>
+      )}
+
+      <p className="text-[11.5px] text-ink-faint">
+        {content.language ?? "go"} · not auto-graded — write it yourself, compare,
+        and be honest about the parts you glossed over.
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Reflection (written response — stored on this page only)            */
+/* ------------------------------------------------------------------ */
+
+function ReflectionView({
+  content,
+}: {
+  content: {
+    title?: string;
+    prompt: string;
+    guidance?: string[];
+    placeholder?: string;
+  };
+}) {
+  const [text, setText] = useState("");
+  return (
+    <div className="space-y-3 rounded-xl border-l-4 border-accent-border bg-accent-soft/40 px-4 py-3.5">
+      <div className="text-[11.5px] font-semibold uppercase tracking-wide text-accent-ink">
+        {content.title ?? "Reflect"}
+      </div>
+      <p className="text-[14.5px] leading-6 text-ink">{content.prompt}</p>
+      {(content.guidance ?? []).length > 0 && (
+        <ul className="space-y-1.5">
+          {content.guidance!.map((g, i) => (
+            <li key={i} className="flex gap-2 text-[13px] leading-5 text-ink-2">
+              <span className="mt-0.5 text-accent">•</span>
+              {g}
+            </li>
+          ))}
+        </ul>
+      )}
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder={content.placeholder ?? "Write your reflection…"}
+        aria-label="Reflection"
+        className="block w-full resize-y rounded-lg border border-edge bg-surface px-3.5 py-2.5 text-[13.5px] leading-6 text-ink outline-none focus:border-accent-border"
+        rows={5}
+      />
+      <div className="flex justify-between text-[11.5px] text-ink-faint">
+        <span>Reflections stay on this page — nothing is uploaded.</span>
+        <span className="tabular-nums">{text.length} chars</span>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Public block renderer                                               */
 /* ------------------------------------------------------------------ */
 
@@ -922,6 +1261,8 @@ export function BlockContent({
       return <RichTextView content={block.content} />;
     case "image":
       return <ImageView content={block.content} />;
+    case "media":
+      return <MediaView content={block.content} />;
     case "code":
       return <CodeView content={block.content} />;
     case "code_playground":
@@ -969,6 +1310,33 @@ export function BlockContent({
           }
         />
       );
+    case "divider":
+      return <DividerView content={block.content} />;
+    case "table":
+      return <TableView content={block.content} />;
+    case "timeline":
+      return (
+        <TimelineViz
+          title={block.content.title ?? "Timeline"}
+          description={block.content.description}
+          config={{ events: block.content.events }}
+        />
+      );
+    case "flowchart":
+      return (
+        <FlowchartViz
+          title={block.content.title}
+          description={block.content.description}
+          takeaway={block.content.takeaway}
+          config={{ nodes: block.content.nodes, edges: block.content.edges }}
+        />
+      );
+    case "knowledge_check":
+      return <KnowledgeCheckView content={block.content} />;
+    case "exercise":
+      return <ExerciseView content={block.content} />;
+    case "reflection":
+      return <ReflectionView content={block.content} />;
     default:
       return (
         <div className="rounded-lg border border-dashed border-line bg-inset px-4 py-4 text-[13px] text-ink-muted">

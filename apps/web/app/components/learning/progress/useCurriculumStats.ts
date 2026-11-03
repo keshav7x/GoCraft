@@ -8,7 +8,7 @@ import {
   type Module,
 } from "@/app/lib/curriculum/types";
 import { getTrpcErrorInfo } from "@/app/lib/trpc";
-import { DataState, ProgressOverview } from "./progress/ProgressOverview";
+import { DataState, ProgressOverview } from "./ProgressOverview";
 
 /**
  * Aggregates curriculum progress rows per module.

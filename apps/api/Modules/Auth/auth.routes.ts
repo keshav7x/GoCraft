@@ -75,6 +75,11 @@ export const authRouter = router({
       }
     }),
 
+  logout: publicProcedure.mutation(async ({ ctx }) => {
+    ctx.res.clearCookie("session_token", { path: "/" });
+    return { success: true as const };
+  }),
+
   verifyEmail: publicProcedure
     .input(verifyEmailInputSchema)
     .mutation(async ({ input }) => {

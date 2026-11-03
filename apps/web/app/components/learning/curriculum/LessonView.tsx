@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,12 +35,19 @@ export function LessonView({
   const router = useRouter();
 
   const { lesson, module, blocks } = detail;
+  const lessonId = lesson.id;
   const parsed = lessonBlocks(detail);
 
-  const startLesson = trpc.progress.startLesson.useMutation();
-  const submitQuiz = trpc.progress.submitQuizAnswer.useMutation();
-  const submitChallenge = trpc.progress.submitChallenge.useMutation();
-  const completeLesson = trpc.progress.completeLesson.useMutation();
+  const startLesson = useMutation(trpc.progress.startLesson.mutationOptions());
+  const submitQuiz = useMutation(
+    trpc.progress.submitQuizAnswer.mutationOptions()
+  );
+  const submitChallenge = useMutation(
+    trpc.progress.submitChallenge.mutationOptions()
+  );
+  const completeLesson = useMutation(
+    trpc.progress.completeLesson.mutationOptions()
+  );
 
   const startedRef = useRef(false);
   useEffect(() => {
@@ -52,9 +60,10 @@ export function LessonView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id]);
 
-  const progressQuery = trpc.progress.getLessonProgress.useQuery(
-    { lessonId: lesson.id },
-    { initialData: initialProgress ?? undefined }
+  const progressQuery = useQuery(
+    trpc.progress.getLessonProgress.queryOptions({ lessonId }, {
+      initialData: initialProgress ?? undefined,
+    })
   );
   const status = progressQuery.data?.status ?? "not started";
 
@@ -74,9 +83,9 @@ export function LessonView({
         toast.success("Lesson complete!");
       }
       if (next) {
-        router.push(`/dashboard/learn/${module.id}/${next.id}`);
+        router.push(`/modules/${module.id}/${next.id}`);
       } else {
-        router.push(`/dashboard/learn/${module.id}`);
+        router.push(`/modules/${module.id}`);
       }
       router.refresh();
     } catch (err) {
@@ -90,7 +99,7 @@ export function LessonView({
     <article className="mx-auto max-w-3xl space-y-8">
       <header>
         <Link
-          href={`/dashboard/learn/${module.id}`}
+          href={`/modules/${module.id}`}
           className="focus-ring inline-flex items-center gap-1.5 rounded-md text-[13px] font-medium text-ink-muted transition-colors hover:text-ink"
         >
           <ArrowLeft size={14} />
@@ -162,7 +171,7 @@ export function LessonView({
           <div className="flex flex-wrap items-center gap-2">
             {prev ? (
               <Link
-                href={`/dashboard/learn/${module.id}/${prev.id}`}
+                href={`/modules/${module.id}/${prev.id}`}
                 className="focus-ring inline-flex h-9 items-center gap-1.5 rounded-lg border border-edge px-3 text-[13px] font-medium text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
               >
                 <ArrowLeft size={14} />
@@ -172,7 +181,7 @@ export function LessonView({
 
             {next ? (
               <Link
-                href={`/dashboard/learn/${module.id}/${next.id}`}
+                href={`/modules/${module.id}/${next.id}`}
                 className="focus-ring inline-flex h-9 items-center gap-1.5 rounded-lg border border-edge px-3 text-[13px] font-medium text-ink transition-colors hover:bg-panel-muted"
               >
                 {next.title}
@@ -180,7 +189,7 @@ export function LessonView({
               </Link>
             ) : (
               <Link
-                href={`/dashboard/learn/${module.id}`}
+                href={`/modules/${module.id}`}
                 className="focus-ring inline-flex h-9 items-center gap-1.5 rounded-lg border border-edge px-3 text-[13px] font-medium text-ink transition-colors hover:bg-panel-muted"
               >
                 Back to module

@@ -60,7 +60,7 @@ function useOverviewData() {
         return {
           module,
           lesson,
-          href: `/dashboard/learn/${module.id}/${lesson.id}`,
+          href: `/modules/${module.id}/${lesson.id}`,
           completedInModule,
           lessonsInModule: module.lessons.length,
         };
@@ -119,7 +119,7 @@ function PageHeader({ nextLevelTitle }: { nextLevelTitle: string | null }) {
           Browse problems
         </Link>
         <Link
-          href="/dashboard/learn"
+          href="/modules"
           className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink/90"
         >
           Open curriculum

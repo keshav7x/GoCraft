@@ -8,6 +8,7 @@ import { useDemoStore } from "../../../lib/demo-store";
 import { useDemoStore as usePersistedStore } from "../../../lib/store/demo";
 import { useDemoStore as useProgressStore } from "../../../lib/progress-store";
 import { getLevelInfo } from "../../../lib/levels";
+import { logout } from "../../../lib/auth";
 import { Button } from "../../ui/button";
 import { Dialog } from "../../ui/dialog";
 import { Input, Label, Select } from "../../ui/input";
@@ -23,6 +24,20 @@ export function AccountSection() {
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function handleSignOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await logout();
+      toast.success("Signed out");
+      router.push("/login");
+      router.refresh();
+    } finally {
+      setSigningOut(false);
+    }
+  }
 
   return (
     <>
@@ -103,16 +118,11 @@ export function AccountSection() {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => {
-              toast.info("Signed out of the demo", {
-                description:
-                  "There is no live session — returning to the landing page.",
-              });
-              router.push("/");
-            }}
+            disabled={signingOut}
+            onClick={handleSignOut}
           >
             <LogOut size={14} />
-            Sign out
+            {signingOut ? "Signing out…" : "Sign out"}
           </Button>
         </Row>
 
@@ -139,8 +149,8 @@ export function AccountSection() {
 
         <Disclosure>
           <ShieldCheck size={11} className="mr-1 inline align-[-1px]" />
-          Sign-out is simulated — this demo has no authentication backend, so
-          nothing is cleared from a real session.
+          Signing out clears your session cookie so you can switch between
+          admin and learner accounts without conflicts.
         </Disclosure>
       </Section>
 

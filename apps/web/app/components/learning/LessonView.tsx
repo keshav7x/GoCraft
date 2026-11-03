@@ -125,7 +125,7 @@ export function LessonView({
           It may be unpublished, or the link is wrong.
         </p>
         <Link
-          href={`/dashboard/learn/${moduleId}`}
+          href={`/modules/${moduleId}`}
           className="focus-ring mt-4 inline-flex items-center gap-1.5 rounded-lg border border-edge px-3.5 py-2 text-[13px] font-medium text-ink-2 hover:bg-panel-muted"
         >
           <ArrowLeft size={14} />
@@ -170,7 +170,7 @@ export function LessonView({
     <article className="mx-auto max-w-3xl space-y-8">
       <header>
         <Link
-          href={`/dashboard/learn/${moduleId}`}
+          href={`/modules/${moduleId}`}
           className="focus-ring inline-flex items-center gap-1.5 rounded-md text-[13px] font-medium text-ink-muted transition-colors hover:text-ink"
         >
           <ArrowLeft size={14} />
@@ -233,7 +233,7 @@ export function LessonView({
           <div className="flex flex-wrap items-center gap-2">
             {prev ? (
               <Link
-                href={`/dashboard/learn/${moduleId}/${prev.id}`}
+                href={`/modules/${moduleId}/${prev.id}`}
                 className="focus-ring inline-flex h-9 items-center gap-1.5 rounded-lg border border-edge px-3 text-[13px] font-medium text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
               >
                 <ArrowLeft size={14} />
@@ -243,7 +243,7 @@ export function LessonView({
 
             {next ? (
               <Link
-                href={`/dashboard/learn/${moduleId}/${next.id}`}
+                href={`/modules/${moduleId}/${next.id}`}
                 className="focus-ring inline-flex h-9 items-center gap-1.5 rounded-lg border border-edge px-3 text-[13px] font-medium text-ink transition-colors hover:bg-panel-muted"
               >
                 {next.title}

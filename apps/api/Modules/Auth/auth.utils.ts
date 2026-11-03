@@ -1,6 +1,5 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import type { FastifyReply } from "fastify";
 
 export interface JwtPayload {
   userId: number;
@@ -9,8 +8,9 @@ export interface JwtPayload {
 
 export class AuthUtils {
   private readonly jwtSecret = process.env.JWT_SECRET || "fallback_super_secret_key";
-  private readonly jwtExpiresIn = (process.env.JWT_EXPIRES_IN || "1d") as jwt.SignOptions["expiresIn"];
-  private readonly cookieName = process.env.AUTH_COOKIE_NAME || "auth_token";
+  // Keep in sync with the session_token cookie maxAge in auth.routes.ts (7 days)
+  // so the cookie never outlives the JWT it carries.
+  private readonly jwtExpiresIn = (process.env.JWT_EXPIRES_IN || "7d") as jwt.SignOptions["expiresIn"];
 
   public generateEmailVerificationToken(): string {
     return crypto.randomBytes(32).toString("hex");
@@ -51,23 +51,6 @@ export class AuthUtils {
 
   public verifyJwtToken(token: string): JwtPayload {
     return jwt.verify(token, this.jwtSecret) as JwtPayload;
-  }
-
-  public assignAuthCookie(reply: FastifyReply, token: string): void {
-    const isProduction = process.env.NODE_ENV === "production";
-    const oneDayInMs = 24 * 60 * 60 * 1000;
-
-    reply.setCookie(this.cookieName, token, {
-      path: "/",
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "strict" : "lax",
-      maxAge: oneDayInMs,
-    });
-  }
-
-  public clearAuthCookie(reply: FastifyReply): void {
-    reply.clearCookie(this.cookieName, { path: "/" });
   }
 
   public async hashPassword(password: string): Promise<string> {

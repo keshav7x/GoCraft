@@ -8,7 +8,13 @@ import { PageHeader } from "@/app/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import { Input, Label } from "@/app/components/ui/input";
-import { readSimulatedRole, writeSimulatedRole, type SimulatedRole } from "@/app/lib/admin/role";
+import {
+  clearSimulatedRole,
+  fetchRealRole,
+  readSimulatedRole,
+  writeSimulatedRole,
+  type SimulatedRole,
+} from "@/app/lib/admin/role";
 import { cn } from "@/app/lib/utils";
 
 export default function AdminSettingsPage() {
@@ -20,17 +26,30 @@ export default function AdminSettingsPage() {
   const [confirmPublish, setConfirmPublish] = useState(true);
 
   useEffect(() => {
-    setRole(readSimulatedRole());
+    let cancelled = false;
+    (async () => {
+      const [real, simulated] = await Promise.all([
+        fetchRealRole(),
+        Promise.resolve(readSimulatedRole()),
+      ]);
+      if (cancelled) return;
+      setRole(simulated ?? real ?? "admin");
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   function switchRole(next: SimulatedRole) {
-    writeSimulatedRole(next);
-    setRole(next);
     if (next === "user") {
-      toast.success("Switched to USER — redirecting to GoCraft");
+      writeSimulatedRole("user");
+      setRole("user");
+      toast.success("Previewing USER — redirecting to GoCraft");
       router.push("/");
     } else {
-      toast.success("Switched to ADMIN role");
+      clearSimulatedRole();
+      setRole("admin");
+      toast.success("Back to ADMIN experience");
     }
   }
 
@@ -80,9 +99,10 @@ export default function AdminSettingsPage() {
 
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle>Simulated role</CardTitle>
+          <CardTitle>Preview experience</CardTitle>
           <CardDescription>
-            Role-based entry: ADMIN lands on /admin, USER lands on the learner home.
+            UI-only preview of the learner home. Your real account and server
+            permissions do not change — log out to sign in as a different role.
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -49,7 +49,7 @@ export function LessonRows({
             </p>
           </div>
           <Link
-            href={`/dashboard/learn/${moduleId}/${resumeLesson.id}`}
+            href={`/modules/${moduleId}/${resumeLesson.id}`}
             className="focus-ring inline-flex h-10 w-fit items-center gap-2 rounded-lg bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-ink/90"
           >
             <Play size={14} />
@@ -69,7 +69,7 @@ export function LessonRows({
           return (
             <li key={lesson.id}>
               <Link
-                href={`/dashboard/learn/${moduleId}/${lesson.id}`}
+                href={`/modules/${moduleId}/${lesson.id}`}
                 className={cn(
                   "focus-ring group flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-panel-muted/60",
                   isCurrent && "bg-accent-soft/30"

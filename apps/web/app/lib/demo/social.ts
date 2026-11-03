@@ -238,7 +238,7 @@ export const FRIEND_ACTIVITY: SocialActivity[] = [
     color: "bg-rose-600",
     action: "completed",
     target: "Interfaces — Implicit satisfaction",
-    href: "/dashboard/learn/interfaces/interface-basics",
+    href: "/modules/interfaces/interface-basics",
     time: "1h ago",
   },
   {
@@ -278,7 +278,7 @@ export const FRIEND_ACTIVITY: SocialActivity[] = [
     color: "bg-violet-600",
     action: "started",
     target: "Goroutines and Channels",
-    href: "/dashboard/learn/goroutines/channels",
+    href: "/modules/goroutines/channels",
     time: "yesterday",
   },
 ];
