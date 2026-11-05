@@ -4,9 +4,7 @@ import { useState } from "react";
 import type { LessonBlockPayload } from "api/schemas";
 import { tokenizeGo, type GoToken } from "@/app/lib/go-highlight";
 import { Check, Copy, Play, RotateCcw, Terminal } from "lucide-react";
-import { VisualizationRenderer } from "../visualizations/VisualizationRenderer";
-import { TimelineViz } from "../visualizations/Timeline";
-import { FlowchartViz } from "../visualizations/NodeGraph";
+import { VisualizationBlock } from "../visualizations/VisualizationBlock";
 
 /* ------------------------------------------------------------------ */
 /* Rich text                                                           */
@@ -141,18 +139,22 @@ function RichTextView({ content }: { content: { nodes: unknown[] } }) {
 /* Code block                                                          */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Dark "editor" palette — GitHub-dark inspired. Code blocks render dark
+ * in both themes so they read as a terminal, not as prose.
+ */
 const TOKEN_CLASS: Record<GoToken["kind"], string> = {
-  comment: "text-ink-faint italic",
-  string: "text-success",
-  number: "text-warning",
-  keyword: "text-accent font-medium",
-  type: "text-accent",
-  func: "text-ink font-medium",
-  builtin: "text-[#7c3aed]",
-  ident: "text-ink",
-  punct: "text-ink-3",
-  exported: "text-[#0284c7]",
-  plain: "",
+  comment: "text-[#8b949e] italic",
+  string: "text-[#a5d6ff]",
+  number: "text-[#79c0ff]",
+  keyword: "text-[#ff7b72] font-medium",
+  type: "text-[#ffa657]",
+  func: "text-[#d2a8ff]",
+  builtin: "text-[#79c0ff]",
+  ident: "text-[#e6edf3]",
+  punct: "text-[#c9d1d9]",
+  exported: "text-[#7ee787]",
+  plain: "text-[#e6edf3]",
 };
 
 function GoCode({ source, highlightLines }: { source: string; highlightLines: number[] }) {
@@ -185,12 +187,16 @@ function GoCode({ source, highlightLines }: { source: string; highlightLines: nu
             return (
               <tr
                 key={lineNo}
-                className={highlighted.has(lineNo) ? "bg-accent-soft" : ""}
+                className={
+                  highlighted.has(lineNo)
+                    ? "bg-[#1f6feb1f] shadow-[inset_2px_0_0_#2f81f7]"
+                    : ""
+                }
               >
-                <td className="w-10 select-none border-r border-edge bg-inset px-2 text-right text-ink-faint">
+                <td className="w-11 select-none border-r border-[#21262d] px-3 text-right text-[11.5px] text-[#6e7681]">
                   {lineNo}
                 </td>
-                <td className="whitespace-pre px-3 text-ink-2">
+                <td className="whitespace-pre px-4 text-[#e6edf3]">
                   {lineTokens.length > 0
                     ? lineTokens.map((t, j) => (
                         <span key={j} className={TOKEN_CLASS[t.kind] ?? ""}>
@@ -208,7 +214,7 @@ function GoCode({ source, highlightLines }: { source: string; highlightLines: nu
   );
 }
 
-function CopyButton({ text }: { text: string }) {
+function CopyButton({ text, dark = false }: { text: string; dark?: boolean }) {
   const [copied, setCopied] = useState(false);
   return (
     <button
@@ -222,7 +228,11 @@ function CopyButton({ text }: { text: string }) {
           /* clipboard unavailable */
         }
       }}
-      className="focus-ring inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11.5px] font-medium text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
+      className={
+        dark
+          ? "focus-ring inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11.5px] font-medium text-[#8b949e] transition-colors hover:bg-white/5 hover:text-[#e6edf3]"
+          : "focus-ring inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11.5px] font-medium text-ink-muted transition-colors hover:bg-panel-muted hover:text-ink"
+      }
       aria-label="Copy code"
     >
       {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -237,15 +247,22 @@ function CodeView({
   content: { language: string; source: string; filename?: string; highlightLines?: number[]; explanation?: string };
 }) {
   return (
-    <figure className="overflow-hidden rounded-xl border border-edge bg-panel shadow-card">
-      <figcaption className="flex items-center justify-between border-b border-edge bg-inset px-3 py-1.5">
-        <span className="flex items-center gap-2 font-mono text-[11.5px] text-ink-muted">
-          <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-wide text-accent-ink">
+    <figure className="overflow-hidden rounded-xl border border-[#21262d] bg-[#0d1117] shadow-pop">
+      <figcaption className="flex items-center justify-between gap-2 border-b border-[#21262d] bg-[#161b22] py-1.5 pl-2 pr-2">
+        <span className="flex min-w-0 items-center gap-2.5 font-mono text-[11px] text-[#8b949e]">
+          <span className="flex shrink-0 gap-1.5 pl-1" aria-hidden>
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+          </span>
+          <span className="shrink-0 rounded bg-[#1f6feb33] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#79c0ff]">
             {content.language}
           </span>
-          {content.filename && <span>{content.filename}</span>}
+          {content.filename && (
+            <span className="truncate text-[#c9d1d9]">{content.filename}</span>
+          )}
         </span>
-        <CopyButton text={content.source} />
+        <CopyButton text={content.source} dark />
       </figcaption>
       <div className="max-h-[480px] overflow-auto">
         <GoCode
@@ -254,7 +271,7 @@ function CodeView({
         />
       </div>
       {content.explanation && (
-        <figcaption className="border-t border-edge px-4 py-2.5 text-[13px] leading-5 text-ink-muted">
+        <figcaption className="border-t border-[#21262d] bg-[#161b22] px-4 py-2.5 text-[12.5px] leading-5 text-[#8b949e]">
           {content.explanation}
         </figcaption>
       )}
@@ -1268,15 +1285,9 @@ export function BlockContent({
     case "code_playground":
       return <PlaygroundView content={block.content} />;
     case "visualization":
-      return (
-        <VisualizationRenderer
-          visualizationType={block.content.visualizationType}
-          title={block.content.title}
-          description={block.content.description}
-          config={block.content.config}
-          takeaway={block.content.takeaway}
-        />
-      );
+    case "timeline":
+    case "flowchart":
+      return <VisualizationBlock block={block} />;
     case "comparison":
       return <ComparisonView content={block.content} />;
     case "callout":
@@ -1314,23 +1325,6 @@ export function BlockContent({
       return <DividerView content={block.content} />;
     case "table":
       return <TableView content={block.content} />;
-    case "timeline":
-      return (
-        <TimelineViz
-          title={block.content.title ?? "Timeline"}
-          description={block.content.description}
-          config={{ events: block.content.events }}
-        />
-      );
-    case "flowchart":
-      return (
-        <FlowchartViz
-          title={block.content.title}
-          description={block.content.description}
-          takeaway={block.content.takeaway}
-          config={{ nodes: block.content.nodes, edges: block.content.edges }}
-        />
-      );
     case "knowledge_check":
       return <KnowledgeCheckView content={block.content} />;
     case "exercise":

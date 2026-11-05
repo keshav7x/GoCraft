@@ -2,7 +2,7 @@
 
 import { Check, Laptop, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useDemoStore, type AccentPreset } from "../../../lib/demo-store";
 import { cn } from "../../../lib/utils";
 import { Label } from "../../ui/input";
@@ -30,14 +30,19 @@ const ACCENTS: { id: AccentPreset; label: string; swatch: string }[] = [
   { id: "rose", label: "Rose", swatch: "#be3455" },
 ];
 
+/* Never-changing external "store" — used only to get a hydrate-safe mounted
+   flag without setState in an effect. */
+const keepSubscribed = () => () => {};
+const keepSubscribedTrue = () => true;
+const keepSubscribedFalse = () => false;
+
 export function AppearanceSection() {
   const { theme, setTheme } = useTheme();
   const settings = useDemoStore((s) => s.settings);
   const updateSettings = useDemoStore((s) => s.updateSettings);
 
   // Avoid hydration mismatch — next-themes resolves the stored theme client-side.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(keepSubscribed, keepSubscribedTrue, keepSubscribedFalse);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-accent", settings.accent);

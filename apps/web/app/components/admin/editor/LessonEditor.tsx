@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore, useState } from "react";
 import { toast } from "sonner";
 import { ArrowLeft, BookOpen, ChevronRight, Eye, Plus, Send, Undo2 } from "lucide-react";
 import { Badge } from "@/app/components/ui/badge";
@@ -19,6 +19,29 @@ import { slugify, type Block, type BlockType } from "@/app/lib/admin/types";
 import { cn } from "@/app/lib/utils";
 
 type PickerState = { open: boolean; index: number; replaceId: string | null };
+
+/* URL-backed preview flag as an external store — SSR-safe with no effect setState. */
+const previewListeners = new Set<() => void>();
+
+function subscribePreview(onChange: () => void) {
+  previewListeners.add(onChange);
+  return () => {
+    previewListeners.delete(onChange);
+  };
+}
+
+function getPreviewSnapshot() {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("preview") === "1";
+}
+
+function setPreviewMode(next: boolean) {
+  const url = new URL(window.location.href);
+  if (next) url.searchParams.set("preview", "1");
+  else url.searchParams.delete("preview");
+  window.history.replaceState(null, "", url);
+  for (const listener of [...previewListeners]) listener();
+}
 
 export function LessonEditor() {
   const params = useParams<{ moduleId: string; lessonId: string }>();
@@ -39,7 +62,7 @@ export function LessonEditor() {
 
   const [dirty, setDirty] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
-  const [previewMode, setPreviewMode] = useState(false);
+  const previewMode = useSyncExternalStore(subscribePreview, getPreviewSnapshot, getPreviewSnapshot);
   const [picker, setPicker] = useState<PickerState>({
     open: false,
     index: 0,
@@ -48,11 +71,6 @@ export function LessonEditor() {
   const [confirmPublish, setConfirmPublish] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setPreviewMode(new URLSearchParams(window.location.search).get("preview") === "1");
-  }, []);
 
   const touch = () => setDirty(true);
 

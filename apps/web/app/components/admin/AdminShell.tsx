@@ -46,10 +46,14 @@ export default function AdminShell({ children }: AdminShellProps) {
     };
   }, []);
 
-  useEffect(() => {
+  /* Close the mobile drawer + profile menu on navigation — adjusted
+     during render (conditional) to avoid cascading renders. */
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileOpen(false);
     setProfileOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!profileOpen) return;

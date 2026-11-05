@@ -20,12 +20,19 @@ export default async function LessonPage({
   let detail;
   let siblings;
   let progress;
+  let modules;
+  let allLessons;
+  let curriculumProgress;
   try {
-    [detail, siblings, progress] = await Promise.all([
-      caller.lesson.getLessonById.query({ id: lessonId }),
-      caller.lesson.getLessonsByModuleId.query({ moduleId }),
-      caller.progress.getLessonProgress.query({ lessonId }),
-    ]);
+    [detail, siblings, progress, modules, allLessons, curriculumProgress] =
+      await Promise.all([
+        caller.lesson.getLessonById.query({ id: lessonId }),
+        caller.lesson.getLessonsByModuleId.query({ moduleId }),
+        caller.progress.getLessonProgress.query({ lessonId }),
+        caller.module.getAllModulesWithStats.query(),
+        caller.lesson.getAllLessons.query(),
+        caller.progress.getCurriculumProgress.query(),
+      ]);
   } catch (error) {
     if (isAuthError(error)) redirect("/login");
     throw error;
@@ -35,6 +42,13 @@ export default async function LessonPage({
   if (detail.lesson.moduleId !== moduleId) notFound();
 
   return (
-    <LessonView detail={detail} siblings={siblings} initialProgress={progress} />
+    <LessonView
+      detail={detail}
+      siblings={siblings}
+      initialProgress={progress}
+      modules={modules}
+      allLessons={allLessons}
+      curriculumProgress={curriculumProgress}
+    />
   );
 }

@@ -43,17 +43,27 @@ export function BlockPicker({ open, onClose, onSelect }: BlockPickerProps) {
     );
   }, [query]);
 
+  /* Reset transient state when the picker (re)opens or the query changes —
+     adjusted during render (conditional, so no cascading-render warning). */
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (prevOpen !== open) {
+    setPrevOpen(open);
+    if (open) {
+      setQuery("");
+      setActiveIndex(0);
+    }
+  }
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (prevQuery !== query) {
+    setPrevQuery(query);
+    setActiveIndex(0);
+  }
+
   useEffect(() => {
     if (!open) return;
-    setQuery("");
-    setActiveIndex(0);
     const timer = window.setTimeout(() => inputRef.current?.focus(), 30);
     return () => window.clearTimeout(timer);
   }, [open]);
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [query]);
 
   useEffect(() => {
     if (!open) return;
