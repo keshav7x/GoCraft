@@ -128,10 +128,7 @@ export function CountUp({
   const [display, setDisplay] = useState(reduce ? value : 0);
 
   useEffect(() => {
-    if (reduce) {
-      setDisplay(value);
-      return;
-    }
+    if (reduce) return; // reduce motion → the raw value renders directly
     let raf = 0;
     const start = performance.now();
     const duration = 750;
@@ -145,7 +142,7 @@ export function CountUp({
     return () => cancelAnimationFrame(raf);
   }, [value, reduce]);
 
-  return <>{display.toLocaleString()}</>;
+  return <>{(reduce ? value : display).toLocaleString()}</>;
 }
 
 /** Transient "Saved" confirmation for immediate-save preference rows. */

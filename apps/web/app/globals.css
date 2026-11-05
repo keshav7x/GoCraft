@@ -319,3 +319,46 @@
   --color-accent-800: #125878;
   --color-accent-900: #144a65;
 }
+
+/* ------------------------------------------------------------------ */
+/* Lesson workspace animations (Visual Lab + Pico thinking dots)        */
+/* ------------------------------------------------------------------ */
+@keyframes lab-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.lab-in {
+  animation: lab-in 0.35s ease-out both;
+}
+
+@keyframes pico-dot {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pico-dot {
+  animation: pico-dot 1.2s infinite ease-in-out;
+}
+
+.pico-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.pico-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}

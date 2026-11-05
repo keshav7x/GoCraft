@@ -3,7 +3,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { fetchSession } from "@/app/lib/trpc";
 import { BrandMark } from "./BrandMark";
@@ -15,8 +15,29 @@ const NAV_ITEMS = [
   { label: "Store", href: "#store" },
 ];
 
+/* "past 12px of scroll" as an external store — SSR-safe (server renders
+   expanded) with no effect setState. */
+const NAV_SCROLLED_OFFSET = 12;
+
+function subscribeScrolled(onChange: () => void) {
+  window.addEventListener("scroll", onChange, { passive: true });
+  return () => window.removeEventListener("scroll", onChange);
+}
+
+function getScrolledSnapshot() {
+  return window.scrollY > NAV_SCROLLED_OFFSET;
+}
+
+function getScrolledServerSnapshot() {
+  return false;
+}
+
 export function SiteHeader() {
-  const [scrolled, setScrolled] = useState(false);
+  const scrolled = useSyncExternalStore(
+    subscribeScrolled,
+    getScrolledSnapshot,
+    getScrolledServerSnapshot,
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const router = useRouter();
@@ -33,15 +54,6 @@ export function SiteHeader() {
       enterInFlightRef.current = false;
     }
   };
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;

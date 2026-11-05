@@ -21,6 +21,13 @@ export default function DashboardShell({ children }: DashboardShellProps) {
   const pathname = usePathname();
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  /* Close the mobile drawer on navigation — adjusted during render
+     (conditional) to avoid cascading renders. */
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setMobileOpen(false);
+  }
   const closeRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
@@ -32,17 +39,17 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
   const activeItem = findNavItem(pathname);
   // Problem detail pages use a full-bleed LeetCode-style split layout.
-  const fullBleed = pathname.startsWith("/dashboard/problems/");
+  // Lesson pages render their own workspace chrome (course rail, Visual Lab).
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const fullBleed =
+    pathname.startsWith("/dashboard/problems/") ||
+    (pathSegments[0] === "modules" && pathSegments.length === 3);
   const { level, title: levelTitle } = levelFromXp(xp);
   const sessionAccent = useSessionDemoStore((state) => state.settings.accent);
   const equippedAccent = getMarketItem(equippedTheme)?.accent;
   // A non-default marketplace theme wins; otherwise the Settings accent applies.
   const accent =
     equippedAccent && equippedAccent !== "graphite" ? equippedAccent : sessionAccent;
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!mobileOpen) return;
