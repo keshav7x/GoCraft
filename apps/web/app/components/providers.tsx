@@ -3,6 +3,7 @@
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { useEffect } from "react";
+import { ReactLenis } from "lenis/react";
 import { useDemoStore } from "@/app/lib/store/demo";
 import { useUiStore } from "@/app/lib/store/ui";
 import { TRPCReactProvider } from "@/trpc/client";
@@ -16,7 +17,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <TRPCReactProvider>
       <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem>
-        {children}
+        <ReactLenis root options={{ anchors: true, lerp: 0.1 }}>
+          {children}
+        </ReactLenis>
         <Toaster
           position="bottom-right"
           toastOptions={{

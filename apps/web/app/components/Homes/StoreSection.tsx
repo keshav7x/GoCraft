@@ -31,7 +31,7 @@ const ITEMS: StoreItem[] = [
     name: "Ship It",
     category: "stickers",
     price: 120,
-    description: "For builders who ship instead of endlessly polishing.",
+    description: "A stamp for work you shipped.",
     rarity: "Common",
   },
   {
@@ -95,7 +95,7 @@ const ITEMS: StoreItem[] = [
     name: "Focus Mode",
     category: "stickers",
     price: 150,
-    description: "One thing at a time. Make it count.",
+    description: "A target ring for your profile.",
     rarity: "Common",
   },
 ];
@@ -116,12 +116,22 @@ function CollectibleArt({
   const size = large ? "100%" : "100%";
 
   const common = {
-    fill: "white",
-    stroke: "#171717",
-    strokeWidth: 2.2,
+    className: "fill-white stroke-ink",
+    strokeWidth: 2.6,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
   };
+
+  const tile = (
+    <rect
+      x="16"
+      y="16"
+      width="128"
+      height="128"
+      rx="28"
+      className="fill-accent-50"
+    />
+  );
 
   return (
     <svg
@@ -135,108 +145,243 @@ function CollectibleArt({
     >
       {id === "ship-it" && (
         <g transform="rotate(-7 80 80)">
-          <rect x="29" y="29" width="102" height="102" rx="23" {...common} />
+          {tile}
+          <rect x="30" y="30" width="100" height="100" rx="22" {...common} strokeWidth={2.8} />
           <path
-            d="M58 56 43 80l15 24M102 56l15 24-15 24M91 49l-22 62"
-            stroke="#171717"
+            d="M58 56 43 80l15 24M102 56l15 24-15 24"
+            className="fill-none stroke-ink"
             strokeWidth="4"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <path d="M53 117h54" stroke="#171717" strokeWidth="2" />
+          <path
+            d="M91 49l-22 62"
+            className="fill-none stroke-accent-600"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path d="M53 117h54" className="fill-none stroke-ink" strokeWidth="2" />
         </g>
       )}
 
       {id === "clean-commit" && (
         <g>
-          <circle cx="80" cy="80" r="49" {...common} />
+          {tile}
+          <circle cx="80" cy="80" r="47" {...common} strokeWidth={2.8} />
           <path
-            d="M57 60 42 80l15 20M103 60l15 20-15 20M91 50l-22 60"
-            stroke="#171717"
+            d="M57 60 42 80l15 20M103 60l15 20-15 20"
+            className="fill-none stroke-ink"
             strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <circle cx="111" cy="47" r="3" fill="#171717" />
+          <path
+            d="M91 50l-22 60"
+            className="fill-none stroke-accent-600"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+          />
+          <circle cx="111" cy="47" r="3" className="fill-accent-600" />
         </g>
       )}
 
       {id === "night-owl" && (
         <g>
+          {tile}
           <path
             d="M43 65 52 42l28 14 28-14 9 23-5 39-32 19-32-19-5-39Z"
             {...common}
+            strokeWidth={2.8}
           />
-          <circle cx="66" cy="78" r="8" {...common} />
-          <circle cx="94" cy="78" r="8" {...common} />
-          <path d="m74 91 6 7 6-7" {...common} />
-          <path d="M80 23v9M126 46l-7 7M34 46l7 7" {...common} />
+          <circle
+            cx="66"
+            cy="78"
+            r="8"
+            className="fill-accent-100 stroke-ink"
+            strokeWidth="2.2"
+          />
+          <circle
+            cx="94"
+            cy="78"
+            r="8"
+            className="fill-accent-100 stroke-ink"
+            strokeWidth="2.2"
+          />
+          <path
+            d="m74 91 6 7 6-7"
+            className="fill-none stroke-accent-600"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M80 23v9M126 46l-7 7M34 46l7 7"
+            className="fill-none stroke-ink"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
         </g>
       )}
 
       {id === "debug-frames" && (
         <g>
-          <rect x="29" y="49" width="102" height="62" rx="22" {...common} />
-          <rect x="39" y="58" width="35" height="44" rx="12" {...common} />
-          <rect x="86" y="58" width="35" height="44" rx="12" {...common} />
-          <path d="M74 73h12M17 73h12M131 73h12" {...common} />
+          {tile}
+          <rect x="29" y="49" width="102" height="62" rx="22" {...common} strokeWidth={2.8} />
+          <rect
+            x="39"
+            y="58"
+            width="35"
+            height="44"
+            rx="12"
+            className="fill-accent-100 stroke-ink"
+            strokeWidth="2.2"
+          />
+          <rect
+            x="86"
+            y="58"
+            width="35"
+            height="44"
+            rx="12"
+            className="fill-accent-100 stroke-ink"
+            strokeWidth="2.2"
+          />
+          <path
+            d="M74 73h12M17 73h12M131 73h12"
+            className="fill-none stroke-ink"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+          />
         </g>
       )}
 
       {id === "builder-cap" && (
         <g>
+          {tile}
           <path
             d="M37 86c0-27 18-45 43-45s43 18 43 45"
             {...common}
+            strokeWidth={2.8}
           />
-          <path d="M37 86c20-8 47-8 86 0" {...common} />
-          <path d="M37 86c-2 12 19 19 43 19 23 0 44-7 43-19" {...common} />
-          <path d="M80 54v17M72 62h16" {...common} />
+          <path d="M37 86c20-8 47-8 86 0" {...common} strokeWidth={2.8} />
+          <path
+            d="M37 86c-2 12 19 19 43 19 23 0 44-7 43-19"
+            className="fill-accent-100 stroke-ink"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M80 54v17M72 62h16"
+            className="fill-none stroke-accent-600"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+          />
         </g>
       )}
 
       {id === "terminal-skin" && (
         <g>
-          <rect x="23" y="36" width="114" height="88" rx="10" {...common} />
-          <path d="M23 58h114" {...common} />
-          <circle cx="36" cy="47" r="2" fill="#171717" />
-          <circle cx="44" cy="47" r="2" fill="#171717" />
+          {tile}
+          <rect x="23" y="36" width="114" height="88" rx="10" {...common} strokeWidth={2.8} />
+          <path d="M23 58h114" className="fill-none stroke-ink" strokeWidth="2.8" />
+          <circle cx="36" cy="47" r="2" className="fill-ink" />
+          <circle cx="44" cy="47" r="2" className="fill-accent-600" />
           <path
-            d="m48 76-9 7 9 7m17-14 9 7-9 7m31 4 12-24"
-            stroke="#171717"
+            d="m48 76-9 7 9 7m17-14 9 7-9 7"
+            className="fill-none stroke-ink"
             strokeWidth="2.8"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <path d="M40 107h46" {...common} />
+          <path
+            d="m113 88 12-24"
+            className="fill-none stroke-accent-600"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+          />
+          <path d="M40 107h46" className="fill-none stroke-ink" strokeWidth="2.2" />
         </g>
       )}
 
       {id === "paper" && (
         <g>
-          <rect x="42" y="25" width="76" height="110" rx="3" {...common} />
-          <path d="M57 48h46M57 61h37M57 83h46M57 96h37M57 109h27" {...common} />
-          <path d="M94 25v18h24" {...common} />
+          {tile}
+          <rect x="42" y="25" width="76" height="110" rx="6" {...common} strokeWidth={2.8} />
+          <path
+            d="M57 48h46M57 61h37M57 83h46M57 96h37M57 109h27"
+            className="fill-none stroke-ink"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M94 25v18h24Z"
+            className="fill-accent-600 stroke-accent-600"
+            strokeWidth="2.4"
+            strokeLinejoin="round"
+          />
         </g>
       )}
 
       {id === "blueprint" && (
         <g>
-          <rect x="28" y="28" width="104" height="104" rx="4" {...common} />
-          <path d="M80 40v80M40 80h80" stroke="#171717" strokeWidth="1" strokeDasharray="3 4" />
-          <rect x="48" y="48" width="64" height="64" rx="2" {...common} />
-          <circle cx="80" cy="80" r="19" {...common} />
-          <path d="M68 80h24M80 68v24" {...common} />
+          {tile}
+          <rect x="28" y="28" width="104" height="104" rx="6" {...common} strokeWidth={2.8} />
+          <path
+            d="M80 40v80M40 80h80"
+            className="fill-none stroke-accent-300"
+            strokeWidth="1.2"
+            strokeDasharray="3 4"
+          />
+          <rect
+            x="48"
+            y="48"
+            width="64"
+            height="64"
+            rx="3"
+            className="fill-none stroke-accent-600"
+            strokeWidth="2.4"
+          />
+          <circle
+            cx="80"
+            cy="80"
+            r="19"
+            className="fill-none stroke-accent-600"
+            strokeWidth="2.4"
+          />
+          <path
+            d="M68 80h24M80 68v24"
+            className="fill-none stroke-ink"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
         </g>
       )}
 
       {id === "focus" && (
         <g>
-          <circle cx="80" cy="80" r="48" {...common} />
-          <circle cx="80" cy="80" r="33" {...common} />
-          <circle cx="80" cy="80" r="17" {...common} />
-          <circle cx="80" cy="80" r="4" fill="#171717" />
-          <path d="M80 19v10M80 131v10M19 80h10M131 80h10" {...common} />
+          {tile}
+          <circle cx="80" cy="80" r="47" {...common} strokeWidth={2.8} />
+          <circle
+            cx="80"
+            cy="80"
+            r="33"
+            className="fill-accent-100 stroke-ink"
+            strokeWidth="2.4"
+          />
+          <circle
+            cx="80"
+            cy="80"
+            r="17"
+            className="fill-white stroke-ink"
+            strokeWidth="2.4"
+          />
+          <circle cx="80" cy="80" r="5" className="fill-accent-600" />
+          <path
+            d="M80 19v10M80 131v10M19 80h10M131 80h10"
+            className="fill-none stroke-ink"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
         </g>
       )}
     </svg>
@@ -293,23 +438,24 @@ export function StoreSection() {
   }
 
   return (
-    <section className="w-full bg-white text-neutral-950">
+    <section className="w-full bg-canvas text-ink">
       <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 lg:px-10">
         <Reveal>
-          <div className="flex flex-col justify-between gap-5 border-b border-neutral-200 pb-7 sm:flex-row sm:items-end">
+          <div className="flex flex-col justify-between gap-5 border-b border-line pb-7 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">
-                GoCraft / Collectibles
+              <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-ink-3">
+                GoCraft store
               </p>
               <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                Your next unlock.
+                Unlock with XP.
               </h2>
-              <p className="mt-3 max-w-lg text-sm leading-6 text-neutral-500">
-                Small things for the people who build things.
+              <p className="mt-3 max-w-lg text-sm leading-6 text-ink-3">
+                Stickers, avatar accessories, and profile themes. Buy them
+                with XP and equip them on your profile.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 self-start rounded-full border border-neutral-200 px-4 py-2.5 sm:self-auto">
+            <div className="flex items-center gap-2 self-start rounded-full border border-line px-4 py-2.5 sm:self-auto">
               <Coins size={16} strokeWidth={1.7} />
               <span className="text-sm font-medium tabular-nums">
                 {balance.toLocaleString()} XP
@@ -323,10 +469,10 @@ export function StoreSection() {
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setCategory("all")}
-                className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                className={`rounded-full border px-4 py-2 text-sm transition-colors motion-safe:active:scale-[0.97] ${
                   category === "all"
-                    ? "border-neutral-950 bg-neutral-950 text-white"
-                    : "border-neutral-200 bg-white text-neutral-600 hover:border-neutral-400"
+                    ? "border-ink bg-ink text-white"
+                    : "border-line bg-surface text-ink-2 hover:border-line-strong"
                 }`}
               >
                 All items
@@ -336,10 +482,10 @@ export function StoreSection() {
                 <button
                   key={item.id}
                   onClick={() => setCategory(item.id)}
-                  className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                  className={`rounded-full border px-4 py-2 text-sm transition-colors motion-safe:active:scale-[0.97] ${
                     category === item.id
-                      ? "border-neutral-950 bg-neutral-950 text-white"
-                      : "border-neutral-200 bg-white text-neutral-600 hover:border-neutral-400"
+                      ? "border-ink bg-ink text-white"
+                      : "border-line bg-surface text-ink-2 hover:border-line-strong"
                   }`}
                 >
                   {item.label}
@@ -361,10 +507,10 @@ export function StoreSection() {
                       duration: shouldReduceMotion ? 0 : 0.25,
                       delay: shouldReduceMotion ? 0 : index * 0.025,
                     }}
-                    className={`group overflow-hidden rounded-2xl border bg-white transition-colors ${
+                    className={`group overflow-hidden rounded-2xl border bg-surface transition-colors ${
                       selectedId === item.id
-                        ? "border-neutral-950"
-                        : "border-neutral-200 hover:border-neutral-400"
+                        ? "border-ink"
+                        : "border-line hover:border-line-strong"
                     }`}
                   >
                     <button
@@ -373,12 +519,12 @@ export function StoreSection() {
                       aria-label={`Preview ${item.name}`}
                       className="block w-full text-left"
                     >
-                      <div className="relative flex aspect-square items-center justify-center border-b border-neutral-100 p-8">
+                      <div className="relative flex aspect-square items-center justify-center border-b border-line p-8">
                         <div className="h-full w-full max-w-[180px] transition-transform duration-300 group-hover:scale-[1.04]">
                           <CollectibleArt id={item.id} />
                         </div>
                         {isOwned && (
-                          <span className="absolute right-3 top-3 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[11px] text-neutral-600">
+                          <span className="absolute right-3 top-3 rounded-full border border-line bg-surface px-2.5 py-1 text-[11px] text-ink-2">
                             Owned
                           </span>
                         )}
@@ -389,7 +535,7 @@ export function StoreSection() {
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <h3 className="text-sm font-medium">{item.name}</h3>
-                          <p className="mt-1 text-xs capitalize text-neutral-500">
+                          <p className="mt-1 text-xs capitalize text-ink-3">
                             {item.category}
                           </p>
                         </div>
@@ -403,10 +549,10 @@ export function StoreSection() {
                           <button
                             type="button"
                             onClick={() => toggleEquip(item)}
-                            className={`flex flex-1 items-center justify-center gap-2 rounded-full border px-3 py-2 text-xs font-medium transition-colors ${
+                            className={`flex flex-1 items-center justify-center gap-2 rounded-full border px-3 py-2 text-xs font-medium transition-colors motion-safe:active:scale-[0.97] ${
                               isEquipped
-                                ? "border-neutral-950 bg-neutral-950 text-white"
-                                : "border-neutral-200 hover:border-neutral-400"
+                                ? "border-ink bg-ink text-white"
+                                : "border-line hover:border-line-strong"
                             }`}
                           >
                             {isEquipped ? (
@@ -421,7 +567,7 @@ export function StoreSection() {
                           <button
                             type="button"
                             onClick={() => purchaseItem(item)}
-                            className="flex flex-1 items-center justify-center gap-2 rounded-full border border-neutral-200 px-3 py-2 text-xs font-medium transition-colors hover:border-neutral-950 hover:bg-neutral-950 hover:text-white"
+                            className="flex flex-1 items-center justify-center gap-2 rounded-full border border-line px-3 py-2 text-xs font-medium transition-colors hover:border-ink hover:bg-ink hover:text-white"
                           >
                             <ShoppingBag size={13} />
                             Unlock
@@ -432,7 +578,7 @@ export function StoreSection() {
                           type="button"
                           onClick={() => setSelectedId(item.id)}
                           aria-label={`View ${item.name} details`}
-                          className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-200 transition-colors hover:border-neutral-950"
+                          className="flex h-8 w-8 items-center justify-center rounded-full border border-line transition-colors hover:border-ink"
                         >
                           <ArrowUpRight size={14} />
                         </button>
@@ -444,14 +590,14 @@ export function StoreSection() {
             </div>
           </div>
 
-          <aside className="h-fit overflow-hidden rounded-2xl border border-neutral-200 bg-white">
-            <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
+          <aside className="h-fit overflow-hidden rounded-2xl border border-line bg-surface">
+            <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <h3 className="text-sm font-medium">Preview</h3>
-              <span className="text-xs text-neutral-500">Your profile</span>
+              <span className="text-xs text-ink-3">Your profile</span>
             </div>
 
             <div className="p-5">
-              <div className="relative overflow-hidden rounded-xl border border-neutral-200 p-5">
+              <div className="relative overflow-hidden rounded-xl border border-line p-5">
                 <div className="absolute inset-0 opacity-30">
                   <svg
                     viewBox="0 0 300 300"
@@ -478,7 +624,7 @@ export function StoreSection() {
                 </div>
 
                 <div className="relative flex flex-col items-center py-5">
-                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-neutral-300 bg-white">
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-line-strong bg-surface">
                     <span className="text-xl font-medium tracking-tight">
                       AK
                     </span>
@@ -501,7 +647,7 @@ export function StoreSection() {
                   </div>
 
                   <h4 className="mt-4 text-base font-semibold">Alex Kim</h4>
-                  <p className="mt-1 text-xs text-neutral-500">
+                  <p className="mt-1 text-xs text-ink-3">
                     Building in public.
                   </p>
 
@@ -516,7 +662,7 @@ export function StoreSection() {
                         .map((id) => (
                           <div
                             key={id}
-                            className="h-10 w-10 rounded-lg border border-neutral-200 bg-white p-1.5"
+                            className="h-10 w-10 rounded-lg border border-line bg-surface p-1.5"
                           >
                             <CollectibleArt id={id} />
                           </div>
@@ -527,8 +673,8 @@ export function StoreSection() {
                   {equipped.some((id) =>
                     ["terminal-skin", "paper", "blueprint"].includes(id),
                   ) && (
-                    <div className="mt-5 w-full rounded-lg border border-neutral-200 bg-white p-3">
-                      <p className="mb-2 text-[10px] uppercase tracking-[0.15em] text-neutral-500">
+                    <div className="mt-5 w-full rounded-lg border border-line bg-surface p-3">
+                      <p className="mb-2 text-[10px] uppercase tracking-[0.15em] text-ink-3">
                         Profile theme
                       </p>
                       <div className="flex items-center gap-2">
@@ -541,7 +687,7 @@ export function StoreSection() {
                               <CollectibleArt id={id} />
                             </div>
                           ))}
-                        <span className="text-xs text-neutral-600">
+                        <span className="text-xs text-ink-2">
                           {ITEMS.find((item) => equipped.includes(item.id) && item.category === "themes")?.name}
                         </span>
                       </div>
@@ -550,7 +696,7 @@ export function StoreSection() {
                 </div>
               </div>
 
-              <p className="mt-3 text-xs leading-5 text-neutral-500">
+              <p className="mt-3 text-xs leading-5 text-ink-3">
                 Select a collectible to preview it. Purchase and equip items to
                 update this local preview.
               </p>
@@ -564,7 +710,7 @@ export function StoreSection() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
-              className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full border border-neutral-200 bg-white px-4 py-3 shadow-lg"
+              className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full border border-line bg-surface px-4 py-3 shadow-lg"
               role="status"
             >
               <span className="text-sm">{notice}</span>
@@ -572,7 +718,7 @@ export function StoreSection() {
                 type="button"
                 onClick={() => setNotice("")}
                 aria-label="Dismiss notification"
-                className="text-neutral-500 hover:text-neutral-950"
+                className="text-ink-3 hover:text-ink"
               >
                 <X size={15} />
               </button>
@@ -583,36 +729,56 @@ export function StoreSection() {
         <AnimatePresence>
           {selectedItem && (
             <motion.div
-              className="fixed inset-0 z-40 flex items-center justify-center bg-neutral-950/30 p-4"
+              className="fixed inset-0 z-40 flex items-center justify-center bg-ink/30 p-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.15 } }}
+              transition={{ duration: 0.2 }}
               onClick={() => setSelectedId(null)}
             >
               <motion.div
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="collectible-title"
-                className="w-full max-w-md overflow-hidden rounded-2xl border border-neutral-200 bg-white"
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 12, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                className="w-full max-w-md overflow-hidden rounded-2xl border border-line bg-surface"
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : { opacity: 0, scale: 1.02 }
+                }
+                animate={{ opacity: 1, scale: 1 }}
+                exit={
+                  shouldReduceMotion
+                    ? { opacity: 0 }
+                    : {
+                        opacity: 0,
+                        scale: 0.98,
+                        transition: {
+                          duration: 0.15,
+                          ease: [0.895, 0.03, 0.685, 0.22],
+                        },
+                      }
+                }
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.2,
+                  ease: [0.32, 0.72, 0, 1],
+                }}
                 onClick={(event) => event.stopPropagation()}
               >
-                <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
+                <div className="flex items-center justify-between border-b border-line px-5 py-4">
                   <span className="text-sm font-medium">Item details</span>
                   <button
                     type="button"
                     onClick={() => setSelectedId(null)}
                     aria-label="Close item details"
-                    className="rounded-full p-1 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-950"
+                    className="rounded-full p-1 text-ink-3 hover:bg-surface-2 hover:text-ink"
                   >
                     <X size={17} />
                   </button>
                 </div>
 
                 <div className="p-6">
-                  <div className="mx-auto mb-5 flex aspect-square max-w-[220px] items-center justify-center rounded-xl border border-neutral-200 p-7">
+                  <div className="mx-auto mb-5 flex aspect-square max-w-[220px] items-center justify-center rounded-xl border border-line p-7">
                     <CollectibleArt id={selectedItem.id} large />
                   </div>
                   <div className="flex items-start justify-between gap-4">
@@ -620,7 +786,7 @@ export function StoreSection() {
                       <h3 id="collectible-title" className="text-lg font-semibold tracking-tight">
                         {selectedItem.name}
                       </h3>
-                      <p className="mt-1 text-sm capitalize text-neutral-500">
+                      <p className="mt-1 text-sm capitalize text-ink-3">
                         {selectedItem.category} · {selectedItem.rarity}
                       </p>
                     </div>
@@ -631,7 +797,7 @@ export function StoreSection() {
                     </span>
                   </div>
 
-                  <p className="mt-4 text-sm leading-6 text-neutral-600">
+                  <p className="mt-4 text-sm leading-6 text-ink-2">
                     {selectedItem.description}
                   </p>
 
@@ -640,7 +806,7 @@ export function StoreSection() {
                       <button
                         type="button"
                         onClick={() => toggleEquip(selectedItem)}
-                        className="flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+                        className="flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-ink-2 motion-safe:active:scale-[0.97]"
                       >
                         {equipped.includes(selectedItem.id) ? (
                           <>
@@ -654,7 +820,7 @@ export function StoreSection() {
                       <button
                         type="button"
                         onClick={() => purchaseItem(selectedItem)}
-                        className="flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+                        className="flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-ink-2 motion-safe:active:scale-[0.97]"
                       >
                         {balance < selectedItem.price ? (
                           <LockKeyhole size={15} />

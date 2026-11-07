@@ -13,9 +13,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "GoCraft — Learn to code by building real things",
+  title: "GoCraft | Learn Go by building real things",
   description:
-    "GoCraft is LeetCode for developers: practical Go challenges, learning paths, XP, streaks, friends, and a playful virtual marketplace.",
+    "Practical Go challenges with short lessons, browser-based checks, XP, streaks, friends, and a virtual marketplace.",
   applicationName: "GoCraft",
   keywords: [
     "Go",
@@ -27,16 +27,16 @@ export const metadata: Metadata = {
     "engineering practice",
   ],
   openGraph: {
-    title: "GoCraft — Learn to code by building real things",
+    title: "GoCraft | Learn Go by building real things",
     description:
-      "Write code. Solve challenges. Earn XP. Build your craft. Practical coding challenges for developers.",
+      "Write code. Solve challenges. Earn XP. Practical Go challenges for developers.",
     siteName: "GoCraft",
     type: "website",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fbfaff",
+  themeColor: "#f7f8fa",
   colorScheme: "light",
 };
 
