@@ -1,10 +1,7 @@
-
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowDownRight,
-  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   Braces,
@@ -13,7 +10,6 @@ import {
   ChevronRight,
   Code2,
   GraduationCap,
-  LockKeyhole,
   Rocket,
   Server,
   Terminal,
@@ -74,7 +70,7 @@ func main() {
     title: "Build for the web",
     subtitle: "Make programs useful.",
     description:
-      "Learn how HTTP works, handle requests, return JSON, and build APIs that other applications can actually use.",
+      "Learn how HTTP works, handle requests, return JSON, and build APIs that other applications can call.",
     skills: ["HTTP", "JSON", "Handlers", "Middleware"],
     challenge: "Build your first API",
     prompt: "Create an endpoint that responds with a JSON message.",
@@ -98,7 +94,7 @@ func main() {
     title: "Debug with confidence",
     subtitle: "Understand what went wrong.",
     description:
-      "Read errors, write tests, and trace bugs to their source. Stop guessing and start building a repeatable debugging process.",
+      "Read errors, write tests, and trace bugs to their source. Replace guesswork with a debugging process you repeat.",
     skills: ["Errors", "Testing", "Logging", "Debugging"],
     challenge: "Fix the broken function",
     prompt: "Find why a function skips valid inputs and repair the bug.",
@@ -122,7 +118,7 @@ func main() {
     title: "Understand systems",
     subtitle: "Learn what happens under the hood.",
     description:
-      "Explore goroutines, channels, cancellation, and worker pools. Learn to coordinate concurrent work without creating chaos.",
+      "Explore goroutines, channels, cancellation, and worker pools. Coordinate concurrent work without deadlocks or data races.",
     skills: ["Goroutines", "Channels", "Context", "Concurrency"],
     challenge: "Build a worker pool",
     prompt: "Process several jobs concurrently and collect their results.",
@@ -191,43 +187,41 @@ export function LearningPath() {
   return (
     <section
       id="learn"
-      className="overflow-hidden bg-white px-5 py-24 sm:px-8 sm:py-32"
+      className="overflow-hidden bg-surface px-5 py-24 sm:px-8 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
             <div className="max-w-2xl">
-              <div className="mb-6 flex items-center gap-2 text-sm font-medium text-blue-700">
-                <span className="flex size-7 items-center justify-center rounded-lg bg-blue-50">
-                  <Code2 size={15} />
+              <div className="mb-6 flex items-center gap-2 text-sm font-medium text-accent-700">
+                <span className="flex size-7 items-center justify-center rounded-lg bg-accent-50">
+                  <Code2 size={15} aria-hidden="true" />
                 </span>
-                Your path to becoming a developer
+                From variables to shipped projects
               </div>
 
-              <h2 className="text-4xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
-                Don't just learn Go.
-                <span className="block text-slate-400">
-                  Get good at building.
+              <h2 className="text-4xl font-semibold tracking-[-0.055em] text-ink sm:text-5xl lg:text-6xl">
+                Learn Go in six stages.
+                <span className="block text-ink-4">
+                  Each one ends with a challenge.
                 </span>
               </h2>
 
-              <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-                Learn something. Put it to work. See what you can build.
-                Every step takes you from understanding code to engineering
-                real systems.
+              <p className="mt-6 max-w-xl text-base leading-7 text-ink-2 sm:text-lg sm:leading-8">
+                Stage one is a variable. Stage six is a URL shortener.
+                Between them you write HTTP handlers, fix a real bug, and
+                build a worker pool.
               </p>
             </div>
 
-            <div className="flex w-fit items-center gap-3 rounded-xl border border-slate-200 px-4 py-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50 font-mono text-sm font-bold text-blue-700">
+            <div className="flex w-fit items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-accent-50 font-mono text-sm font-bold text-accent-700">
                 Go
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-950">
-                  Go learning path
-                </p>
-                <p className="mt-1 text-xs text-slate-500">
-                  6 stages · Learn by doing
+                <p className="text-sm font-semibold text-ink">Go path</p>
+                <p className="mt-1 text-xs text-ink-3">
+                  6 stages · 1,130 XP total
                 </p>
               </div>
             </div>
@@ -235,28 +229,28 @@ export function LearningPath() {
         </Reveal>
 
         <Reveal delay={0.08}>
-          <div className="mt-14 grid overflow-hidden rounded-3xl border border-slate-200 lg:grid-cols-[280px_minmax(0,1fr)]">
-            {/* Learning journey */}
-            <aside className="border-b border-slate-200 bg-slate-50/70 p-5 sm:p-7 lg:border-b-0 lg:border-r">
+          <div className="mt-14 grid overflow-hidden rounded-2xl border border-line lg:grid-cols-[280px_minmax(0,1fr)]">
+            <aside className="border-b border-line bg-canvas p-5 sm:p-7 lg:border-b-0 lg:border-r">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-slate-900">
-                  The journey
-                </p>
-                <span className="text-xs tabular-nums text-slate-500">
+                <p className="text-sm font-semibold text-ink">Stages</p>
+                <span className="text-xs tabular-nums text-ink-3">
                   {String(active + 1).padStart(2, "0")} / 06
                 </span>
               </div>
 
-              <div className="mt-4 h-1 overflow-hidden rounded-full bg-slate-200">
+              <div className="mt-4 h-1 overflow-hidden rounded-full bg-line">
                 <motion.div
-                  className="h-full rounded-full bg-blue-600"
+                  className="h-full rounded-full bg-accent-600"
                   animate={{ width: `${((active + 1) / stages.length) * 100}%` }}
-                  transition={{ duration: reduceMotion ? 0 : 0.3 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.3,
+                    ease: [0.32, 0.72, 0, 1],
+                  }}
                 />
               </div>
 
               <div className="relative mt-7 space-y-2">
-                <div className="absolute bottom-6 left-[17px] top-6 w-px bg-slate-200" />
+                <div className="absolute bottom-6 left-[17px] top-6 w-px bg-line" />
 
                 {stages.map((item, index) => {
                   const ItemIcon = item.icon;
@@ -269,39 +263,39 @@ export function LearningPath() {
                       type="button"
                       onClick={() => selectStage(index)}
                       aria-current={selected ? "step" : undefined}
-                      className={`relative flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors ${
+                      className={`relative flex w-full cursor-pointer items-center gap-3 rounded-xl p-3 text-left transition-[background-color,box-shadow,border-color] duration-150 ease-smooth motion-safe:active:scale-[0.98] motion-reduce:transition-none ${
                         selected
-                          ? "bg-white shadow-sm ring-1 ring-slate-200"
-                          : "hover:bg-white/80"
+                          ? "bg-surface shadow-card ring-1 ring-line-strong"
+                          : "hover:bg-surface/80"
                       }`}
                     >
                       <span
                         className={`relative z-10 flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                           selected
-                            ? "border-blue-600 bg-blue-600 text-white"
+                            ? "border-accent-600 bg-accent-600 text-white"
                             : explored
-                              ? "border-blue-100 bg-blue-50 text-blue-700"
-                              : "border-slate-200 bg-white text-slate-500"
+                              ? "border-accent-100 bg-accent-50 text-accent-700"
+                              : "border-line bg-surface text-ink-3"
                         }`}
                       >
                         {explored && index !== active ? (
-                          <Check size={16} />
+                          <Check size={16} aria-hidden="true" />
                         ) : (
-                          <ItemIcon size={16} />
+                          <ItemIcon size={16} aria-hidden="true" />
                         )}
                       </span>
 
                       <span className="min-w-0 flex-1">
                         <span
                           className={`block text-[11px] ${
-                            selected ? "text-blue-700" : "text-slate-400"
+                            selected ? "text-accent-700" : "text-ink-4"
                           }`}
                         >
-                          STAGE {item.number}
+                          Stage {item.number}
                         </span>
                         <span
                           className={`mt-0.5 block text-sm font-medium ${
-                            selected ? "text-slate-950" : "text-slate-600"
+                            selected ? "text-ink" : "text-ink-2"
                           }`}
                         >
                           {item.title}
@@ -311,7 +305,8 @@ export function LearningPath() {
                       {selected && (
                         <ChevronRight
                           size={16}
-                          className="shrink-0 text-blue-600"
+                          className="shrink-0 text-accent-600"
+                          aria-hidden="true"
                         />
                       )}
                     </button>
@@ -319,57 +314,63 @@ export function LearningPath() {
                 })}
               </div>
 
-              <p className="mt-6 text-xs leading-5 text-slate-500">
-                No need to rush. Move forward when you're ready.
+              <p className="mt-6 text-xs leading-5 text-ink-3">
+                No need to rush. Move forward when you&apos;re ready.
               </p>
             </aside>
 
-            {/* Active lesson */}
             <div className="min-w-0 p-5 sm:p-8 lg:p-10">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={stage.number}
-                  initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={
+                    reduceMotion
+                      ? undefined
+                      : { opacity: 0, y: -6, transition: { duration: 0.12 } }
+                  }
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.2,
+                    ease: [0.32, 0.72, 0, 1],
+                  }}
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
+                    <span className="rounded-full bg-accent-50 px-3 py-1 text-xs font-medium text-accent-700">
                       Stage {stage.number}
                     </span>
-                    <span className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-500">
+                    <span className="rounded-full border border-line px-3 py-1 text-xs text-ink-3">
                       {stage.difficulty}
                     </span>
                   </div>
 
                   <div className="mt-7 flex items-start gap-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-800">
-                      <Icon size={23} />
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-ink">
+                      <Icon size={23} aria-hidden="true" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                      <h3 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
                         {stage.title}
                       </h3>
-                      <p className="mt-2 text-sm font-medium text-slate-500">
+                      <p className="mt-2 text-sm font-medium text-ink-3">
                         {stage.subtitle}
                       </p>
                     </div>
                   </div>
 
-                  <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+                  <p className="mt-6 max-w-2xl text-sm leading-7 text-ink-2 sm:text-base sm:leading-8">
                     {stage.description}
                   </p>
 
                   <div className="mt-7">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-ink-4">
                       Along the way
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {stage.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700"
+                          className="rounded-lg border border-line px-3 py-2 text-xs font-medium text-ink-2"
                         >
                           {skill}
                         </span>
@@ -377,55 +378,58 @@ export function LearningPath() {
                     </div>
                   </div>
 
-                  {/* Challenge preview */}
-                  <div className="mt-9 overflow-hidden rounded-2xl border border-slate-200">
-                    <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 sm:px-5">
+                  <div className="mt-9 overflow-hidden rounded-xl border border-line">
+                    <div className="flex items-center justify-between gap-3 border-b border-line bg-canvas px-4 py-3 sm:px-5">
                       <div className="flex items-center gap-2">
-                        <Terminal size={16} className="text-slate-500" />
-                        <span className="text-sm font-medium text-slate-800">
+                        <Terminal
+                          size={16}
+                          className="text-ink-3"
+                          aria-hidden="true"
+                        />
+                        <span className="text-sm font-medium text-ink-2">
                           Your next challenge
                         </span>
                       </div>
-                      <span className="text-xs font-medium text-blue-700">
+                      <span className="text-xs font-medium text-accent-700">
                         +{stage.xp} XP
                       </span>
                     </div>
 
                     <div className="p-4 sm:p-5">
-                      <h4 className="text-base font-semibold text-slate-950 sm:text-lg">
+                      <h4 className="text-base font-semibold text-ink sm:text-lg">
                         {stage.challenge}
                       </h4>
-                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                      <p className="mt-2 text-sm leading-6 text-ink-2">
                         {stage.prompt}
                       </p>
 
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                        <p className="text-xs text-slate-400">
-                          Learn · Write · Test · Improve
+                        <p className="text-xs text-ink-4">
+                          Checks run in your browser
                         </p>
                         <a
                           href="#preview"
-                          className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                          className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg bg-accent-700 px-4 py-2 text-sm font-medium text-white transition-[background-color,transform] duration-150 ease-smooth hover:bg-accent-800 motion-safe:active:scale-[0.97] motion-reduce:transition-none"
                         >
                           Try a challenge
-                          <ArrowUpRight size={15} />
+                          <ArrowUpRight size={15} aria-hidden="true" />
                         </a>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-7 flex items-center justify-between border-t border-slate-100 pt-5">
+                  <div className="mt-7 flex items-center justify-between border-t border-line pt-5">
                     <button
                       type="button"
                       onClick={() => move(-1)}
                       disabled={active === 0}
-                      className="inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
+                      className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-medium text-ink-2 transition-colors duration-150 ease-smooth hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-30 motion-safe:active:scale-[0.97] motion-reduce:transition-none"
                     >
-                      <ChevronLeft size={16} />
+                      <ChevronLeft size={16} aria-hidden="true" />
                       Previous
                     </button>
 
-                    <span className="text-xs tabular-nums text-slate-400">
+                    <span className="text-xs tabular-nums text-ink-4">
                       {active + 1} of {stages.length}
                     </span>
 
@@ -433,10 +437,10 @@ export function LearningPath() {
                       type="button"
                       onClick={() => move(1)}
                       disabled={active === stages.length - 1}
-                      className="inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-sm font-medium text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
+                      className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-medium text-ink transition-colors duration-150 ease-smooth hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-30 motion-safe:active:scale-[0.97] motion-reduce:transition-none"
                     >
                       Next stage
-                      <ChevronRight size={16} />
+                      <ChevronRight size={16} aria-hidden="true" />
                     </button>
                   </div>
                 </motion.div>
@@ -446,28 +450,28 @@ export function LearningPath() {
         </Reveal>
 
         <Reveal delay={0.12}>
-          <div className="mt-8 flex flex-col justify-between gap-4 rounded-2xl bg-slate-950 p-6 sm:flex-row sm:items-center sm:p-8">
+          <div className="mt-8 flex flex-col justify-between gap-4 rounded-2xl bg-ink p-6 sm:flex-row sm:items-center sm:p-8">
             <div className="flex items-start gap-4">
               <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white">
-                <Rocket size={21} />
+                <Rocket size={21} aria-hidden="true" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-white">
-                  The goal isn't to finish a course.
+                  Stage six ends with a URL shortener.
                 </h3>
-                <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
-                  It's to become the developer who can figure things out,
-                  solve problems, and build things that work.
+                <p className="mt-2 max-w-xl text-sm leading-6 text-ink-4">
+                  You design it, store data, handle failure, test it, and
+                  explain your choices. That is what finishing looks like.
                 </p>
               </div>
             </div>
 
             <a
               href="#preview"
-              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-slate-950 transition hover:bg-slate-200"
+              className="inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-ink transition-[background-color,transform] duration-150 ease-smooth hover:bg-surface-2 motion-safe:active:scale-[0.97] motion-reduce:transition-none"
             >
               Start learning
-              <ArrowRight size={16} />
+              <ArrowRight size={16} aria-hidden="true" />
             </a>
           </div>
         </Reveal>

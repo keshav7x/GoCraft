@@ -1,4 +1,3 @@
-import styles from "./landing.module.css";
 import { ChallengePreview } from "./components/Homes/ChallengePreview";
 import { FinalCta } from "./components/Homes/FinalCta";
 import { FriendsSection } from "./components/Homes/FriendsSection";
@@ -13,7 +12,7 @@ import { ExitPreviewBanner } from "./components/shared/ExitPreviewBanner";
 export default function Home() {
   return (
     <>
-      <a href="#main" className={styles.skipLink}>
+      <a href="#main" className="skip-link">
         Skip to content
       </a>
       <ExitPreviewBanner />

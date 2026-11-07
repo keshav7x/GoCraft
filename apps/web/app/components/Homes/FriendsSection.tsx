@@ -451,7 +451,7 @@ function TransferExperience({
 
               <button
                 onClick={onDone}
-                className="focus-visible:ring-2 focus-visible:ring-emerald-400/60 mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-4 text-sm font-semibold text-slate-950 transition hover:bg-slate-200 active:scale-[0.99] focus-visible:outline-none"
+                className="focus-visible:ring-2 focus-visible:ring-emerald-400/60 mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-4 text-sm font-semibold text-slate-950 transition hover:bg-slate-200 motion-safe:active:scale-[0.99] focus-visible:outline-none"
               >
                 Done
                 <ArrowDown size={16} />
@@ -469,7 +469,7 @@ function TransferExperience({
             onClick={onBack}
             className="focus-visible:ring-2 focus-visible:ring-white/40 mt-10 text-sm text-slate-500 transition hover:text-slate-200 focus-visible:outline-none"
           >
-            Cancel animation
+            Cancel transfer
           </button>
         )}
       </main>
@@ -515,7 +515,7 @@ export function FriendsSection() {
       initials: "YO",
       self: true,
       online: true,
-      color: "bg-slate-900 text-white",
+      color: "bg-ink text-white",
     },
     ...friends.map((friend) => ({
       name: friend.name,
@@ -573,41 +573,41 @@ export function FriendsSection() {
   return (
     <section
       id="friends"
-      className="w-full bg-white px-5 py-24 text-slate-900 sm:px-8 sm:py-32"
+      className="w-full bg-surface px-5 py-24 text-ink sm:px-8 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <div className="flex flex-col justify-between gap-8 border-b border-slate-200 pb-10 sm:flex-row sm:items-end">
+          <div className="flex flex-col justify-between gap-8 border-b border-line pb-10 sm:flex-row sm:items-end">
             <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-canvas px-3 py-1.5 text-xs font-medium text-ink-2">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-pulse rounded-full bg-emerald-500 motion-reduce:animate-none" />
                 </span>
-                <Users size={13} className="text-slate-500" />
+                <Users size={13} className="text-ink-3" />
                 {onlineCount} online now
               </div>
 
-              <h2 className="text-4xl font-semibold leading-[1.05] tracking-[-0.055em] text-slate-900 sm:text-5xl">
-                Your people.
+              <h2 className="text-4xl font-semibold leading-[1.05] tracking-[-0.055em] text-ink sm:text-5xl">
+                Your friends.
                 <br />
-                <span className="text-slate-400">Your podium.</span>
+                <span className="text-ink-4">Your leaderboard.</span>
               </h2>
 
-              <p className="mt-5 max-w-lg text-sm leading-7 text-slate-500 sm:text-base">
-                Learn together, climb the weekly leaderboard, and send XP
-                when someone deserves a boost.
+              <p className="mt-5 max-w-lg text-sm leading-7 text-ink-3 sm:text-base">
+                Add friends, follow the weekly leaderboard, and send up to
+                500 XP when someone helps you.
               </p>
             </div>
 
-            <div className="flex items-center gap-3 self-start rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 sm:self-auto">
+            <div className="flex items-center gap-3 self-start rounded-2xl border border-line bg-canvas px-4 py-3 sm:self-auto">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
                 <Coins size={21} />
               </div>
               <div>
-                <p className="text-xs text-slate-500">Wallet</p>
-                <p className="text-xl font-semibold tabular-nums text-cyan-600">
+                <p className="text-xs text-ink-3">Wallet</p>
+                <p className="text-xl font-semibold tabular-nums text-accent-700">
                   {balance.toLocaleString()}
-                  <span className="ml-1 text-sm font-medium text-slate-400">
+                  <span className="ml-1 text-sm font-medium text-ink-4">
                     XP
                   </span>
                 </p>
@@ -621,11 +621,11 @@ export function FriendsSection() {
             <div>
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-semibold tracking-tight text-slate-900">
-                    Your party
+                  <h3 className="text-lg font-semibold tracking-tight text-ink">
+                    Your friends
                   </h3>
-                  <p className="mt-0.5 text-sm text-slate-500">
-                    {friends.length} in your circle
+                  <p className="mt-0.5 text-sm text-ink-3">
+                    {friends.length} friends
                   </p>
                 </div>
 
@@ -633,7 +633,7 @@ export function FriendsSection() {
                   onClick={() =>
                     setNotice("Friend invitations will be available soon.")
                   }
-                  className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none"
+                  className="focus-visible:ring-2 focus-visible:ring-accent-500/40 inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm font-medium text-ink-2 transition hover:bg-canvas focus-visible:outline-none"
                 >
                   <Plus size={16} />
                   <span className="hidden sm:inline">Add friends</span>
@@ -643,16 +643,16 @@ export function FriendsSection() {
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search your party..."
+                placeholder="Search friends"
                 aria-label="Search friends"
-                className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 mt-4 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus-visible:border-cyan-400 focus-visible:bg-white"
+                className="focus-visible:ring-2 focus-visible:ring-accent-500/40 mt-4 w-full rounded-xl border border-line bg-canvas px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-4 hover:border-line-strong focus-visible:border-accent-400 focus-visible:bg-surface"
               />
 
               <div className="mt-3 space-y-2.5">
                 {filteredFriends.map((friend) => (
                   <div
                     key={friend.id}
-                    className="flex items-center gap-3.5 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 transition-colors hover:border-cyan-300 hover:bg-slate-50"
+                    className="flex items-center gap-3.5 rounded-2xl border border-line bg-surface px-4 py-3.5 transition-colors hover:border-accent-300 hover:bg-canvas"
                   >
                     <Avatar
                       initials={friend.initials}
@@ -661,18 +661,18 @@ export function FriendsSection() {
                     />
 
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-slate-900">
+                      <p className="truncate text-sm font-semibold text-ink">
                         {friend.name}
                       </p>
-                      <p className="mt-0.5 truncate text-xs text-slate-500">
+                      <p className="mt-0.5 truncate text-xs text-ink-3">
                         {friend.username}
                       </p>
                       <div className="mt-1.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-xs">
-                        <span className="tabular-nums text-cyan-600">
+                        <span className="tabular-nums text-accent-700">
                           {friend.xp.toLocaleString()}
-                          <span className="ml-1 text-slate-500">XP</span>
+                          <span className="ml-1 text-ink-3">XP</span>
                         </span>
-                        <span className="inline-flex items-center gap-1 whitespace-nowrap text-slate-500">
+                        <span className="inline-flex items-center gap-1 whitespace-nowrap text-ink-3">
                           <Flame size={12} className="text-amber-500" />
                           {friend.streak} day streak
                         </span>
@@ -682,7 +682,7 @@ export function FriendsSection() {
                     <button
                       onClick={() => openSend(friend)}
                       aria-label={`Send XP to ${friend.name}`}
-                      className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 inline-flex shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-cyan-600 transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 active:scale-[0.97] focus-visible:outline-none"
+                      className="focus-visible:ring-2 focus-visible:ring-accent-500/40 inline-flex shrink-0 items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm font-medium text-accent-700 transition hover:border-accent-300 hover:bg-accent-50 hover:text-accent-700 motion-safe:active:scale-[0.97] focus-visible:outline-none"
                     >
                       <Send size={14} />
                       <span className="hidden sm:inline">Send XP</span>
@@ -691,19 +691,19 @@ export function FriendsSection() {
                 ))}
 
                 {filteredFriends.length === 0 && (
-                  <p className="py-10 text-center text-sm text-slate-500">
+                  <p className="py-10 text-center text-sm text-ink-3">
                     No friends found.
                   </p>
                 )}
               </div>
 
               {notice && (
-                <div className="mt-4 flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                <div className="mt-4 flex items-start justify-between gap-3 rounded-xl border border-line bg-canvas px-4 py-3 text-sm text-ink-2">
                   <p>{notice}</p>
                   <button
                     onClick={() => setNotice("")}
                     aria-label="Dismiss message"
-                    className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 shrink-0 text-slate-400 transition hover:text-slate-700 focus-visible:outline-none"
+                    className="focus-visible:ring-2 focus-visible:ring-accent-500/40 shrink-0 text-ink-4 transition hover:text-ink-2 focus-visible:outline-none"
                   >
                     <X size={16} />
                   </button>
@@ -715,18 +715,18 @@ export function FriendsSection() {
           <Reveal delay={0.08}>
             <div>
               <div className="flex items-center justify-between gap-4">
-                <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+                <h3 className="text-lg font-semibold tracking-tight text-ink">
                   Weekly leaderboard
                 </h3>
                 <Trophy size={17} className="text-amber-500" />
               </div>
 
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div className="mt-4 rounded-2xl border border-line bg-canvas p-5">
                 <div className="grid grid-cols-3 items-end gap-2 pt-5">
                   {[
-                    { person: podium[1], rank: 2, block: "h-20 border-slate-200 bg-slate-100", numeral: "text-xl text-slate-700" },
-                    { person: podium[0], rank: 1, block: "h-28 border-cyan-300 bg-gradient-to-b from-cyan-100 to-cyan-50", numeral: "text-2xl text-slate-900" },
-                    { person: podium[2], rank: 3, block: "h-14 border-slate-200 bg-slate-100", numeral: "text-lg text-slate-600" },
+                    { person: podium[1], rank: 2, block: "h-20 border-line bg-surface-2", numeral: "text-xl text-ink-2" },
+                    { person: podium[0], rank: 1, block: "h-28 border-accent-300 bg-gradient-to-b from-accent-100 to-accent-50", numeral: "text-2xl text-ink" },
+                    { person: podium[2], rank: 3, block: "h-14 border-line bg-surface-2", numeral: "text-lg text-ink-2" },
                   ].map(({ person, rank, block, numeral }) =>
                     person ? (
                       <div
@@ -738,7 +738,7 @@ export function FriendsSection() {
                             <>
                               <div
                                 aria-hidden
-                                className="pointer-events-none absolute -top-3 left-1/2 h-16 w-24 -translate-x-1/2 rounded-full bg-cyan-300/30 blur-2xl"
+                                className="pointer-events-none absolute -top-3 left-1/2 h-16 w-24 -translate-x-1/2 rounded-full bg-accent-300/30 blur-2xl"
                               />
                               <Crown
                                 size={16}
@@ -761,21 +761,21 @@ export function FriendsSection() {
                           <div
                             className={`flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-semibold ${
                               person.self
-                                ? "bg-slate-900 text-white"
+                                ? "bg-ink text-white"
                                 : `${person.color}`
                             }`}
                           >
                             {person.initials}
                           </div>
-                          <p className="max-w-full truncate px-1 text-xs font-medium text-slate-800">
+                          <p className="max-w-full truncate px-1 text-xs font-medium text-ink-2">
                             {person.name}
                             {person.self && (
-                              <span className="ml-1.5 font-normal text-cyan-600">
+                              <span className="ml-1.5 font-normal text-accent-700">
                                 You
                               </span>
                             )}
                           </p>
-                          <p className="text-[11px] tabular-nums text-cyan-600">
+                          <p className="text-[11px] tabular-nums text-accent-700">
                             {person.xp.toLocaleString()}
                           </p>
                         </div>
@@ -785,35 +785,35 @@ export function FriendsSection() {
                 </div>
 
                 {rest.length > 0 && (
-                  <div className="mt-4 space-y-1 border-t border-slate-200 pt-3">
+                  <div className="mt-4 space-y-1 border-t border-line pt-3">
                     {rest.map((person, index) => (
                       <div
                         key={person.name}
                         className={`flex items-center gap-3 rounded-lg px-2 py-2 ${
-                          person.self ? "bg-cyan-50" : ""
+                          person.self ? "bg-accent-50" : ""
                         }`}
                       >
-                        <span className="w-5 shrink-0 text-center text-xs font-medium tabular-nums text-slate-400">
+                        <span className="w-5 shrink-0 text-center text-xs font-medium tabular-nums text-ink-4">
                           {index + 4}
                         </span>
                         <div
                           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
                             person.self
-                              ? "bg-slate-900 text-white"
+                              ? "bg-ink text-white"
                               : `${person.color}`
                           }`}
                         >
                           {person.initials}
                         </div>
-                        <p className="min-w-0 flex-1 truncate text-xs font-medium text-slate-700">
+                        <p className="min-w-0 flex-1 truncate text-xs font-medium text-ink-2">
                           {person.name}
                           {person.self && (
-                            <span className="ml-1.5 font-normal text-cyan-600">
+                            <span className="ml-1.5 font-normal text-accent-700">
                               You
                             </span>
                           )}
                         </p>
-                        <p className="shrink-0 text-xs font-medium tabular-nums text-cyan-600">
+                        <p className="shrink-0 text-xs font-medium tabular-nums text-accent-700">
                           {person.xp.toLocaleString()}
                         </p>
                       </div>
@@ -821,7 +821,7 @@ export function FriendsSection() {
                   </div>
                 )}
 
-                <p className="mt-4 border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">
+                <p className="mt-4 border-t border-line pt-4 text-xs leading-5 text-ink-3">
                   Finish lessons and challenges to climb.
                 </p>
               </div>
@@ -836,14 +836,15 @@ export function FriendsSection() {
             className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 backdrop-blur-sm sm:items-center sm:p-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+            transition={{ duration: 0.2 }}
             onClick={() => setShowSendModal(false)}
           >
             <motion.div
               role="dialog"
               aria-modal="true"
               aria-labelledby="send-xp-title"
-              className="w-full max-w-md rounded-t-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-900/10 sm:rounded-3xl sm:p-7"
+              className="w-full max-w-md rounded-t-2xl border border-line bg-surface p-6 shadow-pop sm:rounded-2xl sm:p-7"
               initial={
                 reducedMotion
                   ? { opacity: 0 }
@@ -853,16 +854,27 @@ export function FriendsSection() {
               exit={
                 reducedMotion
                   ? { opacity: 0 }
-                  : { opacity: 0, y: 25, scale: 0.98 }
+                  : {
+                      opacity: 0,
+                      y: 25,
+                      scale: 0.98,
+                      transition: {
+                        duration: 0.18,
+                        ease: [0.895, 0.03, 0.685, 0.22],
+                      },
+                    }
               }
-              transition={{ duration: 0.25 }}
+              transition={{
+                duration: 0.25,
+                ease: [0.32, 0.72, 0, 1],
+              }}
               onClick={(event) => event.stopPropagation()}
             >
               <div className="mb-7 flex items-center justify-between">
                 <button
                   onClick={() => setShowSendModal(false)}
                   aria-label="Go back"
-                  className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none"
+                  className="focus-visible:ring-2 focus-visible:ring-accent-500/40 rounded-full border border-line bg-canvas p-2 text-ink-2 transition hover:bg-surface-2 focus-visible:outline-none"
                 >
                   <ArrowLeft size={18} />
                 </button>
@@ -870,7 +882,7 @@ export function FriendsSection() {
                 <button
                   onClick={() => setShowSendModal(false)}
                   aria-label="Close send dialog"
-                  className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none"
+                  className="focus-visible:ring-2 focus-visible:ring-accent-500/40 rounded-full border border-line bg-canvas p-2 text-ink-2 transition hover:bg-surface-2 focus-visible:outline-none"
                 >
                   <X size={18} />
                 </button>
@@ -883,17 +895,17 @@ export function FriendsSection() {
 
                 <h3
                   id="send-xp-title"
-                  className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-slate-900"
+                  className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-ink"
                 >
                   Send XP
                 </h3>
 
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-ink-3">
                   Give a friend a little boost.
                 </p>
               </div>
 
-              <div className="mt-6 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="mt-6 flex items-center gap-3 rounded-2xl border border-line bg-canvas p-4">
                 <Avatar
                   initials={selectedFriend.initials}
                   color={selectedFriend.color}
@@ -902,18 +914,18 @@ export function FriendsSection() {
                   showStatus={false}
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-slate-900">
+                  <p className="truncate text-sm font-semibold text-ink">
                     {selectedFriend.name}
                   </p>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-ink-3">
                     {selectedFriend.username}
                   </p>
                 </div>
                 <Check size={18} className="text-emerald-500" />
               </div>
 
-              <div className="mt-6 rounded-2xl bg-slate-50 p-5">
-                <p className="text-center text-xs font-medium text-slate-500">
+              <div className="mt-6 rounded-2xl bg-canvas p-5">
+                <p className="text-center text-xs font-medium text-ink-3">
                   Amount to send
                 </p>
 
@@ -924,16 +936,16 @@ export function FriendsSection() {
                     }
                     disabled={amount <= 50}
                     aria-label="Decrease XP amount"
-                    className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none disabled:opacity-30"
+                    className="focus-visible:ring-2 focus-visible:ring-accent-500/40 flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-ink-2 transition hover:bg-surface-2 focus-visible:outline-none disabled:opacity-30"
                   >
                     <span className="text-xl">−</span>
                   </button>
 
                   <div className="min-w-[120px] text-center">
-                    <p className="text-4xl font-semibold tracking-[-0.04em] tabular-nums text-slate-900">
+                    <p className="text-4xl font-semibold tracking-[-0.04em] tabular-nums text-ink">
                       {amount}
                     </p>
-                    <p className="mt-1 text-xs font-medium text-cyan-600">
+                    <p className="mt-1 text-xs font-medium text-accent-700">
                       XP
                     </p>
                   </div>
@@ -944,7 +956,7 @@ export function FriendsSection() {
                     }
                     disabled={amount >= 500}
                     aria-label="Increase XP amount"
-                    className="focus-visible:ring-2 focus-visible:ring-cyan-500/40 flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none disabled:opacity-30"
+                    className="focus-visible:ring-2 focus-visible:ring-accent-500/40 flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-ink-2 transition hover:bg-surface-2 focus-visible:outline-none disabled:opacity-30"
                   >
                     <Plus size={17} />
                   </button>
@@ -955,10 +967,10 @@ export function FriendsSection() {
                     <button
                       key={preset}
                       onClick={() => setAmount(preset)}
-                      className={`focus-visible:ring-2 focus-visible:ring-cyan-500/40 rounded-lg border px-2 py-2 text-xs font-semibold transition focus-visible:outline-none ${
+                      className={`focus-visible:ring-2 focus-visible:ring-accent-500/40 rounded-lg border px-2 py-2 text-xs font-semibold transition focus-visible:outline-none ${
                         amount === preset
-                          ? "border-slate-900 bg-slate-900 text-white"
-                          : "border-slate-200 bg-white text-slate-600 hover:border-slate-400"
+                          ? "border-ink bg-ink text-white"
+                          : "border-line bg-surface text-ink-2 hover:border-line-strong"
                       }`}
                     >
                       {preset}
@@ -968,26 +980,26 @@ export function FriendsSection() {
               </div>
 
               <div className="mt-4 flex items-center justify-between text-sm">
-                <span className="text-slate-500">Available balance</span>
-                <span className="font-semibold tabular-nums text-slate-900">
+                <span className="text-ink-3">Available balance</span>
+                <span className="font-semibold tabular-nums text-ink">
                   {balance.toLocaleString()} XP
                 </span>
               </div>
 
               {notice && (
-                <p className="mt-3 text-sm text-red-500">{notice}</p>
+                <p className="mt-3 text-sm text-danger">{notice}</p>
               )}
 
               <button
                 onClick={confirmTransfer}
                 disabled={amount > balance || amount < 50}
-                className="focus-visible:ring-2 focus-visible:ring-cyan-500/60 mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-4 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.99] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                className="focus-visible:ring-2 focus-visible:ring-accent-500/60 mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-5 py-4 text-sm font-semibold text-white transition hover:bg-ink-2 motion-safe:active:scale-[0.99] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Confirm &amp; send
                 <ChevronRight size={17} />
               </button>
 
-              <p className="mt-3 text-center text-xs text-slate-500">
+              <p className="mt-3 text-center text-xs text-ink-3">
                 Demo transfer · Maximum 500 XP
               </p>
             </motion.div>

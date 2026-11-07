@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
@@ -47,39 +46,39 @@ export function ProgressSection() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section id="progress" className="bg-white px-5 py-24 sm:px-8 sm:py-32">
+    <section id="progress" className="bg-canvas px-5 py-24 sm:px-8 sm:py-32">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <div className="grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-24">
             <div>
-              <p className="flex items-center gap-2 text-sm font-medium text-slate-500">
-                <GitBranch size={16} />
+              <p className="flex items-center gap-2 text-sm font-medium text-ink-3">
+                <GitBranch size={16} aria-hidden="true" />
                 Your progress
               </p>
 
-              <h2 className="mt-6 max-w-xl text-4xl font-semibold leading-[1.1] tracking-[-0.055em] text-slate-950 sm:text-5xl">
-                The work adds up.
+              <h2 className="mt-6 max-w-xl text-4xl font-semibold leading-[1.1] tracking-[-0.055em] text-ink sm:text-5xl">
+                See what you finished.
               </h2>
 
-              <p className="mt-6 max-w-lg text-base leading-8 text-slate-600">
-                Learning to code isn't about finishing a playlist. It's about
-                solving problems, understanding why your code works, and
-                gradually taking on harder engineering challenges.
+              <p className="mt-6 max-w-lg text-base leading-8 text-ink-2">
+                The overview lists every stage, how many challenges you have
+                passed in each one, and what to open next.
               </p>
 
               <div className="mt-10 space-y-6">
                 <div className="flex gap-4">
                   <Target
                     size={19}
-                    className="mt-0.5 shrink-0 text-slate-500"
+                    className="mt-0.5 shrink-0 text-ink-3"
+                    aria-hidden="true"
                   />
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-950">
-                      Know what you've learned
+                    <h3 className="text-sm font-semibold text-ink">
+                      Know what you&apos;ve learned
                     </h3>
-                    <p className="mt-1.5 text-sm leading-6 text-slate-600">
-                      See which topics you've completed and what still needs
-                      practice.
+                    <p className="mt-1.5 text-sm leading-6 text-ink-2">
+                      Every stage shows challenges passed and challenges
+                      left.
                     </p>
                   </div>
                 </div>
@@ -87,15 +86,16 @@ export function ProgressSection() {
                 <div className="flex gap-4">
                   <Flame
                     size={19}
-                    className="mt-0.5 shrink-0 text-slate-500"
+                    className="mt-0.5 shrink-0 text-ink-3"
+                    aria-hidden="true"
                   />
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-950">
+                    <h3 className="text-sm font-semibold text-ink">
                       Build a consistent habit
                     </h3>
-                    <p className="mt-1.5 text-sm leading-6 text-slate-600">
-                      Keep your practice visible without turning learning into
-                      a competition against a timer.
+                    <p className="mt-1.5 text-sm leading-6 text-ink-2">
+                      Your streak shows how many days in a row you solved a
+                      challenge.
                     </p>
                   </div>
                 </div>
@@ -103,15 +103,16 @@ export function ProgressSection() {
                 <div className="flex gap-4">
                   <Trophy
                     size={19}
-                    className="mt-0.5 shrink-0 text-slate-500"
+                    className="mt-0.5 shrink-0 text-ink-3"
+                    aria-hidden="true"
                   />
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-950">
+                    <h3 className="text-sm font-semibold text-ink">
                       Earn progress through practice
                     </h3>
-                    <p className="mt-1.5 text-sm leading-6 text-slate-600">
-                      Unlock milestones by solving challenges and developing
-                      real skills.
+                    <p className="mt-1.5 text-sm leading-6 text-ink-2">
+                      Achievements unlock when you pass challenges, like
+                      your first ten.
                     </p>
                   </div>
                 </div>
@@ -119,70 +120,76 @@ export function ProgressSection() {
 
               <a
                 href="#preview"
-                className="mt-10 inline-flex items-center gap-2 text-sm font-semibold text-slate-950 transition-colors hover:text-blue-700"
+                className="group mt-10 inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-ink transition-colors duration-150 ease-smooth hover:text-accent-700"
               >
                 Try a Go challenge
-                <ArrowRight size={16} />
+                <ArrowRight
+                  size={16}
+                  aria-hidden="true"
+                  className="transition-transform duration-150 ease-out-fluid group-hover:translate-x-1 motion-reduce:transition-none"
+                />
               </a>
             </div>
 
             <Reveal delay={0.1}>
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 sm:px-6">
+              <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
+                <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-slate-950 font-mono text-xs font-bold text-white">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-accent font-mono text-xs font-bold text-accent-contrast">
                       Go
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-slate-950">
+                      <p className="text-sm font-semibold text-ink">
                         Learning overview
                       </p>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <p className="mt-0.5 text-xs text-ink-3">
                         Your path through Go
                       </p>
                     </div>
                   </div>
 
-                  <Braces size={19} className="text-slate-400" />
+                  <Braces size={19} className="text-ink-4" aria-hidden="true" />
                 </div>
 
                 <div className="p-5 sm:p-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-slate-500">Topics</p>
-                      <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+                      <p className="text-sm text-ink-3">Topics</p>
+                      <p className="mt-2 text-3xl font-semibold tracking-tight text-ink">
                         4
-                        <span className="text-lg font-normal text-slate-400">
-                          {" "}stages
+                        <span className="text-lg font-normal text-ink-4">
+                          {" "}
+                          tracks
                         </span>
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-slate-500">Next up</p>
-                      <p className="mt-2 text-lg font-semibold text-slate-950">
+                      <p className="text-sm text-ink-3">Next up</p>
+                      <p className="mt-2 text-lg font-semibold text-ink">
                         Data structures
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-7 flex gap-6 border-b border-slate-200">
+                  <div className="mt-7 flex gap-6 border-b border-line">
                     <button
                       type="button"
                       onClick={() => setTab("skills")}
                       aria-pressed={tab === "skills"}
-                      className={`relative pb-3 text-sm font-medium ${
+                      className={`relative cursor-pointer pb-3 text-sm font-medium transition-colors duration-150 ease-smooth ${
                         tab === "skills"
-                          ? "text-slate-950"
-                          : "text-slate-500 hover:text-slate-800"
+                          ? "text-ink"
+                          : "text-ink-3 hover:text-ink-2"
                       }`}
                     >
-                      Learning path
+                      Topics
                       {tab === "skills" && (
                         <motion.span
                           layoutId="gocraft-progress-tab"
-                          className="absolute inset-x-0 bottom-0 h-0.5 bg-slate-950"
+                          className="absolute inset-x-0 bottom-0 h-0.5 bg-ink"
                           transition={{
                             duration: reduceMotion ? 0 : 0.2,
+                            ease: [0.32, 0.72, 0, 1],
                           }}
                         />
                       )}
@@ -192,19 +199,20 @@ export function ProgressSection() {
                       type="button"
                       onClick={() => setTab("achievements")}
                       aria-pressed={tab === "achievements"}
-                      className={`relative pb-3 text-sm font-medium ${
+                      className={`relative cursor-pointer pb-3 text-sm font-medium transition-colors duration-150 ease-smooth ${
                         tab === "achievements"
-                          ? "text-slate-950"
-                          : "text-slate-500 hover:text-slate-800"
+                          ? "text-ink"
+                          : "text-ink-3 hover:text-ink-2"
                       }`}
                     >
                       Achievements
                       {tab === "achievements" && (
                         <motion.span
                           layoutId="gocraft-progress-tab"
-                          className="absolute inset-x-0 bottom-0 h-0.5 bg-slate-950"
+                          className="absolute inset-x-0 bottom-0 h-0.5 bg-ink"
                           transition={{
                             duration: reduceMotion ? 0 : 0.2,
+                            ease: [0.32, 0.72, 0, 1],
                           }}
                         />
                       )}
@@ -215,10 +223,13 @@ export function ProgressSection() {
                     key={tab}
                     initial={reduceMotion ? false : { opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.18 }}
+                    transition={{
+                      duration: reduceMotion ? 0 : 0.15,
+                      ease: [0.32, 0.72, 0, 1],
+                    }}
                   >
                     {tab === "skills" ? (
-                      <div className="divide-y divide-slate-100">
+                      <div className="divide-y divide-line">
                         {skills.map((skill, index) => {
                           const percentage =
                             (skill.completed / skill.total) * 100;
@@ -230,31 +241,31 @@ export function ProgressSection() {
                                   <span
                                     className={`flex size-7 items-center justify-center rounded-md ${
                                       percentage === 100
-                                        ? "bg-emerald-50 text-emerald-700"
-                                        : "bg-slate-100 text-slate-500"
+                                        ? "bg-success-soft text-success"
+                                        : "bg-surface-2 text-ink-3"
                                     }`}
                                   >
                                     {percentage === 100 ? (
-                                      <Check size={15} />
+                                      <Check size={15} aria-hidden="true" />
                                     ) : (
                                       <span className="text-xs">
                                         {String(index + 1).padStart(2, "0")}
                                       </span>
                                     )}
                                   </span>
-                                  <span className="text-sm font-medium text-slate-800">
+                                  <span className="text-sm font-medium text-ink-2">
                                     {skill.name}
                                   </span>
                                 </div>
 
-                                <span className="shrink-0 text-xs tabular-nums text-slate-500">
+                                <span className="shrink-0 text-xs tabular-nums text-ink-3">
                                   {skill.completed}/{skill.total}
                                 </span>
                               </div>
 
-                              <div className="ml-10 mt-3 h-1 overflow-hidden rounded-full bg-slate-100">
+                              <div className="ml-10 mt-3 h-1 overflow-hidden rounded-full bg-surface-2">
                                 <motion.div
-                                  className="h-full rounded-full bg-slate-900"
+                                  className="h-full rounded-full bg-ink"
                                   initial={
                                     reduceMotion ? false : { width: 0 }
                                   }
@@ -263,6 +274,7 @@ export function ProgressSection() {
                                   transition={{
                                     duration: reduceMotion ? 0 : 0.5,
                                     delay: reduceMotion ? 0 : index * 0.06,
+                                    ease: [0.32, 0.72, 0, 1],
                                   }}
                                 />
                               </div>
@@ -271,7 +283,7 @@ export function ProgressSection() {
                         })}
                       </div>
                     ) : (
-                      <div className="divide-y divide-slate-100">
+                      <div className="divide-y divide-line">
                         {achievements.map((achievement) => (
                           <div
                             key={achievement.name}
@@ -280,28 +292,28 @@ export function ProgressSection() {
                             <div
                               className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${
                                 achievement.unlocked
-                                  ? "bg-emerald-50 text-emerald-700"
-                                  : "bg-slate-100 text-slate-400"
+                                  ? "bg-success-soft text-success"
+                                  : "bg-surface-2 text-ink-4"
                               }`}
                             >
                               {achievement.unlocked ? (
-                                <Check size={17} />
+                                <Check size={17} aria-hidden="true" />
                               ) : (
-                                <LockKeyhole size={16} />
+                                <LockKeyhole size={16} aria-hidden="true" />
                               )}
                             </div>
 
                             <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-slate-900">
+                              <p className="text-sm font-medium text-ink">
                                 {achievement.name}
                               </p>
-                              <p className="mt-1 text-xs leading-5 text-slate-500">
+                              <p className="mt-1 text-xs leading-5 text-ink-3">
                                 {achievement.detail}
                               </p>
                             </div>
 
                             {achievement.unlocked && (
-                              <span className="text-xs font-medium text-emerald-700">
+                              <span className="text-xs font-medium text-success">
                                 Earned
                               </span>
                             )}
@@ -313,15 +325,15 @@ export function ProgressSection() {
 
                   <a
                     href="#learn"
-                    className="mt-3 flex items-center justify-between border-t border-slate-200 pt-5 text-sm font-medium text-slate-700 transition-colors hover:text-slate-950"
+                    className="mt-3 flex cursor-pointer items-center justify-between border-t border-line pt-5 text-sm font-medium text-ink-2 transition-colors duration-150 ease-smooth hover:text-ink"
                   >
                     Explore the learning path
-                    <ChevronRight size={16} />
+                    <ChevronRight size={16} aria-hidden="true" />
                   </a>
                 </div>
               </div>
 
-              <p className="mt-3 text-xs leading-5 text-slate-400">
+              <p className="mt-3 text-xs leading-5 text-ink-4">
                 Illustrative interface. Progress values shown are examples,
                 not live account data.
               </p>
