@@ -1,159 +1,179 @@
-# Turborepo starter
+# GoCraft
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Learn to code by building real things.**
 
-## Using this example
+GoCraft is a hands-on developer learning platform designed to help developers understand programming concepts through practical lessons, challenges, and real-world problem solving.
 
-Run the following command:
+Instead of passively watching tutorials, developers learn through structured learning paths, interactive content, and progressively challenging exercises.
 
-```sh
-npx create-turbo@latest
+The goal is simple: **turn learning into building.**
+
+---
+
+## What is GoCraft?
+
+GoCraft brings structured technical education and hands-on coding practice together.
+
+Learning content is organized into three levels:
+
+- **Modules** – Structured learning paths covering a particular subject.
+- **Lessons** – Individual topics within a module.
+- **Blocks** – Rich, flexible content inside lessons, including explanations, code snippets, images, and other learning resources.
+
+The platform is designed to make technical concepts easier to understand while encouraging developers to experiment, practice, and build.
+
+## Features
+
+### Learning experience
+- Structured modules and lessons.
+- Rich, block-based lesson content.
+- Technical explanations and code examples.
+- Progressive learning paths.
+- Practical programming challenges.
+
+### Gamification
+- XP and experience tracking.
+- Learning progress tracking.
+- Streaks and achievements.
+- Friends and social learning.
+- Virtual marketplace with collectible items.
+
+### Developer experience
+- Organized learning content.
+- Progress tracking.
+- Interactive learning environment.
+- A foundation for future code execution and evaluation.
+
+## Tech Stack
+
+GoCraft is built using a modern TypeScript ecosystem.
+
+| Layer | Technologies |
+|---|---|
+| Monorepo | Turborepo |
+| Runtime & Package Manager | Bun |
+| Frontend | Next.js, React, TypeScript |
+| Styling | Tailwind CSS |
+| Animations | Framer Motion |
+| Backend | Fastify |
+| API | tRPC |
+| Database | PostgreSQL |
+| ORM | Drizzle ORM |
+| Data Fetching | TanStack Query |
+| Validation | Zod |
+| State Management | Zustand |
+
+## Architecture
+
+GoCraft follows a monorepo architecture to keep the frontend, backend, and shared packages organized.
+
+```text
+gocraft/
+├── apps/
+│   ├── web/              # Next.js application
+│   └── api/              # Fastify + tRPC API
+│
+├── packages/
+│   ├── db/               # Database schema and queries
+│   ├── contract/         # Shared contracts and types
+│   └── ...               # Shared packages
+│
+├── package.json
+├── turbo.json
+└── bun.lock
 ```
 
-## What's inside?
+The backend uses Fastify as its HTTP server and tRPC for type-safe communication between the frontend and backend.
 
-This Turborepo includes the following packages/apps:
+PostgreSQL handles persistent application data, with Drizzle ORM providing the database abstraction and schema management.
 
-### Apps and Packages
+## Learning Content Structure
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `@next/eslint-plugin-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+GoCraft uses a hierarchical content model:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```text
+Module
+  │
+  ├── Lesson
+  │     │
+  │     ├── Block
+  │     ├── Block
+  │     └── Block
+  │
+  ├── Lesson
+  │     │
+  │     ├── Block
+  │     └── Block
+  │
+  └── Lesson
 ```
 
-Without global `turbo`, use your package manager:
+Each lesson belongs to a module, and each block belongs to a lesson.
 
-```sh
-cd my-turborepo
-npx turbo build
-bun exec turbo build
-bun exec turbo build
+This structure makes it possible to create flexible learning experiences without restricting lessons to a single content format.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 24+
+- Bun 1.4+
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Keshav7x/GoCraft.git
+
+cd GoCraft
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Install dependencies:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```bash
+bun install
 ```
 
-Without global `turbo`:
+Configure the environment variables for the applications and database.
 
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
-```
+Start the development environment using the configured workspace scripts.
 
-### Develop
+> Development commands and environment requirements may evolve as the project develops.
 
-To develop all apps and packages, run the following command:
+## Project Status
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+<details>
+<summary>Development roadmap</summary>
 
-```sh
-cd my-turborepo
-turbo dev
-```
+- [x] Monorepo foundation
+- [x] Next.js frontend foundation
+- [x] Fastify API foundation
+- [x] tRPC integration
+- [x] Database schema foundation
+- [x] Module, lesson, and block content model
+- [ ] Complete learning experience
+- [ ] Admin content management system
+- [ ] Progress and XP system
+- [ ] Interactive coding challenges
+- [ ] Code execution and evaluation
+- [ ] Social learning features
+- [ ] Virtual marketplace
 
-Without global `turbo`, use your package manager:
+</details>
 
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
-```
+GoCraft is actively evolving. Some features are still under development, and the roadmap represents the intended direction rather than a claim that everything is production-ready.
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Vision
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+Learning to program shouldn't be limited to reading documentation or following tutorials.
 
-```sh
-turbo dev --filter=web
-```
+Developers should be able to explore concepts, understand what's happening under the hood, experiment with code, make mistakes, and gradually develop the confidence to build real-world software.
 
-Without global `turbo`:
+That's what GoCraft aims to make possible.
 
-```sh
-npx turbo dev --filter=web
-bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
-```
+**Learn. Experiment. Build. Repeat.**
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Built with curiosity by [Keshav](https://github.com/Keshav7x).
